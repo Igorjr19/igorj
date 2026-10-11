@@ -61,6 +61,21 @@
     margin: 0;
   }
 
+  /* Reverse video marks the row under the mouse or holding the focus; everything in it takes the inverted colors. */
+  .grid > .panel :is(li, dd, .panel__summary):is(:hover, :focus-visible, :has(:focus-visible)) {
+    background-color: var(--color-selection-background);
+    color: var(--color-selection-text);
+
+    & * {
+      color: inherit;
+    }
+
+    & :focus-visible,
+    &:focus-visible {
+      outline-color: var(--color-selection-text);
+    }
+  }
+
   .status--completed {
     color: var(--color-success);
   }

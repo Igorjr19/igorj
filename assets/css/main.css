@@ -13,6 +13,7 @@
 @import './base/elements.css';
 @import './layout/grid.css';
 @import './components/header.css';
+@import './components/keybar.css';
 @import './components/panel.css';
 @import './components/prose.css';
 @import './components/code.css';
