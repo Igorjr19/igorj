@@ -7,6 +7,7 @@ export type ColorScheme = 'light' | 'dark';
 export interface PageOptions {
   readonly viewport?: { readonly width: number; readonly height: number };
   readonly colorScheme?: ColorScheme;
+  readonly reducedMotion?: boolean;
   /** Set to false to check what visitors and crawlers without JavaScript get. */
   readonly javascript?: boolean;
 }
@@ -29,15 +30,22 @@ export class Session implements AsyncDisposable {
   }
 
   /** Opens a fresh page, closing the previous one so emulated settings never leak between steps. */
-  async open(path: string, { viewport, colorScheme, javascript = true }: PageOptions = {}): Promise<Page> {
+  async open(
+    path: string,
+    { viewport, colorScheme, reducedMotion, javascript = true }: PageOptions = {},
+  ): Promise<Page> {
     await this.page?.close();
     const page = await this.browser.newPage();
     this.page = page;
     if (viewport) {
       await page.setViewportSize(viewport);
     }
-    if (colorScheme) {
-      await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: colorScheme }]);
+    const features = [
+      ...(colorScheme ? [{ name: 'prefers-color-scheme', value: colorScheme }] : []),
+      ...(reducedMotion ? [{ name: 'prefers-reduced-motion', value: 'reduce' }] : []),
+    ];
+    if (features.length > 0) {
+      await page.emulateMediaFeatures(features);
     }
     if (!javascript) {
       await page.unsafelyGetCelestialBindings().Emulation.setScriptExecutionDisabled({ value: true });

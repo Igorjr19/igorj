@@ -1,7 +1,14 @@
-<header>
-  <p><a href="{{ site.Home.RelPermalink }}">{{ site.Title }}</a></p>
+<header class="site-header">
+  <div class="site-header__identity">
+    {{- if .IsHome }}
+    <h1 class="site-header__name">{{ site.Params.author }}</h1>
+    {{- else }}
+    <p class="site-header__name"><a href="{{ site.Home.RelPermalink }}">{{ site.Params.author }}</a></p>
+    {{- end }}
+    <p class="site-header__role">{{ i18n "role" }}<span class="cursor" aria-hidden="true"></span></p>
+  </div>
   {{- with .Translations }}
-  <nav aria-label="{{ i18n "languages" }}">
+  <nav class="site-header__languages" aria-label="{{ i18n "languages" }}">
     {{- range . }}
     <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Locale }}" lang="{{ .Language.Locale }}">{{ .Language.Label }}</a>
     {{- end }}

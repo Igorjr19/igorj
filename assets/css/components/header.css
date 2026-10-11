@@ -1,0 +1,48 @@
+@layer app.components {
+  .site-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 calc(2 * var(--cell-width));
+    padding: var(--cell-height) var(--cell-width);
+  }
+
+  .site-header__identity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--cell-width);
+  }
+
+  .site-header__name,
+  .site-header__role {
+    margin: 0;
+    font-size: inherit;
+    line-height: var(--cell-height);
+  }
+
+  .site-header__languages {
+    display: flex;
+    gap: var(--cell-width);
+  }
+
+  .cursor {
+    display: inline-block;
+    inline-size: var(--cell-width);
+    block-size: var(--cell-height);
+    vertical-align: bottom;
+    background-color: var(--color-cursor);
+    animation: cursor-blink 1s steps(1) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+    }
+  }
+
+  @keyframes cursor-blink {
+    50% {
+      visibility: hidden;
+    }
+  }
+}

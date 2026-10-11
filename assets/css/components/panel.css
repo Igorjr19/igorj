@@ -20,7 +20,8 @@
     line-height: var(--cell-height);
   }
 
-  .panel__title {
+  /* Home panel names read like btop boxes; page titles keep the author's capitalisation. */
+  .panel__name {
     text-transform: lowercase;
   }
 
