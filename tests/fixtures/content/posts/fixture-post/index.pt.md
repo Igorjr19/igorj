@@ -1,5 +1,6 @@
 ---
 title: Post de teste
+summary: Um post usado pelos testes de ponta a ponta.
 date: 2026-01-01
 categories: [testing]
 ---

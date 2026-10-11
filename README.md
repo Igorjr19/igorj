@@ -48,6 +48,8 @@ deno task ci             # everything the CI runs
 
 Posts, projects, research and CV live in a separate private repository. The build reads `content/`, a local clone of it; `deno task content:fetch` clones it when `CONTENT_REPO` and `CONTENT_TOKEN` are set.
 
+`deno task content:check` validates every Markdown front matter and YAML file against the schemas in `tools/content/schema.ts`: Hugo's own keys (`title`, `date`, `lastmod`, `draft`, `slug`, `summary`, `categories`) plus the site's fields in English, one category per post, and JSON Resume keys for the CV. Unknown keys and files outside the expected structure fail the check. The build runs it on the real content, and the fixture build on `tests/fixtures/content`.
+
 The production build fails on example content (`example: true` or `[EXAMPLE]`). Set `ALLOW_EXAMPLE_CONTENT=1` for previews.
 
 ## Themes and fonts

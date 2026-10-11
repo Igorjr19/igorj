@@ -1,5 +1,6 @@
 ---
 title: Fixture post
+summary: A post used by the end-to-end tests.
 date: 2026-01-01
 categories: [testing]
 ---
