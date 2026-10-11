@@ -1,0 +1,7 @@
+engine biome(1.0)
+language css
+
+or {
+  CssFunction(name=$name) as $value where { $name <: r"rgba?|hsla?|hwb|lab|lch|oklab|oklch|color" },
+  CssColor() as $value
+} where { register_diagnostic(span=$value, message="Hardcoded color. Use a theme role such as var(--color-text).") }

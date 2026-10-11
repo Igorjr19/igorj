@@ -1,0 +1,90 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sverweij/dependency-cruiser/main/src/schema/configuration.schema.json",
+  "forbidden": [
+    {
+      "name": "no-circular",
+      "severity": "error",
+      "comment": "Cycles make modules impossible to understand or test in isolation.",
+      "from": {},
+      "to": {
+        "circular": true
+      }
+    },
+    {
+      "name": "no-orphans",
+      "severity": "error",
+      "comment": "A module nothing imports and that imports nothing is dead code.",
+      "from": {
+        "orphan": true,
+        "pathNot": ["^tools/cli/", "\\.test\\.ts$", "^tests/e2e/support/", "^assets/ts/theme/apply-saved-theme\\.ts$"]
+      },
+      "to": {}
+    },
+    {
+      "name": "domains-not-to-cli",
+      "severity": "error",
+      "comment": "Command-line entry points sit on top; domain modules never depend on them.",
+      "from": {
+        "path": "^tools/(?!cli/)"
+      },
+      "to": {
+        "path": "^tools/cli/"
+      }
+    },
+    {
+      "name": "domains-only-to-shared-layers",
+      "severity": "error",
+      "comment": "A domain may use its own modules, color and shared, but not another domain.",
+      "from": {
+        "path": "^tools/(?!cli/)([^/]+)/"
+      },
+      "to": {
+        "path": "^tools/",
+        "pathNot": ["^tools/$1/", "^tools/color/", "^tools/shared/"]
+      }
+    },
+    {
+      "name": "production-not-to-tests",
+      "severity": "error",
+      "comment": "Production code never imports test code.",
+      "from": {
+        "path": "^(tools|assets)/"
+      },
+      "to": {
+        "path": "^tests/"
+      }
+    },
+    {
+      "name": "browser-not-to-tools",
+      "severity": "error",
+      "comment": "Browser code is shipped to visitors and must not pull in build tooling.",
+      "from": {
+        "path": "^assets/ts/"
+      },
+      "to": {
+        "path": "^tools/"
+      }
+    },
+    {
+      "name": "stable-dependencies",
+      "severity": "error",
+      "comment": "Depend in the direction of stability: a module should not import one that is more unstable than itself.",
+      "from": {
+        "path": "^tools/"
+      },
+      "to": {
+        "path": "^tools/",
+        "moreUnstable": true
+      }
+    }
+  ],
+  "options": {
+    "doNotFollow": {
+      "path": ["node_modules"]
+    },
+    "tsPreCompilationDeps": true,
+    "enhancedResolveOptions": {
+      "extensions": [".ts"]
+    }
+  }
+}

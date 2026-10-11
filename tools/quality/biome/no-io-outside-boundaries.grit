@@ -1,0 +1,10 @@
+engine biome(1.0)
+language js(typescript)
+
+or {
+  `Deno.$method($...)` as $call,
+  `fetch($...)` as $call,
+  `new Deno.Command($...)` as $call
+} where {
+  register_diagnostic(span=$call, message="File, process and network access belong in tools/cli, tools/shared or a load.ts module.")
+}

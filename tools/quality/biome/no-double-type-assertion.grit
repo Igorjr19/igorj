@@ -1,0 +1,6 @@
+engine biome(1.0)
+language js(typescript)
+
+`$value as unknown as $type` as $assertion where {
+  register_diagnostic(span=$assertion, message="Double type assertion bypasses the type checker. Validate the value or fix its type.")
+}

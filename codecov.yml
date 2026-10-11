@@ -1,0 +1,10 @@
+coverage:
+  status:
+    # The whole project is reported but never blocks; new code must be tested.
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        target: 80%
+comment: false

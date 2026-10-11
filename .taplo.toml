@@ -1,0 +1,5 @@
+include = ["*.toml", "data/**/*.toml", "tests/**/*.toml"]
+
+[formatting]
+indent_string = "  "
+column_width = 120

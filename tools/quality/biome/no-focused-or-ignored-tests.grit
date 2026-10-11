@@ -1,0 +1,14 @@
+engine biome(1.0)
+language js(typescript)
+
+or {
+  `Deno.test.only($...)` as $test,
+  `Deno.test.ignore($...)` as $test,
+  `$t.step.only($...)` as $test,
+  `Deno.test({ $props })` as $test where {
+    $props <: contains or {
+      `only: true`,
+      `ignore: true`
+    }
+  }
+} where { register_diagnostic(span=$test, message="Focused or ignored test. Every test must run in CI.") }

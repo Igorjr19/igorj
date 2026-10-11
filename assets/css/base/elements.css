@@ -1,0 +1,16 @@
+@layer app.base {
+  :root {
+    scrollbar-color: var(--color-text-muted) var(--color-background);
+    caret-color: var(--color-cursor);
+  }
+
+  ::selection {
+    background-color: var(--color-selection-background);
+    color: var(--color-selection-text);
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+}

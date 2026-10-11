@@ -1,0 +1,32 @@
+# Third-party material served by the site and where its license text comes from:
+# a file inside the installed package, or an upstream file pinned by commit and checksum.
+
+[[entries]]
+name = "WebTUI"
+license = "MIT"
+homepage = "https://github.com/webtui/webtui"
+text = { url = "https://raw.githubusercontent.com/webtui/webtui/c8eaf2c10a08e33082602be353ec20affc43770e/LICENSE", sha256 = "708c197f9b4181a6db9f16ed65d430417d665aaa21f4a8a293184d32f28fa185" }
+
+[[entries]]
+name = "Fira Code"
+license = "OFL-1.1"
+homepage = "https://github.com/tonsky/FiraCode"
+text = { package = "@fontsource/fira-code", file = "LICENSE" }
+
+[[entries]]
+name = "Fira Sans"
+license = "OFL-1.1"
+homepage = "https://github.com/mozilla/Fira"
+text = { package = "@fontsource/fira-sans", file = "LICENSE" }
+
+[[entries]]
+name = "Catppuccin palette"
+license = "MIT"
+homepage = "https://catppuccin.com"
+text = { url = "https://raw.githubusercontent.com/catppuccin/catppuccin/d09787dd98ca6fba08af5ef2ae94a7e09f17daca/LICENSE", sha256 = "814096d2c34cc216c624738a49356f32b7237733b4f7edb0685f4e50ef5074ba" }
+
+[[entries]]
+name = "iTerm2-Color-Schemes"
+license = "MIT"
+homepage = "https://github.com/mbadolato/iTerm2-Color-Schemes"
+text = { url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/LICENSE", sha256 = "2373168614b527494dff99eb393024608216db79f687d58bad420f6c1e0ad192" }

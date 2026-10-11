@@ -1,0 +1,11 @@
+{
+  "threshold": 3,
+  "minLines": 5,
+  "minTokens": 50,
+  "format": ["typescript", "css"],
+  "path": ["tools", "tests", "assets"],
+  "ignore": ["**/generated/**", "**/fixtures/**"],
+  "reporters": ["console"],
+  "absolute": false,
+  "gitignore": true
+}

@@ -1,0 +1,6 @@
+import type { StepDefinition } from '../support/steps.ts';
+import type { World } from '../support/world.ts';
+import { contentSteps } from './content.ts';
+
+/** Step definitions for the specifications in specs/. Each feature adds its own module and lists it here. */
+export const steps: readonly StepDefinition<World>[] = [...contentSteps];

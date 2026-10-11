@@ -1,0 +1,20 @@
+subsets = ["latin", "latin-ext"]
+
+# The cell size is measured with the monospace font, so it is preloaded to avoid a layout shift when it arrives.
+[[preload]]
+family = "Fira Code"
+weight = 400
+style = "normal"
+subset = "latin"
+
+[[families]]
+name = "Fira Code"
+package = "@fontsource/fira-code"
+weights = [400, 700]
+styles = ["normal"]
+
+[[families]]
+name = "Fira Sans"
+package = "@fontsource/fira-sans"
+weights = [400, 700]
+styles = ["normal", "italic"]
