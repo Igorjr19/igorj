@@ -1,0 +1,12 @@
+{{- with hugo.Data.external.films.films }}
+<ul class="entries">
+  {{- range $film := . }}
+  <li>
+    {{ with .url }}<a href="{{ . }}">{{ $film.title }}</a>{{ else }}<cite>{{ $film.title }}</cite>{{ end }}
+    <span class="panel__meta">{{ .year }}{{ with .rating }} · {{ i18n "rating" (lang.FormatNumber 1 .) }}{{ end }}</span>
+  </li>
+  {{- end }}
+</ul>
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

@@ -1,0 +1,13 @@
+{{- $kind := dict "book" "kindBook" "paper" "kindPaper" }}
+{{- with hugo.Data.reading.reading.items }}
+<ul class="entries">
+  {{- range $item := . }}
+  <li>
+    {{ with .url }}<a href="{{ . }}">{{ $item.title }}</a>{{ else }}<cite>{{ $item.title }}</cite>{{ end }}
+    <span class="panel__meta">{{ delimit .authors ", " }} · {{ i18n (index $kind .kind) }}</span>
+  </li>
+  {{- end }}
+</ul>
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

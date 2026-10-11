@@ -1,0 +1,8 @@
+items:
+  - title: "Fixture book"
+    authors: ["Fixture Author"]
+    kind: book
+  - title: "Fixture paper"
+    authors: ["First Author", "Second Author"]
+    kind: paper
+    url: https://example.com/paper

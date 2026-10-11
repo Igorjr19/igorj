@@ -1,0 +1,15 @@
+{
+  "updated": "2026-01-01",
+  "films": [
+    {
+      "title": "Fixture Film",
+      "year": 2020,
+      "rating": 4.5,
+      "url": "https://example.com/film"
+    },
+    {
+      "title": "Unrated Film",
+      "year": 1999
+    }
+  ]
+}

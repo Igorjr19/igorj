@@ -6,14 +6,10 @@
   .grid {
     --grid-columns: 1;
     display: grid;
-    gap: var(--cell-height) var(--cell-width);
+    /* No gap: the box border is drawn half a cell inside each panel, so touching panels leave one cell between borders. */
     grid-template-columns: repeat(
         var(--grid-columns),
-        round(
-          down,
-          calc((100cqi - (var(--grid-columns) - 1) * var(--cell-width)) / var(--grid-columns)),
-          var(--cell-width)
-        )
+        round(down, calc(100cqi / var(--grid-columns)), var(--cell-width))
       );
   }
 
@@ -27,6 +23,16 @@
   @container screen (width >= 80ch) {
     .grid {
       --grid-columns: 2;
+    }
+  }
+
+  @container screen (width >= 120ch) {
+    .grid {
+      --grid-columns: 4;
+    }
+
+    .panel--wide {
+      grid-column: span 2;
     }
   }
 }

@@ -45,7 +45,7 @@ async function sectionLinks(world: World, section: string): Promise<string[]> {
   return await currentPage(world).evaluate(
     (name: string) => {
       const panel = [...document.querySelectorAll('.panel')].find(
-        (candidate) => candidate.querySelector('.panel__title')?.textContent?.trim() === name,
+        (candidate) => candidate.querySelector('.panel__name')?.textContent?.trim() === name,
       );
       return panel ? [...panel.querySelectorAll('li a')].map((link) => link.textContent?.trim() ?? '') : [];
     },

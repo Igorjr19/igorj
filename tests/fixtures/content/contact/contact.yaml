@@ -1,0 +1,9 @@
+email:
+  pt: "contato@example.com"
+  en: "contact@example.com"
+professional:
+  - network: GitHub
+    url: "https://github.com/example"
+personal:
+  - network: Last.fm
+    url: "https://www.last.fm/user/example"

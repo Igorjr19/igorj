@@ -1,0 +1,15 @@
+{{- with first 5 (where site.RegularPages "Section" "posts").ByDate.Reverse }}
+<ul class="entries">
+  {{- range . }}
+  <li>
+    <time class="panel__meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{- range .GetTerms "categories" }}
+    <a class="panel__meta" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+    {{- end }}
+  </li>
+  {{- end }}
+</ul>
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

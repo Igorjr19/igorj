@@ -1,0 +1,15 @@
+{{- $status := dict "completed" "statusCompleted" "in-progress" "statusInProgress" "paused" "statusPaused" "abandoned" "statusAbandoned" }}
+{{- $projects := where (where site.RegularPages "Section" "projects") "Params.featured" true }}
+{{- with sort $projects "Params.period.start" "desc" }}
+<ul class="entries">
+  {{- range . }}
+  <li>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    <span class="status status--{{ .Params.status }}">{{ i18n (index $status .Params.status) }}</span>
+    <span class="panel__meta">{{ delimit .Params.stack " · " }}</span>
+  </li>
+  {{- end }}
+</ul>
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

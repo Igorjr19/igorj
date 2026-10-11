@@ -1,0 +1,17 @@
+{{- /* Frame shared by the home panels. Expects id, number, title, body and, optionally, href, wide and summary (which makes the body collapsible on narrow screens). */ -}}
+{{- $digits := slice "¹" "²" "³" "⁴" "⁵" "⁶" "⁷" "⁸" "⁹" }}
+{{- $headingId := printf "panel-%s" .id }}
+<section class="panel{{ if .wide }} panel--wide{{ end }}" box-="square" id="{{ .id }}" aria-labelledby="{{ $headingId }}">
+  <h2 class="panel__title" id="{{ $headingId }}">
+    <span class="panel__shortcut" aria-hidden="true">{{ index $digits (sub .number 1) }}</span>
+    {{- with .href }}<a class="panel__name" href="{{ . }}">{{ $.title }}</a>{{ else }}<span class="panel__name">{{ .title }}</span>{{ end -}}
+  </h2>
+  {{- if .summary }}
+  <details class="panel__collapse">
+    <summary class="panel__summary">{{ .summary }}</summary>
+    {{ .body }}
+  </details>
+  {{- else }}
+  {{ .body }}
+  {{- end }}
+</section>

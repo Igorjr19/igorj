@@ -1,6 +1,6 @@
-const EXAMPLE_FLAG = /^example:\s*true\s*$/m;
+const EXAMPLE_FLAG = /^\s*"?example"?\s*:\s*true\s*,?\s*$/m;
 const EXAMPLE_MARKER = '[EXAMPLE]';
-const CHECKED_FILE = /\.(md|ya?ml)$/;
+const CHECKED_FILE = /\.(md|ya?ml|json)$/;
 
 /** Example content is fake data for development and must never reach production. */
 export function containsExampleContent(text: string): boolean {

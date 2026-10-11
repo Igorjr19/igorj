@@ -1,16 +1,21 @@
 {{ define "main" }}
 <h1>{{ site.Title }}</h1>
+{{- $listeningSummary := i18n "noData" }}
+{{- with hugo.Data.external.music }}{{ with index .artists 0 }}{{ $listeningSummary = .name }}{{ end }}{{ end }}
+{{- $watchedSummary := i18n "noData" }}
+{{- with hugo.Data.external.films }}{{ with index .films 0 }}{{ $watchedSummary = .title }}{{ end }}{{ end }}
+{{- $projectsHref := "" }}
+{{- with site.GetPage "/projects" }}{{ $projectsHref = .RelPermalink }}{{ end }}
+{{- $postsHref := "" }}
+{{- with site.GetPage "/posts" }}{{ $postsHref = .RelPermalink }}{{ end }}
 <div class="grid">
-  {{- range site.Sections }}
-  {{- $id := printf "panel-%s" .Section }}
-  <section class="panel" box-="square" aria-labelledby="{{ $id }}">
-    <h2 class="panel__title" id="{{ $id }}"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
-    <ul>
-      {{- range first 5 .Pages }}
-      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-      {{- end }}
-    </ul>
-  </section>
-  {{- end }}
+  {{ partial "panel.html" (dict "id" "about" "number" 1 "title" (i18n "panelAbout") "wide" true "body" (partial "panels/about.html" .)) }}
+  {{ partial "panel.html" (dict "id" "now" "number" 2 "title" (i18n "panelNow") "wide" true "body" (partial "panels/now.html" .)) }}
+  {{ partial "panel.html" (dict "id" "projects" "number" 3 "title" (i18n "panelProjects") "wide" true "href" $projectsHref "body" (partial "panels/projects.html" .)) }}
+  {{ partial "panel.html" (dict "id" "posts" "number" 4 "title" (i18n "panelPosts") "wide" true "href" $postsHref "body" (partial "panels/posts.html" .)) }}
+  {{ partial "panel.html" (dict "id" "reading" "number" 5 "title" (i18n "panelReading") "body" (partial "panels/reading.html" .)) }}
+  {{ partial "panel.html" (dict "id" "listening" "number" 6 "title" (i18n "panelListening") "summary" $listeningSummary "body" (partial "panels/listening.html" .)) }}
+  {{ partial "panel.html" (dict "id" "watched" "number" 7 "title" (i18n "panelWatched") "summary" $watchedSummary "body" (partial "panels/watched.html" .)) }}
+  {{ partial "panel.html" (dict "id" "system" "number" 8 "title" (i18n "panelSystem") "body" (partial "panels/system.html" .)) }}
 </div>
 {{ end }}

@@ -105,6 +105,41 @@ const ContactSchema = v.strictObject({
   personal: v.array(ContactLink),
 });
 
+const ReadingSchema = v.strictObject({
+  example: Example,
+  items: v.array(
+    v.strictObject({
+      title: Text,
+      authors: v.pipe(v.array(Text), v.nonEmpty()),
+      kind: v.picklist(['book', 'paper']),
+      url: v.optional(Url),
+    }),
+  ),
+});
+
+// Written by the daily job in the content repository; no field may say when something was played or watched.
+const MusicSchema = v.strictObject({
+  example: Example,
+  updated: Day,
+  period: v.picklist(['week', 'month']),
+  artists: v.array(
+    v.strictObject({ name: Text, plays: v.pipe(v.number(), v.integer(), v.minValue(1)), url: v.optional(Url) }),
+  ),
+});
+
+const FilmsSchema = v.strictObject({
+  example: Example,
+  updated: Day,
+  films: v.array(
+    v.strictObject({
+      title: Text,
+      year: v.pipe(v.number(), v.integer()),
+      rating: v.optional(v.pipe(v.number(), v.minValue(0.5), v.maxValue(5), v.multipleOf(0.5))),
+      url: v.optional(Url),
+    }),
+  ),
+});
+
 type ContentSchema = v.GenericSchema<unknown>;
 
 const LANGUAGE = '(?:pt|en)';
@@ -116,6 +151,9 @@ const SCHEMAS_BY_PATH: readonly (readonly [RegExp, ContentSchema])[] = [
   [new RegExp(`^about/about\\.${LANGUAGE}\\.yaml$`), AboutSchema],
   [new RegExp(`^cv/cv\\.${LANGUAGE}\\.yaml$`), CvSchema],
   [/^contact\/contact\.yaml$/, ContactSchema],
+  [/^reading\/reading\.yaml$/, ReadingSchema],
+  [/^external\/music\.json$/, MusicSchema],
+  [/^external\/films\.json$/, FilmsSchema],
 ];
 
 /** Picks the schema from the path relative to the content root, so a misplaced or misnamed file is reported too. */

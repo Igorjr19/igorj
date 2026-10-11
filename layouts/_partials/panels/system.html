@@ -1,0 +1,21 @@
+{{- $commit := hugo.Data.generated.build.commit }}
+<dl class="facts">
+  {{- with $commit }}
+  <dt>{{ i18n "systemCommit" }}</dt>
+  <dd><a href="{{ site.Params.repository }}/commit/{{ . }}"><code>{{ substr . 0 7 }}</code></a></dd>
+  {{- end }}
+  <dt>{{ i18n "systemBuilt" }}</dt>
+  <dd><time datetime="{{ now.Format "2006-01-02" }}">{{ now.Format "2006-01-02" }}</time></dd>
+  {{- with hugo.Data.contact.contact }}
+  {{- with index .email site.Language.Lang }}
+  <dt>{{ i18n "systemContact" }}</dt>
+  <dd><a href="mailto:{{ . }}">{{ . }}</a></dd>
+  {{- end }}
+  {{- with append .personal .professional }}
+  <dt>{{ i18n "systemLinks" }}</dt>
+  {{- range . }}
+  <dd><a href="{{ .url }}">{{ .network }}</a>{{ with .note }} <span class="panel__meta">{{ . }}</span>{{ end }}</dd>
+  {{- end }}
+  {{- end }}
+  {{- end }}
+</dl>
