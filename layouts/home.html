@@ -1,5 +1,4 @@
 {{ define "main" }}
-<h1>{{ site.Title }}</h1>
 {{- $listeningSummary := i18n "noData" }}
 {{- with hugo.Data.external.music }}{{ with index .artists 0 }}{{ $listeningSummary = .name }}{{ end }}{{ end }}
 {{- $watchedSummary := i18n "noData" }}
