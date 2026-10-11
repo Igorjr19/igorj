@@ -1,0 +1,11 @@
+{{- with index hugo.Data.about (printf "about.%s" site.Language.Lang) }}
+{{- range .lines }}
+<p>{{ . }}</p>
+{{- end }}
+<p class="panel__meta">{{ .location }}</p>
+{{- with site.GetPage "/research" }}
+<p><a href="{{ .RelPermalink }}">{{ i18n "research" }}</a></p>
+{{- end }}
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

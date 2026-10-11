@@ -112,3 +112,26 @@ Deno.test('the contact file requires valid e-mail addresses for both languages',
   assertEquals(issuesFor('contact/contact.yaml', contact), null);
   assertRejected('contact/contact.yaml', { ...contact, email: { pt: 'not an e-mail', en: 'b@example.com' } }, 'email');
 });
+
+Deno.test('music and film summaries reject any field that would reveal when something was consumed', () => {
+  const music = { updated: '2026-10-10', period: 'week', artists: [{ name: 'An artist', plays: 3 }] };
+  assertEquals(issuesFor('external/music.json', music), null);
+  assertRejected(
+    'external/music.json',
+    { ...music, artists: [{ name: 'An artist', plays: 3, playedAt: '22:10' }] },
+    'playedAt',
+  );
+  const films = { updated: '2026-10-10', films: [{ title: 'A film', year: 2024, rating: 4.5 }] };
+  assertEquals(issuesFor('external/films.json', films), null);
+  assertRejected(
+    'external/films.json',
+    { ...films, films: [{ title: 'A film', year: 2024, watched: '2026-10-01' }] },
+    'watched',
+  );
+});
+
+Deno.test('the reading list accepts books and papers only', () => {
+  const reading = { items: [{ title: 'A book', authors: ['Someone'], kind: 'book' }] };
+  assertEquals(issuesFor('reading/reading.yaml', reading), null);
+  assertRejected('reading/reading.yaml', { items: [{ title: 'A', authors: ['B'], kind: 'podcast' }] }, '"paper"');
+});

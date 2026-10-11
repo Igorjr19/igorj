@@ -1,0 +1,15 @@
+{
+  "updated": "2026-01-01",
+  "period": "week",
+  "artists": [
+    {
+      "name": "Fixture Artist",
+      "plays": 12,
+      "url": "https://example.com/artist"
+    },
+    {
+      "name": "Second Artist",
+      "plays": 5
+    }
+  ]
+}

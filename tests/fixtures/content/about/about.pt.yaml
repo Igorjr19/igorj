@@ -1,0 +1,11 @@
+lines:
+  - "Linha de teste um."
+  - "Linha de teste dois."
+  - "Linha de teste três."
+photoAlt: "Foto de teste"
+location: "Cidade de teste"
+now:
+  work: "Trabalho de teste"
+  masters: "Mestrado de teste"
+  studying: "Assunto de teste"
+lastmod: 2026-01-01

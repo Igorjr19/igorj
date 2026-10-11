@@ -1,0 +1,18 @@
+{{- with hugo.Data.external.music }}
+{{- $period := .period }}
+{{- with .artists }}
+<p class="panel__meta">{{ i18n (cond (eq $period "month") "periodMonth" "periodWeek") }}</p>
+<ol class="entries">
+  {{- range $artist := . }}
+  <li>
+    {{ with .url }}<a href="{{ . }}">{{ $artist.name }}</a>{{ else }}{{ $artist.name }}{{ end }}
+    <span class="panel__meta">{{ i18n "plays" (dict "Count" (int .plays)) }}</span>
+  </li>
+  {{- end }}
+</ol>
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

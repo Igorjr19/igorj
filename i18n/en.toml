@@ -1,1 +1,36 @@
 languages = "Languages"
+
+panelAbout = "About"
+panelNow = "Now"
+panelProjects = "Projects"
+panelPosts = "Posts"
+panelReading = "Reading"
+panelListening = "Listening"
+panelWatched = "Watched"
+panelSystem = "System"
+
+nowWork = "Work"
+nowMasters = "Master's"
+nowStudying = "Studying"
+
+statusCompleted = "completed"
+statusInProgress = "in progress"
+statusPaused = "paused"
+statusAbandoned = "abandoned"
+
+kindBook = "book"
+kindPaper = "paper"
+
+research = "Research"
+periodWeek = "Most played this week"
+periodMonth = "Most played this month"
+noData = "Nothing here yet."
+rating = "{{ . }} out of 5"
+systemCommit = "Commit"
+systemBuilt = "Built"
+systemContact = "Contact"
+systemLinks = "Links"
+
+[plays]
+one = "{{ .Count }} play"
+other = "{{ .Count }} plays"

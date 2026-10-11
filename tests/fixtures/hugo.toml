@@ -3,6 +3,11 @@
 [[module.mounts]]
 source = "tests/fixtures/content"
 target = "content"
+files = ["**/*.md"]
+[[module.mounts]]
+source = "tests/fixtures/content"
+target = "data"
+files = ["**/*.yaml", "**/*.json"]
 [[module.mounts]]
 source = "data"
 target = "data"

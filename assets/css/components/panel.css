@@ -20,7 +20,84 @@
     line-height: var(--cell-height);
   }
 
+  .panel__title {
+    text-transform: lowercase;
+  }
+
   .panel__shortcut {
     color: var(--color-text-muted);
+  }
+
+  .panel__meta {
+    color: var(--color-text-muted);
+  }
+
+  .panel :is(p, ul, ol, dl) {
+    margin: 0;
+  }
+
+  .entries > li + li {
+    margin-block-start: var(--cell-height);
+  }
+
+  .entries > li > * {
+    margin-inline-end: var(--cell-width);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: var(--cell-width);
+  }
+
+  .facts > dt {
+    grid-column: 1;
+    color: var(--color-text-muted);
+  }
+
+  .facts > dd {
+    grid-column: 2;
+    margin: 0;
+  }
+
+  .status--completed {
+    color: var(--color-success);
+  }
+
+  .status--paused {
+    color: var(--color-warning);
+  }
+
+  .status--abandoned {
+    color: var(--color-error);
+  }
+
+  /* Two rows keep the toggle above the minimum touch target. */
+  .panel__summary {
+    display: flex;
+    align-items: center;
+    min-block-size: calc(2 * var(--cell-height));
+    cursor: pointer;
+  }
+
+  .panel__summary::before {
+    content: '[+] ' / '';
+    color: var(--color-text-muted);
+    white-space: pre;
+  }
+
+  .panel__collapse[open] > .panel__summary::before {
+    content: '[-] ' / '';
+  }
+
+  /* Personal panels collapse only on narrow screens; from 80 columns they show open, without a toggle. */
+  @container screen (width >= 80ch) {
+    .panel__summary {
+      display: none;
+    }
+
+    .panel__collapse::details-content {
+      content-visibility: visible;
+    }
   }
 }

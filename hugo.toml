@@ -6,6 +6,9 @@ defaultContentLanguageInSubdir = true
 
 enableRobotsTXT = true
 
+[params]
+repository = "https://github.com/Igorjr19/igorj"
+
 [markup.highlight]
 # Code colors come from the theme roles instead of inline styles.
 noClasses = false
@@ -33,7 +36,7 @@ files = ["**/*.md", "**/*.png", "**/*.jpg", "**/*.webp", "**/*.svg", "! README.m
 [[module.mounts]]
 source = "content"
 target = "data"
-files = ["**/*.yaml"]
+files = ["**/*.yaml", "**/*.json"]
 [[module.mounts]]
 source = "data"
 target = "data"

@@ -1,0 +1,12 @@
+{{- with index hugo.Data.about (printf "about.%s" site.Language.Lang) }}
+<dl class="facts">
+  <dt>{{ i18n "nowWork" }}</dt>
+  <dd>{{ .now.work }}</dd>
+  <dt>{{ i18n "nowMasters" }}</dt>
+  <dd>{{ .now.masters }}</dd>
+  <dt>{{ i18n "nowStudying" }}</dt>
+  <dd>{{ .now.studying }}</dd>
+</dl>
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

@@ -16,3 +16,8 @@ Deno.test('isCheckedContentFile covers Markdown and YAML, not the repository REA
   assertEquals(isCheckedContentFile('content/README.md'), false);
   assertEquals(isCheckedContentFile('content/posts/a/cover.png'), false);
 });
+
+Deno.test('containsExampleContent also detects the flag in JSON written by the daily data job', () => {
+  assertEquals(containsExampleContent('{\n  "example": true,\n  "updated": "2026-10-10"\n}'), true);
+  assertEquals(containsExampleContent('{\n  "example": false\n}'), false);
+});

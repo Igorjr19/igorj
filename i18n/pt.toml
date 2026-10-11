@@ -1,1 +1,36 @@
 languages = "Idiomas"
+
+panelAbout = "Sobre"
+panelNow = "Agora"
+panelProjects = "Projetos"
+panelPosts = "Escrita"
+panelReading = "Lendo"
+panelListening = "Ouvindo"
+panelWatched = "Assistidos"
+panelSystem = "Sistema"
+
+nowWork = "Trabalho"
+nowMasters = "Mestrado"
+nowStudying = "Estudando"
+
+statusCompleted = "concluído"
+statusInProgress = "em andamento"
+statusPaused = "pausado"
+statusAbandoned = "abandonado"
+
+kindBook = "livro"
+kindPaper = "artigo"
+
+research = "Pesquisa"
+periodWeek = "Mais ouvidos na semana"
+periodMonth = "Mais ouvidos no mês"
+noData = "Nada aqui ainda."
+rating = "{{ . }} de 5"
+systemCommit = "Commit"
+systemBuilt = "Build"
+systemContact = "Contato"
+systemLinks = "Links"
+
+[plays]
+one = "{{ .Count }} reprodução"
+other = "{{ .Count }} reproduções"
