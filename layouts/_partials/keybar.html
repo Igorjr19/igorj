@@ -1,0 +1,44 @@
+{{- /* Hidden until the shortcuts script runs: without JavaScript there are no shortcuts to show. */ -}}
+<footer class="keybar" hidden>
+  <p class="keybar__hints">
+    {{- if .IsHome }}
+    <span><kbd>1</kbd>–<kbd>8</kbd> {{ i18n "keyPanels" }}</span>
+    <span><kbd>j</kbd> <kbd>k</kbd> {{ i18n "keyMove" }}</span>
+    <span><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
+    {{- end }}
+    <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
+    <button type="button" data-action="toggle-shortcuts" data-shortcuts-toggle aria-pressed="true">{{ i18n "shortcutsToggle" }}</button>
+  </p>
+  <p class="keybar__buttons">
+    {{- if .IsHome }}
+    <button type="button" data-action="previous-panel">‹ {{ i18n "previousPanel" }}</button>
+    <button type="button" data-action="next-panel">{{ i18n "nextPanel" }} ›</button>
+    {{- end }}
+    <button type="button" data-action="help">? {{ i18n "keyHelp" }}</button>
+  </p>
+</footer>
+<dialog class="panel help" box-="square" aria-labelledby="help-title">
+  <h2 class="panel__title" id="help-title">{{ i18n "helpTitle" }}</h2>
+  <dl class="facts">
+    <dt><kbd>1</kbd>–<kbd>8</kbd></dt>
+    <dd>{{ i18n "helpPanels" }}</dd>
+    <dt><kbd>j</kbd> <kbd>k</kbd> <kbd>↓</kbd> <kbd>↑</kbd></dt>
+    <dd>{{ i18n "helpMove" }}</dd>
+    <dt><kbd>enter</kbd></dt>
+    <dd>{{ i18n "helpOpen" }}</dd>
+    <dt><kbd>tab</kbd></dt>
+    <dd>{{ i18n "helpTab" }}</dd>
+    <dt><kbd>?</kbd></dt>
+    <dd>{{ i18n "helpHelp" }}</dd>
+    <dt><kbd>esc</kbd></dt>
+    <dd>{{ i18n "helpEscape" }}</dd>
+  </dl>
+  <p>{{ i18n "helpIgnored" }}</p>
+  <form class="help__actions" method="dialog">
+    <button type="button" data-action="toggle-shortcuts" data-shortcuts-toggle aria-pressed="true">{{ i18n "shortcutsToggle" }}</button>
+    <button type="submit">{{ i18n "helpClose" }}</button>
+  </form>
+</dialog>
+{{- with resources.Get "ts/shortcuts/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}

@@ -1,0 +1,107 @@
+@layer app.components {
+  :root {
+    scroll-padding-block-end: calc(3 * var(--cell-height));
+  }
+
+  .keybar {
+    position: sticky;
+    inset-block-end: 0;
+    padding: 0 var(--cell-width) env(safe-area-inset-bottom);
+    background-color: var(--color-surface-1);
+  }
+
+  .keybar[hidden] {
+    display: none;
+  }
+
+  .keybar p {
+    margin: 0;
+  }
+
+  .keybar button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .keybar kbd,
+  .help kbd {
+    font: inherit;
+    font-weight: bold;
+  }
+
+  .keybar__hints {
+    display: none;
+  }
+
+  .keybar__buttons {
+    display: flex;
+  }
+
+  /* At least 44 px tall, rounded up to whole cells, so the buttons are comfortable to tap. */
+  .keybar__buttons button {
+    flex: 1;
+    min-block-size: round(up, 44px, var(--cell-height));
+  }
+
+  @container screen (width >= 80ch) {
+    .keybar__hints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 calc(2 * var(--cell-width));
+    }
+
+    .keybar__buttons {
+      display: none;
+    }
+  }
+
+  :root[data-shortcuts='off'] .keybar__hints > span {
+    display: none;
+  }
+
+  [data-shortcuts-toggle]::before {
+    content: '[x] ' / '';
+    white-space: pre;
+  }
+
+  [data-shortcuts-toggle][aria-pressed='false']::before {
+    content: '[ ] ' / '';
+  }
+
+  .help {
+    max-inline-size: min(70ch, calc(100% - 2 * var(--cell-width)));
+    margin: auto;
+    border: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+  .help::backdrop {
+    background-color: color-mix(in oklab, var(--color-background) 80%, transparent);
+  }
+
+  .help > p {
+    margin-block: var(--cell-height) 0;
+  }
+
+  .help__actions {
+    display: flex;
+    gap: calc(2 * var(--cell-width));
+    margin-block-start: var(--cell-height);
+  }
+
+  .help__actions button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-link);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

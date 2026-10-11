@@ -1,6 +1,14 @@
 @layer app.layout {
+  /* The key bar ends the page at the bottom of the screen even when the content is short. */
   body {
     container: screen / inline-size;
+    display: flex;
+    flex-direction: column;
+    min-block-size: 100dvh;
+  }
+
+  main {
+    flex: 1;
   }
 
   .grid {
