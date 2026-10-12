@@ -138,9 +138,9 @@ Deno.test('the key bar follows the screen and the page', async (t) => {
     ]);
   });
 
-  await t.step('wide inner page: only help and the switch', async () => {
+  await t.step('wide inner page: back, help and the switch', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleControls), ['? help', 'Single-key shortcuts']);
+    assertEquals(await page.evaluate(visibleControls), ['q back', '? help', 'Single-key shortcuts']);
   });
 
   await t.step('narrow home: three buttons tall enough to tap, stuck to the bottom', async () => {

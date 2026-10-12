@@ -53,6 +53,13 @@ function openHelp(): void {
   document.querySelector<HTMLDialogElement>('.help')?.showModal();
 }
 
+/** The path bar's link to the parent page; the home has none, so there the key is left alone. */
+function goBack(): boolean {
+  const link = document.querySelector<HTMLAnchorElement>('.zoom__back');
+  link?.click();
+  return link !== null;
+}
+
 function perform(action: ShortcutAction): boolean {
   switch (action.kind) {
     case 'panel':
@@ -60,6 +67,8 @@ function perform(action: ShortcutAction): boolean {
       return true;
     case 'move':
       return moveWithinPanel(action.step);
+    case 'back':
+      return goBack();
     case 'help':
       openHelp();
       return true;
@@ -126,6 +135,9 @@ function onPointerDown(event: PointerEvent): void {
 }
 
 renderEnabled();
+for (const element of document.querySelectorAll('[data-script-only]')) {
+  element.removeAttribute('hidden');
+}
 document.querySelector('.keybar')?.removeAttribute('hidden');
 document.addEventListener('pointerdown', onPointerDown);
 document.addEventListener('keydown', onKeydown);

@@ -43,6 +43,11 @@ Deno.test('actionForKey moves with j, k and the arrows only where there are pane
   assertEquals(actionForKey('1', 0), null);
 });
 
+Deno.test('actionForKey goes back with q on any page, since the home simply has nowhere to go', () => {
+  assertEquals(actionForKey('q', 0), { kind: 'back' });
+  assertEquals(actionForKey('Q', 0), null);
+});
+
 Deno.test('actionForKey opens the help on every page and leaves / and quote alone', () => {
   assertEquals(actionForKey('?', 0), { kind: 'help' });
   assertEquals(actionForKey('/', 8), null);

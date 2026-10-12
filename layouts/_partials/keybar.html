@@ -1,10 +1,12 @@
 {{- /* Hidden until the shortcuts script runs: without JavaScript there are no shortcuts to show. */ -}}
-<footer class="keybar" hidden>
+<div class="keybar" hidden>
   <p class="keybar__hints">
     {{- if .IsHome }}
     <span><kbd>1</kbd>–<kbd>8</kbd> {{ i18n "keyPanels" }}</span>
     <span><kbd>j</kbd> <kbd>k</kbd> {{ i18n "keyMove" }}</span>
     <span><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
+    {{- else }}
+    <span><kbd>q</kbd> {{ i18n "keyBack" }}</span>
     {{- end }}
     <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
     <button type="button" data-action="toggle-shortcuts" data-shortcuts-toggle aria-pressed="true">{{ i18n "shortcutsToggle" }}</button>
@@ -16,16 +18,21 @@
     {{- end }}
     <button type="button" data-action="help">? {{ i18n "keyHelp" }}</button>
   </p>
-</footer>
+</div>
 <dialog class="panel help" box-="square" aria-labelledby="help-title">
   <h2 class="panel__title" id="help-title">{{ i18n "helpTitle" }}</h2>
   <dl class="facts">
+    {{- if .IsHome }}
     <dt><kbd>1</kbd>–<kbd>8</kbd></dt>
     <dd>{{ i18n "helpPanels" }}</dd>
     <dt><kbd>j</kbd> <kbd>k</kbd> <kbd>↓</kbd> <kbd>↑</kbd></dt>
     <dd>{{ i18n "helpMove" }}</dd>
     <dt><kbd>enter</kbd></dt>
     <dd>{{ i18n "helpOpen" }}</dd>
+    {{- else }}
+    <dt><kbd>q</kbd></dt>
+    <dd>{{ i18n "helpBack" }}</dd>
+    {{- end }}
     <dt><kbd>tab</kbd></dt>
     <dd>{{ i18n "helpTab" }}</dd>
     <dt><kbd>?</kbd></dt>

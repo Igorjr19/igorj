@@ -1,8 +1,3 @@
 {{ define "main" }}
-<article class="panel" box-="square" aria-labelledby="page-title">
-  <h1 class="panel__title" id="page-title">{{ .Title }}</h1>
-  <div class="prose">
-    {{ .Content }}
-  </div>
-</article>
+{{ partial "zoom.html" (dict "page" . "body" .Content) }}
 {{ end }}

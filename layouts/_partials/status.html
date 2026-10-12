@@ -1,0 +1,18 @@
+{{- /* Status line of the inner pages. The read percentage needs scroll events, so it appears only with JavaScript. */ -}}
+<p class="status-line">
+  {{- with .File }}
+  <span>{{ .Path }}</span>
+  {{- end }}
+  <span>{{ .Language.Locale }}</span>
+  {{- if .IsPage }}
+  <span>{{ i18n "readingTime" .ReadingTime }}</span>
+  <span data-script-only hidden><span data-progress>0</span>% {{ i18n "statusRead" }}</span>
+  {{- else }}
+  <span>{{ i18n "items" (len .Pages) }}</span>
+  {{- end }}
+</p>
+{{- if .IsPage }}
+{{- with resources.Get "ts/progress/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}
+{{- end }}

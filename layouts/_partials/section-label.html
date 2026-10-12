@@ -1,0 +1,5 @@
+{{- /* Interface name of a section or taxonomy page, as shown in the path. */ -}}
+{{- if eq .Kind "section" "taxonomy" }}
+  {{- return i18n (printf "section%s" (title .Section)) }}
+{{- end }}
+{{- return .Title }}

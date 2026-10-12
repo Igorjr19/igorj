@@ -1,8 +1,4 @@
 {{ define "main" }}
-<h1>{{ .Title }}</h1>
-<ul>
-  {{- range .Pages }}
-  <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-  {{- end }}
-</ul>
+{{- $body := partial "zoom-list.html" . }}
+{{ partial "zoom.html" (dict "page" . "body" $body) }}
 {{ end }}
