@@ -1,7 +1,9 @@
-# Maximum sizes per page of the fixture site. HTML and CSS are measured gzip-compressed,
-# as visitors receive them; fonts are the files the browser actually downloads for the page.
+# Maximum sizes per page of the fixture site. HTML, CSS and linked scripts are measured
+# gzip-compressed, as visitors receive them; inline scripts are counted as written;
+# fonts are the files the browser actually downloads for the page.
 [bytes]
 html = 20_480
 css = 10_240
 inlineScript = 2_048
+linkedScript = 4_096
 fonts = 163_840
