@@ -32,6 +32,16 @@ systemBuilt = "Built"
 systemContact = "Contact"
 systemLinks = "Links"
 
+path = "Path"
+back = "back"
+sectionPosts = "posts"
+sectionProjects = "projects"
+sectionResearch = "research"
+sectionCv = "cv"
+sectionCategories = "categories"
+statusRead = "read"
+
+keyBack = "back"
 keyPanels = "panels"
 keyMove = "move"
 keyOpen = "open"
@@ -40,6 +50,7 @@ shortcutsToggle = "Single-key shortcuts"
 previousPanel = "previous"
 nextPanel = "next"
 helpTitle = "Help"
+helpBack = "Go back to the parent page"
 helpPanels = "Go to the panel with that number"
 helpMove = "Move between the items of the panel"
 helpOpen = "Open the selected item"
@@ -48,6 +59,14 @@ helpHelp = "Open this help"
 helpEscape = "Close this help"
 helpIgnored = "Shortcuts do nothing while Ctrl, Alt or Meta is held or while typing in a field."
 helpClose = "Close"
+
+[readingTime]
+one = "{{ .Count }} min read"
+other = "{{ .Count }} min read"
+
+[items]
+one = "{{ .Count }} item"
+other = "{{ .Count }} items"
 
 [plays]
 one = "{{ .Count }} play"

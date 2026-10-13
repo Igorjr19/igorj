@@ -32,6 +32,16 @@ systemBuilt = "Build"
 systemContact = "Contato"
 systemLinks = "Links"
 
+path = "Caminho"
+back = "voltar"
+sectionPosts = "escrita"
+sectionProjects = "projetos"
+sectionResearch = "pesquisa"
+sectionCv = "cv"
+sectionCategories = "categorias"
+statusRead = "lido"
+
+keyBack = "voltar"
 keyPanels = "painéis"
 keyMove = "mover"
 keyOpen = "abrir"
@@ -40,6 +50,7 @@ shortcutsToggle = "Atalhos de uma tecla"
 previousPanel = "anterior"
 nextPanel = "próximo"
 helpTitle = "Ajuda"
+helpBack = "Voltar para a página anterior na hierarquia"
 helpPanels = "Ir para o painel com esse número"
 helpMove = "Mover entre os itens do painel"
 helpOpen = "Abrir o item selecionado"
@@ -48,6 +59,14 @@ helpHelp = "Abrir esta ajuda"
 helpEscape = "Fechar esta ajuda"
 helpIgnored = "Os atalhos não fazem nada com Ctrl, Alt ou Meta pressionado ou enquanto você digita num campo."
 helpClose = "Fechar"
+
+[readingTime]
+one = "{{ .Count }} min de leitura"
+other = "{{ .Count }} min de leitura"
+
+[items]
+one = "{{ .Count }} item"
+other = "{{ .Count }} itens"
 
 [plays]
 one = "{{ .Count }} reprodução"

@@ -1,13 +1,17 @@
 @layer app.components {
   :root {
-    scroll-padding-block-end: calc(3 * var(--cell-height));
+    scroll-padding-block-end: calc(4 * var(--cell-height));
+  }
+
+  .dock {
+    position: sticky;
+    inset-block-end: 0;
+    padding-block-end: env(safe-area-inset-bottom);
+    background-color: var(--color-surface-1);
   }
 
   .keybar {
-    position: sticky;
-    inset-block-end: 0;
-    padding: 0 var(--cell-width) env(safe-area-inset-bottom);
-    background-color: var(--color-surface-1);
+    padding-inline: var(--cell-width);
   }
 
   .keybar[hidden] {
@@ -61,6 +65,10 @@
   }
 
   :root[data-shortcuts='off'] .keybar__hints > span {
+    display: none;
+  }
+
+  :root[data-shortcuts='off'] .zoom__hint {
     display: none;
   }
 

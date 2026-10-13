@@ -1,0 +1,6 @@
+<footer class="dock">
+  {{- if not .IsHome }}
+  {{ partial "status.html" . }}
+  {{- end }}
+  {{ partial "keybar.html" . }}
+</footer>
