@@ -1,6 +1,6 @@
 import * as v from '@valibot/valibot';
 
-export const BUDGET_KEYS = ['html', 'css', 'inlineScript', 'fonts'] as const;
+export const BUDGET_KEYS = ['html', 'css', 'inlineScript', 'linkedScript', 'fonts'] as const;
 export type BudgetKey = (typeof BUDGET_KEYS)[number];
 export type Budgets = Readonly<Record<BudgetKey, number>>;
 export type Measurements = Readonly<Record<BudgetKey, number>>;

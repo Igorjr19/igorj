@@ -13,6 +13,11 @@ async function gzipSize(path: string): Promise<number> {
   return (await new Response(stream).arrayBuffer()).byteLength;
 }
 
+async function sumGzip(urls: string[]): Promise<number> {
+  const sizes = await Promise.all(urls.map((url) => gzipSize(`${SITE}${url}`)));
+  return sizes.reduce((total, size) => total + size, 0);
+}
+
 Deno.test('pages stay within the size budgets', async (t) => {
   await using session = await Session.start();
 
@@ -23,6 +28,9 @@ Deno.test('pages stay within the size budgets', async (t) => {
         await document.fonts.ready;
         const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
         return {
+          linkedScripts: [...document.querySelectorAll('script[src]')].map(
+            (script) => script.getAttribute('src') ?? '',
+          ),
           stylesheet: document.querySelector('link[rel=stylesheet]')?.getAttribute('href') ?? '',
           inlineScript: [...document.querySelectorAll('script:not([src])')].reduce(
             (total, script) => total + (script.textContent?.length ?? 0),
@@ -37,6 +45,7 @@ Deno.test('pages stay within the size budgets', async (t) => {
         html: await gzipSize(`${SITE}${path}index.html`),
         css: await gzipSize(`${SITE}${loaded.stylesheet}`),
         inlineScript: loaded.inlineScript,
+        linkedScript: await sumGzip(loaded.linkedScripts),
         fonts: loaded.fonts,
       };
       assertEquals(findOverruns(budgets, measured), []);
