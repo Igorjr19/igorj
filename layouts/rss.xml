@@ -2,7 +2,7 @@
 {{- $posts := cond .IsHome (where site.RegularPages "Section" "posts") .Pages }}
 {{- $posts = $posts.ByDate.Reverse }}
 {{- $title := site.Params.author }}
-{{- if eq .Kind "term" }}{{ $title = printf "%s — %s" site.Params.author (humanize .Data.Term) }}{{ end }}
+{{- if eq .Kind "term" }}{{ $title = printf "%s — %s" site.Params.author (partial "category-label.html" .) }}{{ end }}
 {{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
@@ -24,7 +24,7 @@
       <guid>{{ .Permalink }}</guid>
       <description>{{ .Params.summary }}</description>
       {{- range .GetTerms "categories" }}
-      <category>{{ humanize .Data.Term }}</category>
+      <category>{{ partial "category-label.html" . }}</category>
       {{- end }}
     </item>
     {{- end }}
