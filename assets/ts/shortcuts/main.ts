@@ -115,6 +115,9 @@ function onClick(event: MouseEvent): void {
     case 'help':
       openHelp();
       break;
+    case 'print':
+      print();
+      break;
     case 'toggle-shortcuts':
       enabled = !enabled;
       try {

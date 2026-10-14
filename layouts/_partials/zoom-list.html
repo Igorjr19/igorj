@@ -2,6 +2,10 @@
 {{ partial "lists/posts.html" . }}
 {{- else if eq .Section "projects" }}
 {{ partial "lists/projects.html" . }}
+{{- else if eq .Section "research" }}
+{{ partial "lists/research.html" . }}
+{{- else if eq .Section "cv" }}
+{{ partial "lists/cv.html" . }}
 {{- else }}
 <ul>
   {{- range .Pages }}

@@ -1,0 +1,9 @@
+<ul class="entries">
+  {{- range sort .Pages "Params.year" "desc" }}
+  <li>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    <span class="panel__meta">{{ i18n (printf "research%s" (title .Params.kind)) }} · {{ .Params.year }}</span>
+    <span class="entries__summary panel__meta">{{ delimit .Params.authors ", " }} · {{ .Params.venue }}</span>
+  </li>
+  {{- end }}
+</ul>

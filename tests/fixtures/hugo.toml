@@ -15,6 +15,9 @@ target = "data"
 source = "static"
 target = "static"
 [[module.mounts]]
+source = "pages"
+target = "content"
+[[module.mounts]]
 source = "assets"
 target = "assets"
 [[module.mounts]]

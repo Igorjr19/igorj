@@ -11,3 +11,7 @@ export const FILM_POST_EN = '/en/posts/film-post/';
 export const DEVOPS_EN = '/en/categories/devops/';
 export const PROJECTS_EN = '/en/projects/';
 export const PROJECT_EN = '/en/projects/fixture-project/';
+export const CV_EN = '/en/cv/';
+export const CV_PT = '/pt/cv/';
+export const RESEARCH_EN = '/en/research/';
+export const RESEARCH_ITEM_EN = '/en/research/fixture-research/';

@@ -1,5 +1,5 @@
 {{- /* Heading of an inner page: sections use the interface name, so the title matches the path in both languages. */ -}}
-{{- $keys := dict "posts" "panelPosts" "projects" "panelProjects" "research" "research" }}
+{{- $keys := dict "posts" "panelPosts" "projects" "panelProjects" "research" "research" "cv" "cv" }}
 {{- if and (eq .Kind "section") (isset $keys .Section) }}
   {{- return i18n (index $keys .Section) }}
 {{- end }}

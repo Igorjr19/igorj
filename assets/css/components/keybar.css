@@ -22,7 +22,8 @@
     margin: 0;
   }
 
-  .keybar button {
+  .keybar button,
+  .status-line button {
     padding: 0;
     border: 0;
     background: none;

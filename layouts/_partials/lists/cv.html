@@ -1,0 +1,90 @@
+{{- $lang := site.Language.Lang }}
+{{- $cv := false }}
+{{- $fallback := "" }}
+{{- with hugo.Data.cv }}
+  {{- $cv = index . (printf "cv.%s" $lang) }}
+  {{- if not $cv }}
+    {{- range where site.Languages "Lang" "ne" $lang }}
+      {{- $cv = index hugo.Data.cv (printf "cv.%s" .Lang) }}
+      {{- if $cv }}{{ $fallback = .Language.Label }}{{ end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- with $cv }}
+{{- if $fallback }}
+<p class="panel__meta">{{ i18n "cvOtherLanguage" $fallback }}</p>
+{{- end }}
+<p>{{ .basics.label }} · {{ .basics.location }}</p>
+<p>{{ .basics.summary }}</p>
+<p>
+  <a href="mailto:{{ .basics.email }}">{{ .basics.email }}</a>
+  {{- range .basics.profiles }} · <a href="{{ .url }}">{{ .network }}</a>{{ end }}
+</p>
+{{- with .work }}
+<section>
+  <h2>{{ i18n "cvWork" }}</h2>
+  {{- range . }}
+  <article>
+    <h3>{{ .position }} · {{ .name }}</h3>
+    <p class="panel__meta">{{ .startDate }} – {{ with .endDate }}{{ . }}{{ else }}{{ i18n "periodPresent" }}{{ end }}{{ with .location }} · {{ . }}{{ end }}</p>
+    {{- with .summary }}<p>{{ . }}</p>{{ end }}
+    {{- with .highlights }}
+    <ul>
+      {{- range . }}
+      <li>{{ . }}</li>
+      {{- end }}
+    </ul>
+    {{- end }}
+  </article>
+  {{- end }}
+</section>
+{{- end }}
+{{- with .education }}
+<section>
+  <h2>{{ i18n "cvEducation" }}</h2>
+  {{- range . }}
+  {{- $entry := . }}
+  <article>
+    <h3>{{ .studyType }} · {{ .area }}</h3>
+    <p class="panel__meta">{{ .institution }}{{ with .startDate }} · {{ . }}{{ with $entry.endDate }} – {{ . }}{{ end }}{{ end }}</p>
+  </article>
+  {{- end }}
+</section>
+{{- end }}
+{{- with .skills }}
+<section>
+  <h2>{{ i18n "cvSkills" }}</h2>
+  <dl class="facts">
+    {{- range . }}
+    <dt>{{ .name }}</dt>
+    <dd>{{ delimit .keywords " · " }}</dd>
+    {{- end }}
+  </dl>
+</section>
+{{- end }}
+{{- with .languages }}
+<section>
+  <h2>{{ i18n "cvLanguages" }}</h2>
+  <dl class="facts">
+    {{- range . }}
+    <dt>{{ .language }}</dt>
+    <dd>{{ .fluency }}</dd>
+    {{- end }}
+  </dl>
+</section>
+{{- end }}
+{{- with .publications }}
+<section>
+  <h2>{{ i18n "cvPublications" }}</h2>
+  <ul>
+    {{- range . }}
+    {{- with site.GetPage (printf "/research/%s" .research) }}
+    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a> <span class="panel__meta">{{ .Params.year }}</span></li>
+    {{- end }}
+    {{- end }}
+  </ul>
+</section>
+{{- end }}
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}

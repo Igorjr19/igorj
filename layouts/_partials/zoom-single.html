@@ -22,6 +22,25 @@
   <dd><a href="{{ . }}">{{ . }}</a></dd>
   {{- end }}
 </dl>
+{{- else if eq .Section "research" }}
+<dl class="facts">
+  <dt>{{ i18n "factKind" }}</dt>
+  <dd>{{ i18n (printf "research%s" (title .Params.kind)) }}</dd>
+  <dt>{{ i18n "factYear" }}</dt>
+  <dd>{{ .Params.year }}</dd>
+  <dt>{{ i18n "factAuthors" }}</dt>
+  <dd>{{ delimit .Params.authors ", " }}</dd>
+  <dt>{{ i18n "factVenue" }}</dt>
+  <dd>{{ .Params.venue }}</dd>
+  {{- with .Params.doi }}
+  <dt>{{ i18n "factDoi" }}</dt>
+  <dd><a href="https://doi.org/{{ . }}">{{ . }}</a></dd>
+  {{- end }}
+  {{- with .Params.file }}{{ with $.Resources.GetMatch . }}
+  <dt>{{ i18n "factFile" }}</dt>
+  <dd><a href="{{ .RelPermalink }}">{{ .Name }}</a></dd>
+  {{- end }}{{ end }}
+</dl>
 {{- end }}
 {{ .Content }}
 {{- if eq .Section "posts" }}
