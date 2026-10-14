@@ -140,7 +140,12 @@ Deno.test('the key bar follows the screen and the page', async (t) => {
 
   await t.step('wide inner page: back, help and the switch', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleControls), ['q back', '? help', 'Single-key shortcuts']);
+    assertEquals(await page.evaluate(visibleControls), [
+      'q back',
+      'p n previous / next post',
+      '? help',
+      'Single-key shortcuts',
+    ]);
   });
 
   await t.step('narrow home: three buttons tall enough to tap, stuck to the bottom', async () => {
@@ -164,7 +169,13 @@ Deno.test('the key bar follows the screen and the page', async (t) => {
     const page = await session.open(HOME_EN, { viewport: NARROW });
     const visited: (string | undefined)[] = [];
     for (const button of ['next', 'next', 'previous']) {
-      await page.locator(`.keybar__buttons [data-action="${button}-panel"]`).click();
+      // A pointer click would first scroll the page to the sticky bar, which changes which panel counts as current.
+      await page.evaluate(
+        (action) => {
+          document.querySelector<HTMLElement>(`.keybar__buttons [data-action="${action}-panel"]`)?.click();
+        },
+        { args: [button] },
+      );
       visited.push(await page.evaluate(() => document.activeElement?.id));
     }
     assertEquals(visited, ['now', 'projects', 'now']);

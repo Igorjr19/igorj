@@ -30,6 +30,42 @@
     text-decoration: none;
   }
 
+  .filter ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 calc(2 * var(--cell-width));
+    margin: 0 0 var(--cell-height);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* The filter is a row of choices, not a bulleted list. */
+  .filter li::before {
+    content: none;
+  }
+
+  .filter [aria-current='page'] {
+    color: inherit;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .filter [aria-current='page']::before {
+    content: '> ' / '';
+  }
+
+  .entries__summary {
+    display: block;
+  }
+
+  .pager {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 calc(2 * var(--cell-width));
+    margin-block-start: var(--cell-height);
+  }
+
   .zoom__body {
     max-inline-size: calc(80 * var(--cell-width));
   }
