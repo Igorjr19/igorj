@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   {{ partial "head/theme-script.html" . }}
-  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ partial "page-title.html" . }} · {{ site.Title }}{{ end }}</title>
   {{ partial "head/alternates.html" . }}
   {{ partial "head/font-preloads.html" . }}
   {{ partial "head/styles.html" . }}

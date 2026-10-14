@@ -7,10 +7,12 @@ export interface KeyEventLike {
   readonly defaultPrevented: boolean;
 }
 
+export type NavigationTarget = 'back' | 'next' | 'previous';
+
 export type ShortcutAction =
   | { readonly kind: 'panel'; readonly index: number }
   | { readonly kind: 'move'; readonly step: 1 | -1 }
-  | { readonly kind: 'back' }
+  | { readonly kind: 'navigate'; readonly target: NavigationTarget }
   | { readonly kind: 'help' };
 
 /** Single-key shortcuts must never fire while someone types or uses a browser or system combination. */
@@ -30,7 +32,9 @@ const KEY_ACTIONS: ReadonlyMap<string, ShortcutAction> = new Map([
   ['ArrowDown', { kind: 'move', step: 1 }],
   ['k', { kind: 'move', step: -1 }],
   ['ArrowUp', { kind: 'move', step: -1 }],
-  ['q', { kind: 'back' }],
+  ['q', { kind: 'navigate', target: 'back' }],
+  ['n', { kind: 'navigate', target: 'next' }],
+  ['p', { kind: 'navigate', target: 'previous' }],
   ['?', { kind: 'help' }],
 ]);
 

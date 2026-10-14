@@ -1,0 +1,11 @@
+{{- $status := dict "completed" "statusCompleted" "in-progress" "statusInProgress" "paused" "statusPaused" "abandoned" "statusAbandoned" }}
+<ul class="entries">
+  {{- range sort .Pages "Params.period.start" "desc" }}
+  <li>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    <span class="status status--{{ .Params.status }}">{{ i18n (index $status .Params.status) }}</span>
+    <span class="panel__meta">{{ delimit .Params.stack " · " }}</span>
+    <span class="entries__summary panel__meta">{{ .Params.summary }}</span>
+  </li>
+  {{- end }}
+</ul>
