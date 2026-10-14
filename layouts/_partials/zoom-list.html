@@ -1,5 +1,11 @@
+{{- if or (eq .Section "posts") (eq .Kind "term") }}
+{{ partial "lists/posts.html" . }}
+{{- else if eq .Section "projects" }}
+{{ partial "lists/projects.html" . }}
+{{- else }}
 <ul>
   {{- range .Pages }}
-  <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+  <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
   {{- end }}
 </ul>
+{{- end }}

@@ -1,0 +1,36 @@
+{{- if eq .Section "posts" }}
+<p class="panel__meta">
+  <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+  {{- range .GetTerms "categories" }} · <a href="{{ .RelPermalink }}">{{ partial "category-label.html" . }}</a>{{ end }}
+  {{- if and .Lastmod (ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02")) }} · {{ i18n "postUpdated" }} <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "2006-01-02" }}</time>{{ end }}
+</p>
+{{- else if eq .Section "projects" }}
+{{- $status := dict "completed" "statusCompleted" "in-progress" "statusInProgress" "paused" "statusPaused" "abandoned" "statusAbandoned" }}
+<dl class="facts">
+  <dt>{{ i18n "factStatus" }}</dt>
+  <dd><span class="status status--{{ .Params.status }}">{{ i18n (index $status .Params.status) }}</span></dd>
+  <dt>{{ i18n "factPeriod" }}</dt>
+  <dd>{{ .Params.period.start }} – {{ with .Params.period.end }}{{ . }}{{ else }}{{ i18n "periodPresent" }}{{ end }}</dd>
+  <dt>{{ i18n "factStack" }}</dt>
+  <dd>{{ delimit .Params.stack " · " }}</dd>
+  {{- with .Params.links.repository }}
+  <dt>{{ i18n "factRepository" }}</dt>
+  <dd><a href="{{ . }}">{{ . }}</a></dd>
+  {{- end }}
+  {{- with .Params.links.demo }}
+  <dt>{{ i18n "factDemo" }}</dt>
+  <dd><a href="{{ . }}">{{ . }}</a></dd>
+  {{- end }}
+</dl>
+{{- end }}
+{{ .Content }}
+{{- if eq .Section "posts" }}
+<nav class="pager" aria-label="{{ i18n "pagerLabel" }}">
+  {{- with .PrevInSection }}
+  <a rel="prev" data-nav="previous" href="{{ .RelPermalink }}">‹ {{ i18n "pagerPrevious" }}: {{ .Title }}</a>
+  {{- end }}
+  {{- with .NextInSection }}
+  <a rel="next" data-nav="next" href="{{ .RelPermalink }}">{{ i18n "pagerNext" }}: {{ .Title }} ›</a>
+  {{- end }}
+</nav>
+{{- end }}

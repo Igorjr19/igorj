@@ -1,0 +1,9 @@
+{{- /* Heading of an inner page: sections use the interface name, so the title matches the path in both languages. */ -}}
+{{- $keys := dict "posts" "panelPosts" "projects" "panelProjects" "research" "research" }}
+{{- if and (eq .Kind "section") (isset $keys .Section) }}
+  {{- return i18n (index $keys .Section) }}
+{{- end }}
+{{- if eq .Kind "term" }}
+  {{- return partial "category-label.html" . }}
+{{- end }}
+{{- return .Title }}

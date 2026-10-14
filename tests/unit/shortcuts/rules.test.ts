@@ -43,8 +43,10 @@ Deno.test('actionForKey moves with j, k and the arrows only where there are pane
   assertEquals(actionForKey('1', 0), null);
 });
 
-Deno.test('actionForKey goes back with q on any page, since the home simply has nowhere to go', () => {
-  assertEquals(actionForKey('q', 0), { kind: 'back' });
+Deno.test('actionForKey navigates with q, n and p on any page, since pages without that link ignore the key', () => {
+  assertEquals(actionForKey('q', 0), { kind: 'navigate', target: 'back' });
+  assertEquals(actionForKey('n', 0), { kind: 'navigate', target: 'next' });
+  assertEquals(actionForKey('p', 0), { kind: 'navigate', target: 'previous' });
   assertEquals(actionForKey('Q', 0), null);
 });
 

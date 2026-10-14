@@ -9,6 +9,9 @@
   <span data-script-only hidden><span data-progress>0</span>% {{ i18n "statusRead" }}</span>
   {{- else }}
   <span>{{ i18n "items" (len .Pages) }}</span>
+  {{- if eq .Kind "term" }}
+  <span>{{ partial "category-label.html" . }}</span>
+  {{- end }}
   {{- end }}
 </p>
 {{- if .IsPage }}

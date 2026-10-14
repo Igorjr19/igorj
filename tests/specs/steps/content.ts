@@ -1,27 +1,16 @@
 /// <reference lib="dom" />
 import { assert, assertEquals } from '@std/assert';
-import { parse } from '@std/toml';
 import { HOME_EN } from '../../e2e/support/paths.ts';
+import { type FixturePost, readEnglishPosts } from '../support/fixture-posts.ts';
 import { defineStep } from '../support/steps.ts';
 import { currentPage, type World } from '../support/world.ts';
 
-const POSTS_DIR = 'tests/fixtures/content/posts';
-
-interface FixturePost {
-  readonly path: string;
-  readonly body: string;
-}
-
 async function findEnglishPost(title: string): Promise<FixturePost> {
-  for await (const entry of Deno.readDir(POSTS_DIR)) {
-    const source = await Deno.readTextFile(`${POSTS_DIR}/${entry.name}/index.en.md`);
-    const [, frontMatter = '', body = ''] = source.split(/^---$/m);
-    const { title: postTitle } = parse(frontMatter.replaceAll(/^(\w+): (.+)$/gm, '$1 = "$2"')) as { title?: string };
-    if (postTitle === title) {
-      return { path: `/en/posts/${entry.name}/`, body };
-    }
+  const post = (await readEnglishPosts()).find((candidate) => candidate.title === title);
+  if (!post) {
+    throw new Error(`No fixture post titled "${title}"`);
   }
-  throw new Error(`No fixture post titled "${title}"`);
+  return post;
 }
 
 /** The visible text of each Markdown line, without markup, skipping code blocks. */
