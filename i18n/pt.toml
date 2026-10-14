@@ -33,6 +33,7 @@ systemContact = "Contato"
 systemLinks = "Links"
 
 path = "Caminho"
+feedDescription = "Posts"
 filterLabel = "Categorias"
 filterAll = "todas"
 pagerLabel = "Posts"
