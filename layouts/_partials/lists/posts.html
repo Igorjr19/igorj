@@ -1,0 +1,23 @@
+{{- $section := site.GetPage "/posts" }}
+{{- with site.Taxonomies.categories.Alphabetical }}
+<nav class="filter" aria-label="{{ i18n "filterLabel" }}">
+  <ul>
+    <li><a href="{{ $section.RelPermalink }}"{{ if eq $.Kind "section" }} aria-current="page"{{ end }}>{{ i18n "filterAll" }}</a></li>
+    {{- range . }}
+    <li><a href="{{ .Page.RelPermalink }}"{{ if eq $.RelPermalink .Page.RelPermalink }} aria-current="page"{{ end }}>{{ partial "category-label.html" .Page }}</a> <span class="panel__meta">{{ .Count }}</span></li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end }}
+<ul class="entries">
+  {{- range .Pages.ByDate.Reverse }}
+  <li>
+    <time class="panel__meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{- range .GetTerms "categories" }}
+    <a class="panel__meta" href="{{ .RelPermalink }}">{{ partial "category-label.html" . }}</a>
+    {{- end }}
+    <span class="entries__summary panel__meta">{{ .Params.summary }}</span>
+  </li>
+  {{- end }}
+</ul>

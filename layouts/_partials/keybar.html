@@ -7,6 +7,9 @@
     <span><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
     {{- else if ne .Kind "404" }}
     <span><kbd>q</kbd> {{ i18n "keyBack" }}</span>
+    {{- if and .IsPage (eq .Section "posts") }}
+    <span><kbd>p</kbd> <kbd>n</kbd> {{ i18n "keyPosts" }}</span>
+    {{- end }}
     {{- end }}
     <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
     <button type="button" data-action="toggle-shortcuts" data-shortcuts-toggle aria-pressed="true">{{ i18n "shortcutsToggle" }}</button>
@@ -32,6 +35,12 @@
     {{- else if ne .Kind "404" }}
     <dt><kbd>q</kbd></dt>
     <dd>{{ i18n "helpBack" }}</dd>
+    {{- if and .IsPage (eq .Section "posts") }}
+    <dt><kbd>p</kbd></dt>
+    <dd>{{ i18n "helpPrevious" }}</dd>
+    <dt><kbd>n</kbd></dt>
+    <dd>{{ i18n "helpNext" }}</dd>
+    {{- end }}
     {{- end }}
     <dt><kbd>tab</kbd></dt>
     <dd>{{ i18n "helpTab" }}</dd>

@@ -9,6 +9,7 @@
   {{- if eq .Kind "404" }}
   <meta name="robots" content="noindex">
   {{- else }}
+  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ partial "page-title.html" . }} · {{ site.Title }}{{ end }}</title>
   {{ partial "head/alternates.html" . }}
   {{- end }}
   {{ partial "head/font-preloads.html" . }}
