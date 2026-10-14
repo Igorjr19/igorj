@@ -1,8 +1,11 @@
 {{- /* Frame of the inner pages: one panel with the path on top. Expects page and body. */ -}}
 {{- $page := .page }}
+{{- /* A category belongs to the blog, so leaving it goes back to the posts rather than to the list of categories. */ -}}
+{{- $parent := $page.Parent }}
+{{- if eq $page.Kind "term" }}{{ with site.GetPage "/posts" }}{{ $parent = . }}{{ end }}{{ end }}
 {{- $current := cond $page.IsPage (path.Base $page.RelPermalink) (partial "section-label.html" $page) }}
 <article class="panel zoom" box-="square" aria-labelledby="page-title">
-  <h1 class="panel__title" id="page-title">{{ $page.Title }}</h1>
+  <h1 class="panel__title" id="page-title">{{ partial "page-title.html" $page }}</h1>
   <nav class="zoom__bar" aria-label="{{ i18n "path" }}">
     <ol class="zoom__path">
       {{- range $page.Ancestors.Reverse }}
@@ -10,7 +13,7 @@
       {{- end }}
       <li><a href="{{ $page.RelPermalink }}" aria-current="page">{{ $current }}</a></li>
     </ol>
-    <a class="zoom__back" href="{{ $page.Parent.RelPermalink }}"><span class="zoom__hint" data-script-only hidden>[<kbd>q</kbd>] </span>{{ i18n "back" }}</a>
+    <a class="zoom__back" href="{{ $parent.RelPermalink }}" data-nav="back"><span class="zoom__hint" data-script-only hidden>[<kbd>q</kbd>] </span>{{ i18n "back" }}</a>
   </nav>
   <div class="zoom__body prose">
     {{ .body }}

@@ -54,7 +54,7 @@ Deno.test('inner pages show the path, a way back and a status line', async (t) =
       ['~', 'posts'],
     );
     assertEquals(frame.back, '/en/');
-    assertEquals(frame.status, ['en', '1 item']);
+    assertEquals(frame.status, ['en', '3 items']);
   });
 
   await t.step('the frame is a whole number of cells wide and the content stops at 80 columns', async () => {

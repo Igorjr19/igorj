@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { readShortcutsEnabled, saveShortcutsEnabled } from './preference.ts';
-import { actionForKey, isShortcutCandidate, type ShortcutAction, stepIndex } from './rules.ts';
+import { actionForKey, isShortcutCandidate, type NavigationTarget, type ShortcutAction, stepIndex } from './rules.ts';
 
 const EDITABLE = 'input, textarea, select, [contenteditable]:not([contenteditable="false"])';
 
@@ -53,9 +53,9 @@ function openHelp(): void {
   document.querySelector<HTMLDialogElement>('.help')?.showModal();
 }
 
-/** The path bar's link to the parent page; the home has none, so there the key is left alone. */
-function goBack(): boolean {
-  const link = document.querySelector<HTMLAnchorElement>('.zoom__back');
+/** Follows the page's own link for that direction; pages without one leave the key alone. */
+function navigate(target: NavigationTarget): boolean {
+  const link = document.querySelector<HTMLAnchorElement>(`[data-nav="${target}"]`);
   link?.click();
   return link !== null;
 }
@@ -67,8 +67,8 @@ function perform(action: ShortcutAction): boolean {
       return true;
     case 'move':
       return moveWithinPanel(action.step);
-    case 'back':
-      return goBack();
+    case 'navigate':
+      return navigate(action.target);
     case 'help':
       openHelp();
       return true;

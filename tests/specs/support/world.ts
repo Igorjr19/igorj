@@ -8,6 +8,9 @@ export interface World {
   page?: Page;
   /** Markdown body of the post the scenario opened. */
   post?: string;
+  /** Titles of the posts the scenario expects in a list. */
+  expectedTitles?: string[];
+  draftTitle?: string;
 }
 
 export function currentPage(world: World): Page {

@@ -1,3 +1,4 @@
 {{ define "main" }}
-{{ partial "zoom.html" (dict "page" . "body" .Content) }}
+{{- $body := partial "zoom-single.html" . }}
+{{ partial "zoom.html" (dict "page" . "body" $body) }}
 {{ end }}
