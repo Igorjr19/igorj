@@ -17,4 +17,7 @@
   {{ partial "panel.html" (dict "id" "watched" "number" 7 "title" (i18n "panelWatched") "summary" $watchedSummary "body" (partial "panels/watched.html" .)) }}
   {{ partial "panel.html" (dict "id" "system" "number" 8 "title" (i18n "panelSystem") "body" (partial "panels/system.html" .)) }}
 </div>
+{{- with resources.Get "ts/home/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}
 {{ end }}
