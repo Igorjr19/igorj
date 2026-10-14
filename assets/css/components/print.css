@@ -1,0 +1,23 @@
+@layer app.components {
+  /* Paper is white whatever the theme: the system colors follow the printer, not the screen. */
+  @media print {
+    :root {
+      color-scheme: light;
+      --color-background: Canvas;
+      --color-surface-1: Canvas;
+      --color-text: CanvasText;
+      --color-text-muted: GrayText;
+      --color-link: CanvasText;
+    }
+
+    .site-header,
+    .dock,
+    .zoom__bar {
+      display: none;
+    }
+
+    .zoom {
+      inline-size: auto;
+    }
+  }
+}

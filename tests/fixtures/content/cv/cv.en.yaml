@@ -1,0 +1,36 @@
+basics:
+  name: Fixture Person
+  label: Fixture role
+  summary: Fixture summary of the career.
+  email: person@example.com
+  url: https://example.com
+  location: Fixture city
+  profiles:
+    - network: GitHub
+      url: https://github.com/example
+work:
+  - name: Fixture Company
+    position: Fixture Developer
+    startDate: 2024-02
+    location: Remote
+    summary: Fixture work summary.
+    highlights:
+      - Fixture highlight.
+  - name: Past Company
+    position: Past Developer
+    startDate: 2022-01
+    endDate: 2023-12
+education:
+  - institution: Fixture University
+    studyType: Bachelor
+    area: Computing
+    startDate: 2020-01
+    endDate: 2023-12
+skills:
+  - name: Languages
+    keywords: [TypeScript, Go]
+languages:
+  - language: English
+    fluency: Fluent
+publications:
+  - research: fixture-research

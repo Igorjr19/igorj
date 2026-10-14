@@ -41,7 +41,7 @@ weight = 2
 [[module.mounts]]
 source = "content"
 target = "content"
-files = ["**/*.md", "**/*.png", "**/*.jpg", "**/*.webp", "**/*.svg", "! README.md"]
+files = ["**/*.md", "**/*.png", "**/*.jpg", "**/*.webp", "**/*.svg", "**/*.pdf", "! README.md"]
 [[module.mounts]]
 source = "content"
 target = "data"
@@ -52,6 +52,9 @@ target = "data"
 [[module.mounts]]
 source = "static"
 target = "static"
+[[module.mounts]]
+source = "pages"
+target = "content"
 [[module.mounts]]
 source = "assets"
 target = "assets"

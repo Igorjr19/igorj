@@ -6,6 +6,9 @@
 {{- with site.GetPage "/research" }}
 <p><a href="{{ .RelPermalink }}">{{ i18n "research" }}</a></p>
 {{- end }}
+{{- with site.GetPage "/cv" }}
+<p><a href="{{ .RelPermalink }}">{{ i18n "cv" }}</a></p>
+{{- end }}
 {{- else }}
 {{ partial "panels/empty.html" . }}
 {{- end }}
