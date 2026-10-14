@@ -1,0 +1,32 @@
+{{- /* Feeds carry posts only: the home feed has every post, a category feed only its own. */ -}}
+{{- $posts := cond .IsHome (where site.RegularPages "Section" "posts") .Pages }}
+{{- $posts = $posts.ByDate.Reverse }}
+{{- $title := site.Params.author }}
+{{- if eq .Kind "term" }}{{ $title = printf "%s — %s" site.Params.author (humanize .Data.Term) }}{{ end }}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ $title }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>{{ i18n "feedDescription" }}</description>
+    <language>{{ site.Language.Locale }}</language>
+    {{- range first 1 $posts }}
+    <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+    {{- end }}
+    {{- with .OutputFormats.Get "rss" }}
+    {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType.Type | safeHTML }}
+    {{- end }}
+    {{- range $posts }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      <guid>{{ .Permalink }}</guid>
+      <description>{{ .Params.summary }}</description>
+      {{- range .GetTerms "categories" }}
+      <category>{{ humanize .Data.Term }}</category>
+      {{- end }}
+    </item>
+    {{- end }}
+  </channel>
+</rss>

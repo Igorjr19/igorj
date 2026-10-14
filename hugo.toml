@@ -14,6 +14,13 @@ repository = "https://github.com/Igorjr19/igorj"
 # Code colors come from the theme roles instead of inline styles.
 noClasses = false
 
+# Only the home and the categories publish feeds, both with posts only.
+[outputs]
+home = ["html", "rss"]
+section = ["html"]
+taxonomy = ["html"]
+term = ["html", "rss"]
+
 [taxonomies]
 category = "categories"
 

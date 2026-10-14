@@ -33,6 +33,7 @@ systemContact = "Contato"
 systemLinks = "Links"
 
 path = "Caminho"
+feedDescription = "Posts"
 back = "voltar"
 sectionPosts = "escrita"
 sectionProjects = "projetos"
