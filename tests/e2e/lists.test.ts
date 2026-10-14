@@ -22,6 +22,9 @@ function readList() {
     ),
     filter: [...document.querySelectorAll('.filter li')].map((item) => item.textContent?.replace(/\s+/g, ' ').trim()),
     current: document.querySelector('.filter [aria-current="page"]')?.textContent,
+    feeds: [...document.querySelectorAll('.zoom__body > p a')].map(
+      (link) => `${link.textContent} ${link.getAttribute('href')}`,
+    ),
     back: document.querySelector('.zoom__back')?.getAttribute('href'),
   };
 }
@@ -36,6 +39,7 @@ Deno.test('the post list shows every published post, newest first, with a catego
       titles: ['Film fixture post', 'Second fixture post', 'Fixture post'],
       filter: ['all', 'Devops 1', 'Film reviews 1', 'Testing 1'],
       current: 'all',
+      feeds: ['RSS: all posts /en/index.xml'],
       back: '/en/',
     });
   });
@@ -52,6 +56,7 @@ Deno.test('the post list shows every published post, newest first, with a catego
       titles: ['Second fixture post'],
       filter: ['all', 'Devops 1', 'Film reviews 1', 'Testing 1'],
       current: 'Devops',
+      feeds: ['RSS: all posts /en/index.xml', 'RSS: Devops /en/categories/devops/index.xml'],
       back: '/en/posts/',
     });
   });

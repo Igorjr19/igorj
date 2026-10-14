@@ -9,6 +9,10 @@
   </ul>
 </nav>
 {{- end }}
+<p class="panel__meta">
+  {{- with site.Home.OutputFormats.Get "rss" }}<a href="{{ .RelPermalink }}">{{ i18n "feedAll" }}</a>{{ end }}
+  {{- if eq $.Kind "term" }}{{ with $.OutputFormats.Get "rss" }} · <a href="{{ .RelPermalink }}">{{ i18n "feedCategory" (partial "category-label.html" $) }}</a>{{ end }}{{ end }}
+</p>
 <ul class="entries">
   {{- range .Pages.ByDate.Reverse }}
   <li>
