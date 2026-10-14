@@ -5,7 +5,7 @@
     <span><kbd>1</kbd>–<kbd>8</kbd> {{ i18n "keyPanels" }}</span>
     <span><kbd>j</kbd> <kbd>k</kbd> {{ i18n "keyMove" }}</span>
     <span><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
-    {{- else }}
+    {{- else if ne .Kind "404" }}
     <span><kbd>q</kbd> {{ i18n "keyBack" }}</span>
     {{- end }}
     <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
@@ -29,7 +29,7 @@
     <dd>{{ i18n "helpMove" }}</dd>
     <dt><kbd>enter</kbd></dt>
     <dd>{{ i18n "helpOpen" }}</dd>
-    {{- else }}
+    {{- else if ne .Kind "404" }}
     <dt><kbd>q</kbd></dt>
     <dd>{{ i18n "helpBack" }}</dd>
     {{- end }}

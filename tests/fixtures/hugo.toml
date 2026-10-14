@@ -12,6 +12,9 @@ files = ["**/*.yaml", "**/*.json"]
 source = "data"
 target = "data"
 [[module.mounts]]
+source = "static"
+target = "static"
+[[module.mounts]]
 source = "assets"
 target = "assets"
 [[module.mounts]]

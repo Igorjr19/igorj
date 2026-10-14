@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   {{ partial "head/theme-script.html" . }}
-  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+  <title>{{ if eq .Kind "404" }}404{{ else if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+  {{- if eq .Kind "404" }}
+  <meta name="robots" content="noindex">
+  {{- else }}
   {{ partial "head/alternates.html" . }}
+  {{- end }}
   {{ partial "head/font-preloads.html" . }}
   {{ partial "head/styles.html" . }}
 </head>
@@ -16,5 +20,10 @@
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "dock.html" . }}
+  {{- if eq .Kind "404" }}
+  {{- with resources.Get "ts/not-found/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+  <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+  {{- end }}
+  {{- end }}
 </body>
 </html>
