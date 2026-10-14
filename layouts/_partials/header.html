@@ -7,11 +7,11 @@
     {{- end }}
     <p class="site-header__role">{{ i18n "role" }}<span class="cursor" aria-hidden="true"></span></p>
   </div>
-  {{- with .Translations }}
+  {{- if ne .Kind "404" }}{{ with .Translations }}
   <nav class="site-header__languages" aria-label="{{ i18n "languages" }}">
     {{- range . }}
     <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Locale }}" lang="{{ .Language.Locale }}">{{ .Language.Label }}</a>
     {{- end }}
   </nav>
-  {{- end }}
+  {{- end }}{{ end }}
 </header>

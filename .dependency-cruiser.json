@@ -16,7 +16,13 @@
       "comment": "A module nothing imports and that imports nothing is dead code.",
       "from": {
         "orphan": true,
-        "pathNot": ["^tools/cli/", "\\.test\\.ts$", "^tests/e2e/support/", "^assets/ts/theme/apply-saved-theme\\.ts$"]
+        "pathNot": [
+          "^tools/cli/",
+          "\\.test\\.ts$",
+          "^tests/e2e/support/",
+          "^assets/ts/theme/apply-saved-theme\\.ts$",
+          "^assets/ts/not-found/main\\.ts$"
+        ]
       },
       "to": {}
     },

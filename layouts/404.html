@@ -1,0 +1,7 @@
+{{ define "main" }}
+<article class="panel zoom" box-="square" aria-labelledby="page-title">
+  <h1 class="panel__title" id="page-title">404</h1>
+  <p>{{ site.Params.shell }}: <span data-script-only hidden><span data-not-found-path></span>: </span>command not found</p>
+  <p><a href="{{ site.Home.RelPermalink }}">~ {{ i18n "notFoundHome" }}</a></p>
+</article>
+{{ end }}

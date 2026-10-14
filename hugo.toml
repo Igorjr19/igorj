@@ -8,6 +8,7 @@ enableRobotsTXT = true
 
 [params]
 author = "Ígor José Rodrigues"
+shell = "igorj"
 repository = "https://github.com/Igorjr19/igorj"
 
 [markup.highlight]
@@ -48,6 +49,9 @@ files = ["**/*.yaml", "**/*.json"]
 [[module.mounts]]
 source = "data"
 target = "data"
+[[module.mounts]]
+source = "static"
+target = "static"
 [[module.mounts]]
 source = "assets"
 target = "assets"

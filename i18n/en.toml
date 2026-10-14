@@ -33,6 +33,7 @@ systemContact = "Contact"
 systemLinks = "Links"
 
 path = "Path"
+notFoundHome = "Go to the home page"
 feedDescription = "Posts"
 filterLabel = "Categories"
 filterAll = "all"
