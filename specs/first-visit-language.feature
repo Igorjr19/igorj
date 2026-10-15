@@ -1,4 +1,3 @@
-@wip
 Feature: Language of the first visit
   Only the root address chooses a language. Every other address carries its language in the path,
   so a shared link always opens in the language it was shared in.
