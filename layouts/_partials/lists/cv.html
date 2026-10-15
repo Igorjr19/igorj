@@ -4,9 +4,11 @@
 {{- with hugo.Data.cv }}
   {{- $cv = index . (printf "cv.%s" $lang) }}
   {{- if not $cv }}
-    {{- range where site.Languages "Lang" "ne" $lang }}
-      {{- $cv = index hugo.Data.cv (printf "cv.%s" .Lang) }}
-      {{- if $cv }}{{ $fallback = .Language.Label }}{{ end }}
+    {{- range where hugo.Sites "Language.Lang" "ne" $lang }}
+      {{- if not $cv }}
+        {{- $cv = index hugo.Data.cv (printf "cv.%s" .Language.Lang) }}
+        {{- if $cv }}{{ $fallback = .Language.Label }}{{ end }}
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
