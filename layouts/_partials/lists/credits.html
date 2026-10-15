@@ -1,0 +1,8 @@
+<p>{{ i18n "creditsIntro" }}</p>
+<dl class="facts">
+  {{- range index hugo.Data "third-party" "entries" }}
+  <dt>{{ .name }}</dt>
+  <dd><a href="{{ .homepage }}">{{ .homepage }}</a> <span class="panel__meta">{{ .license }}</span></dd>
+  {{- end }}
+</dl>
+<p><a href="/third-party-licenses.txt">{{ i18n "creditsTexts" }}</a></p>

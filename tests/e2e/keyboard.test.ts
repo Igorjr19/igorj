@@ -50,7 +50,7 @@ Deno.test('single-key shortcuts move focus between panels and items', async (t) 
       await page.keyboard.press(key);
       visited.push((await page.evaluate(describeFocus)).text);
     }
-    assertEquals(visited.slice(1), ['contact@example.com', 'GitHub', 'Last.fm', 'Last.fm', 'GitHub']);
+    assertEquals(visited.slice(1), ['contact@example.com', 'GitHub', 'Last.fm', 'Credits', 'Last.fm']);
   });
 
   await t.step('a panel without links takes the focus itself', async () => {
