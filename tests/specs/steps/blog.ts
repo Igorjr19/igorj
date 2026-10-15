@@ -56,7 +56,7 @@ export const blogSteps = [
       (title: string) =>
         [...document.querySelectorAll('.zoom__body .entries > li')]
           .filter((row) => row.querySelector('a')?.textContent?.trim() === title)
-          .map((row) => row.querySelector('[lang]')?.textContent?.trim()),
+          .map((row) => row.querySelector('span[lang]')?.textContent?.trim()),
       { args: [world.untranslatedTitle ?? ''] },
     );
     assertEquals(labels, ['Português']);

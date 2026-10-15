@@ -3,7 +3,7 @@
   {{- range . }}
   <li>
     <time class="panel__meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    <a href="{{ .RelPermalink }}"{{ if ne .Language.Lang site.Language.Lang }} lang="{{ .Language.Locale }}"{{ end }}>{{ .Title }}</a>
     {{- if ne .Language.Lang site.Language.Lang }}
     <span class="panel__meta" lang="{{ .Language.Locale }}">{{ .Language.Label }}</span>
     {{- end }}
