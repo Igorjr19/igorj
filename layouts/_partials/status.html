@@ -7,6 +7,7 @@
   {{- if .IsPage }}
   <span>{{ i18n "readingTime" .ReadingTime }}</span>
   <span data-script-only hidden><span data-progress>0</span>% {{ i18n "statusRead" }}</span>
+  {{- else if eq .Section "credits" }}
   {{- else if eq .Section "cv" }}
   <span data-script-only hidden><button type="button" data-action="print">{{ i18n "print" }}</button></span>
   {{- else }}
