@@ -15,7 +15,10 @@ export interface FixturePost {
 export async function readEnglishPosts(): Promise<FixturePost[]> {
   const posts: FixturePost[] = [];
   for await (const entry of Deno.readDir(POSTS_DIR)) {
-    const source = await Deno.readTextFile(`${POSTS_DIR}/${entry.name}/index.en.md`);
+    const source = await Deno.readTextFile(`${POSTS_DIR}/${entry.name}/index.en.md`).catch(() => null);
+    if (source === null) {
+      continue;
+    }
     const [, frontMatter = '', body = ''] = source.split(/^---$/m);
     const data = parse(frontMatter) as { title: string; categories: string[]; draft?: boolean };
     posts.push({
@@ -27,4 +30,20 @@ export async function readEnglishPosts(): Promise<FixturePost[]> {
     });
   }
   return posts;
+}
+
+/** Titles of the posts that exist only in Portuguese. */
+export async function readPortugueseOnlyTitles(): Promise<string[]> {
+  const titles: string[] = [];
+  for await (const entry of Deno.readDir(POSTS_DIR)) {
+    const files = new Set<string>();
+    for await (const file of Deno.readDir(`${POSTS_DIR}/${entry.name}`)) {
+      files.add(file.name);
+    }
+    if (files.has('index.pt.md') && !files.has('index.en.md')) {
+      const [, frontMatter = ''] = (await Deno.readTextFile(`${POSTS_DIR}/${entry.name}/index.pt.md`)).split(/^---$/m);
+      titles.push((parse(frontMatter) as { title: string }).title);
+    }
+  }
+  return titles;
 }

@@ -11,6 +11,7 @@ export interface World {
   /** Titles of the posts the scenario expects in a list. */
   expectedTitles?: string[];
   draftTitle?: string;
+  untranslatedTitle?: string;
 }
 
 export function currentPage(world: World): Page {

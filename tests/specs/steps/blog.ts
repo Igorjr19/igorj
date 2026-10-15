@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
-import { assert } from '@std/assert';
+import { assert, assertEquals } from '@std/assert';
 import { POSTS_EN } from '../../e2e/support/paths.ts';
-import { readEnglishPosts } from '../support/fixture-posts.ts';
+import { readEnglishPosts, readPortugueseOnlyTitles } from '../support/fixture-posts.ts';
 import { defineStep } from '../support/steps.ts';
 import { currentPage, type World } from '../support/world.ts';
 
@@ -42,5 +42,23 @@ export const blogSteps = [
       world.draftTitle && !titles.includes(world.draftTitle),
       `The blog lists the draft: ${JSON.stringify(titles)}`,
     );
+  }),
+  defineStep<World>(/a post written only in Portuguese/, async (world) => {
+    const [title] = await readPortugueseOnlyTitles();
+    assert(title, 'No fixture post exists only in Portuguese');
+    world.untranslatedTitle = title;
+  }),
+  defineStep<World>(/a visitor opens the English blog/, async (world) => {
+    world.page = await world.session.open(POSTS_EN, world.pageOptions);
+  }),
+  defineStep<World>(/the post is listed with a label saying it is in Portuguese/, async (world) => {
+    const labels = await currentPage(world).evaluate(
+      (title: string) =>
+        [...document.querySelectorAll('.zoom__body .entries > li')]
+          .filter((row) => row.querySelector('a')?.textContent?.trim() === title)
+          .map((row) => row.querySelector('[lang]')?.textContent?.trim()),
+      { args: [world.untranslatedTitle ?? ''] },
+    );
+    assertEquals(labels, ['Português']);
   }),
 ];

@@ -14,10 +14,13 @@
   {{- if eq $.Kind "term" }}{{ with $.OutputFormats.Get "rss" }} · <a href="{{ .RelPermalink }}">{{ i18n "feedCategory" (partial "category-label.html" $) }}</a>{{ end }}{{ end }}
 </p>
 <ul class="entries">
-  {{- range .Pages.ByDate.Reverse }}
+  {{- range cond (eq .Kind "section") (partial "posts-for-language.html") .Pages.ByDate.Reverse }}
   <li>
     <time class="panel__meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{- if ne .Language.Lang site.Language.Lang }}
+    <span class="panel__meta" lang="{{ .Language.Locale }}">{{ .Language.Label }}</span>
+    {{- end }}
     {{- range .GetTerms "categories" }}
     <a class="panel__meta" href="{{ .RelPermalink }}">{{ partial "category-label.html" . }}</a>
     {{- end }}

@@ -1,9 +1,12 @@
-{{- with first 5 (where site.RegularPages "Section" "posts").ByDate.Reverse }}
+{{- with first 5 (partial "posts-for-language.html") }}
 <ul class="entries">
   {{- range . }}
   <li>
     <time class="panel__meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    {{- if ne .Language.Lang site.Language.Lang }}
+    <span class="panel__meta" lang="{{ .Language.Locale }}">{{ .Language.Label }}</span>
+    {{- end }}
     {{- range .GetTerms "categories" }}
     <a class="panel__meta" href="{{ .RelPermalink }}">{{ partial "category-label.html" . }}</a>
     {{- end }}

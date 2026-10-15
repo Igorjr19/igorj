@@ -12,7 +12,6 @@ Feature: Every published post appears in the blog
     When a visitor opens the blog
     Then the draft is not listed
 
-  @wip
   Scenario: A post without translation appears in the other language with a label
     Given a post written only in Portuguese
     When a visitor opens the English blog
