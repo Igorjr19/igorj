@@ -1,7 +1,7 @@
 {{- /* Posts of the current language plus those written only in another one, newest first. Each carries its own language, which lists show as a label. */ -}}
 {{- $lang := site.Language.Lang }}
 {{- $posts := where site.RegularPages "Section" "posts" }}
-{{- range site.Sites }}
+{{- range hugo.Sites }}
   {{- if ne .Language.Lang $lang }}
     {{- range where .RegularPages "Section" "posts" }}
       {{- if not (where .Translations "Language.Lang" $lang) }}
