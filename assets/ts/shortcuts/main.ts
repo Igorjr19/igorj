@@ -1,4 +1,5 @@
 /// <reference lib="dom" />
+import { LANGUAGE_STORAGE_KEY, siteLanguageOf } from '../language/choice.ts';
 import { readShortcutsEnabled, saveShortcutsEnabled } from './preference.ts';
 import { actionForKey, isShortcutCandidate, type NavigationTarget, type ShortcutAction, stepIndex } from './rules.ts';
 
@@ -103,7 +104,22 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
+/** Choosing a language with the switcher is remembered, so the root address honors it next time. */
+function rememberLanguage(event: MouseEvent): void {
+  const link =
+    event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('.site-header__languages a') : null;
+  const language = siteLanguageOf(link?.hreflang ?? null);
+  if (language) {
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    } catch {
+      // Storage blocked: the browser language keeps deciding at the root.
+    }
+  }
+}
+
 function onClick(event: MouseEvent): void {
+  rememberLanguage(event);
   const control = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-action]') : null;
   switch (control?.dataset['action']) {
     case 'previous-panel':

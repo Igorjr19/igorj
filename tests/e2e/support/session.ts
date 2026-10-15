@@ -10,6 +10,10 @@ export interface PageOptions {
   readonly reducedMotion?: boolean;
   /** Set to false to check what visitors and crawlers without JavaScript get. */
   readonly javascript?: boolean;
+  /** The browser's language preference, as an Accept-Language value such as "pt-BR,pt;q=0.9". */
+  readonly acceptLanguage?: string;
+  /** Values already saved in the site's local storage by an earlier visit. */
+  readonly savedStorage?: Readonly<Record<string, string>>;
 }
 
 /** One browser, one page and one static server shared by the steps of a test. */
@@ -32,7 +36,7 @@ export class Session implements AsyncDisposable {
   /** Opens a fresh page, closing the previous one so emulated settings never leak between steps. */
   async open(
     path: string,
-    { viewport, colorScheme, reducedMotion, javascript = true }: PageOptions = {},
+    { viewport, colorScheme, reducedMotion, javascript = true, acceptLanguage, savedStorage }: PageOptions = {},
   ): Promise<Page> {
     await this.page?.close();
     const page = await this.browser.newPage();
@@ -49,6 +53,21 @@ export class Session implements AsyncDisposable {
     }
     if (!javascript) {
       await page.unsafelyGetCelestialBindings().Emulation.setScriptExecutionDisabled({ value: true });
+    }
+    if (acceptLanguage) {
+      const userAgent = await page.evaluate(() => navigator.userAgent);
+      await page.unsafelyGetCelestialBindings().Emulation.setUserAgentOverride({ userAgent, acceptLanguage });
+    }
+    if (savedStorage) {
+      await page.goto(`${this.server.url}/robots.txt`, { waitUntil: 'load' });
+      await page.evaluate(
+        (entries: Record<string, string>) => {
+          for (const [key, value] of Object.entries(entries)) {
+            localStorage.setItem(key, value);
+          }
+        },
+        { args: [savedStorage] },
+      );
     }
     await page.goto(`${this.server.url}${path}`, { waitUntil: 'load' });
     return page;

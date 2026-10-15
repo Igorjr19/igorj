@@ -5,9 +5,14 @@
   <title>{{ site.Title }}</title>
   <link rel="canonical" href="{{ .Permalink }}">
   <meta name="robots" content="noindex">
-  <meta http-equiv="refresh" content="0; url={{ .Page.RelPermalink }}">
+  {{- with resources.Get "ts/language/redirect.ts" | js.Build (dict "minify" true) }}
+  <script>{{ .Content | safeJS }}</script>
+  {{- end }}
+  <noscript><meta http-equiv="refresh" content="0; url={{ .Page.RelPermalink }}"></noscript>
 </head>
 <body>
-  <p><a href="{{ .Page.RelPermalink }}">{{ .Page.RelPermalink }}</a></p>
+  <p>
+    {{- range $index, $page := .Page.AllTranslations }}{{ if $index }} · {{ end }}<a href="{{ $page.RelPermalink }}" hreflang="{{ $page.Language.Locale }}" lang="{{ $page.Language.Locale }}">{{ $page.Language.Label }}</a>{{ end -}}
+  </p>
 </body>
 </html>

@@ -36,7 +36,7 @@ Deno.test('the post list shows every published post, newest first, with a catego
     const page = await session.open(POSTS_EN, { viewport: WIDE, javascript: false });
     assertEquals(await page.evaluate(readList), {
       heading: 'Posts',
-      titles: ['Film fixture post', 'Second fixture post', 'Fixture post'],
+      titles: ['Film fixture post', 'Post só em português', 'Second fixture post', 'Fixture post'],
       filter: ['all', 'Devops 1', 'Film reviews 1', 'Testing 1'],
       current: 'all',
       feeds: ['RSS: all posts /en/index.xml'],

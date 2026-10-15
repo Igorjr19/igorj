@@ -10,7 +10,9 @@
   {{- else if eq .Section "cv" }}
   <span data-script-only hidden><button type="button" data-action="print">{{ i18n "print" }}</button></span>
   {{- else }}
-  <span>{{ i18n "items" (len .Pages) }}</span>
+  {{- $count := len .Pages }}
+  {{- if and (eq .Kind "section") (eq .Section "posts") }}{{ $count = len (partial "posts-for-language.html") }}{{ end }}
+  <span>{{ i18n "items" $count }}</span>
   {{- if eq .Kind "term" }}
   <span>{{ partial "category-label.html" . }}</span>
   {{- end }}
