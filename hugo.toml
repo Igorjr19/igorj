@@ -58,6 +58,11 @@ target = "content"
 [[module.mounts]]
 source = "assets"
 target = "assets"
+# The photo is processed at build time, so it reaches the asset pipeline instead of the content.
+[[module.mounts]]
+source = "content"
+target = "assets"
+files = ["about/photo.*"]
 [[module.mounts]]
 source = "generated/css"
 target = "assets/css/generated"
