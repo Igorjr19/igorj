@@ -50,10 +50,12 @@ Deno.test('the CV is a page of its own, built from the CV data', async (t) => {
     assertEquals(links, [RESEARCH_ITEM_EN]);
   });
 
-  await t.step('the Portuguese CV has its own data and a title in Portuguese', async () => {
+  await t.step('without data in the page language the CV shows the other language and says so', async () => {
     const page = await session.open(CV_PT, { viewport: WIDE, javascript: false });
     assertEquals((await textOf(page, 'h1'))[0], 'Currículo');
-    assert(((await textOf(page, '.zoom__body'))[0] ?? '').includes('Resumo fixture da carreira.'));
+    const body = (await textOf(page, '.zoom__body'))[0] ?? '';
+    assert(body.startsWith('Disponível só em English.'), body);
+    assert(body.includes('Fixture summary of the career.'));
   });
 
   await t.step('the home links to the CV and to the research list', async () => {

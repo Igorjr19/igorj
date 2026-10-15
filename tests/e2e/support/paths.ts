@@ -15,3 +15,4 @@ export const CV_EN = '/en/cv/';
 export const CV_PT = '/pt/cv/';
 export const RESEARCH_EN = '/en/research/';
 export const RESEARCH_ITEM_EN = '/en/research/fixture-research/';
+export const CREDITS_EN = '/en/credits/';

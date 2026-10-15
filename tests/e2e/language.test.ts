@@ -36,7 +36,7 @@ Deno.test('posts written only in the other language carry a language label on th
   const rows = () =>
     [...document.querySelectorAll('#posts li')].map((row) => [
       row.querySelector('a')?.textContent?.trim(),
-      row.querySelector('[lang]')?.textContent?.trim() ?? null,
+      row.querySelector('span[lang]')?.textContent?.trim() ?? null,
     ]);
 
   await t.step('the English home labels the Portuguese-only post and leaves the others alone', async () => {
