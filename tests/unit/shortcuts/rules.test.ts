@@ -50,6 +50,11 @@ Deno.test('actionForKey navigates with q, n and p on any page, since pages witho
   assertEquals(actionForKey('Q', 0), null);
 });
 
+Deno.test('actionForKey opens the theme picker with t on every page', () => {
+  assertEquals(actionForKey('t', 0), { kind: 'theme' });
+  assertEquals(actionForKey('t', 8), { kind: 'theme' });
+});
+
 Deno.test('actionForKey opens the help on every page and leaves / and quote alone', () => {
   assertEquals(actionForKey('?', 0), { kind: 'help' });
   assertEquals(actionForKey('/', 8), null);

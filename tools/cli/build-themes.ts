@@ -1,5 +1,6 @@
 import { auditContrast } from '../themes/audit.ts';
 import { groupFamilies } from '../themes/families.ts';
+import { describeThemes } from '../themes/index-data.ts';
 import { loadPalette, loadThemeDefaults, loadThemeManifests } from '../themes/load.ts';
 import { renderThemeCss } from '../themes/render.ts';
 import { resolveColors } from '../themes/resolve.ts';
@@ -10,6 +11,7 @@ const THEMES_DIR = 'data/themes';
 const CACHE_DIR = '.cache/palettes';
 const OUTPUT_DIR = 'generated/css';
 const OUTPUT_PATH = `${OUTPUT_DIR}/themes.css`;
+const INDEX_PATH = 'generated/data/themes.json';
 
 function formatResult({ passes, ratio, minimum, foreground, background }: ContrastResult): string {
   const status = passes ? 'ok  ' : 'FAIL';
@@ -36,5 +38,8 @@ if (failures > 0) {
 }
 
 await Deno.mkdir(OUTPUT_DIR, { recursive: true });
-await Deno.writeTextFile(OUTPUT_PATH, renderThemeCss(groupFamilies(themes), defaults.defaultFamily));
+const families = groupFamilies(themes);
+await Deno.writeTextFile(OUTPUT_PATH, renderThemeCss(families, defaults.defaultFamily));
+await Deno.mkdir('generated/data', { recursive: true });
+await Deno.writeTextFile(INDEX_PATH, `${JSON.stringify(describeThemes(families, defaults.defaultFamily), null, 2)}\n`);
 console.log(`Wrote ${OUTPUT_PATH} (${themes.length} themes).`);

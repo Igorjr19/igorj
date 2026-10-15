@@ -1,5 +1,6 @@
 /// <reference lib="dom" />
 import { LANGUAGE_STORAGE_KEY, siteLanguageOf } from '../language/choice.ts';
+import { openThemePicker } from '../theme/picker.ts';
 import { readShortcutsEnabled, saveShortcutsEnabled } from './preference.ts';
 import { actionForKey, isShortcutCandidate, type NavigationTarget, type ShortcutAction, stepIndex } from './rules.ts';
 
@@ -70,6 +71,9 @@ function perform(action: ShortcutAction): boolean {
       return moveWithinPanel(action.step);
     case 'navigate':
       return navigate(action.target);
+    case 'theme':
+      openThemePicker();
+      return true;
     case 'help':
       openHelp();
       return true;
@@ -95,7 +99,7 @@ function renderEnabled(): void {
 
 function onKeydown(event: KeyboardEvent): void {
   const editable = event.target instanceof Element && event.target.closest(EDITABLE) !== null;
-  if (!enabled || document.querySelector('.help[open]') || !isShortcutCandidate(event, editable)) {
+  if (!enabled || document.querySelector('dialog[open]') || !isShortcutCandidate(event, editable)) {
     return;
   }
   const action = actionForKey(event.key, panels().length);
@@ -133,6 +137,9 @@ function onClick(event: MouseEvent): void {
       break;
     case 'print':
       print();
+      break;
+    case 'theme':
+      openThemePicker();
       break;
     case 'toggle-shortcuts':
       enabled = !enabled;

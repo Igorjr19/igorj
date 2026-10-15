@@ -32,3 +32,20 @@ export function applySavedTheme(root: HTMLElement, saved: SavedTheme): void {
     root.dataset['theme'] = saved.theme;
   }
 }
+
+export function saveTheme(storage: Pick<Storage, 'setItem' | 'removeItem'>, saved: SavedTheme | null): void {
+  if (saved) {
+    storage.setItem(THEME_STORAGE_KEY, JSON.stringify(saved));
+  } else {
+    storage.removeItem(THEME_STORAGE_KEY);
+  }
+}
+
+/** Unlike applySavedTheme, a choice replaces whatever was set before, so a family never keeps an old theme. */
+export function applyThemeChoice(root: HTMLElement, saved: SavedTheme | null): void {
+  root.removeAttribute('data-theme-family');
+  root.removeAttribute('data-theme');
+  if (saved) {
+    applySavedTheme(root, saved);
+  }
+}

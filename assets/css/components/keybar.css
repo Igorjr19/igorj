@@ -82,7 +82,8 @@
     content: '[ ] ' / '';
   }
 
-  .help {
+  .help,
+  .theme-picker {
     max-inline-size: min(70ch, calc(100% - 2 * var(--cell-width)));
     margin: auto;
     border: 0;
@@ -90,11 +91,13 @@
     color: var(--color-text);
   }
 
-  .help::backdrop {
+  .help::backdrop,
+  .theme-picker::backdrop {
     background-color: color-mix(in oklab, var(--color-background) 80%, transparent);
   }
 
-  .help > p {
+  .help > p,
+  .theme-picker__actions {
     margin-block: var(--cell-height) 0;
   }
 
@@ -104,6 +107,26 @@
     margin-block-start: var(--cell-height);
   }
 
+  .theme-picker fieldset {
+    margin: 0 0 var(--cell-height);
+    padding: 0;
+    border: 0;
+  }
+
+  .theme-picker legend {
+    padding: 0;
+    font-weight: bold;
+  }
+
+  .theme-picker label {
+    display: block;
+  }
+
+  .theme-picker input {
+    accent-color: var(--color-accent);
+  }
+
+  .theme-picker__actions button,
   .help__actions button {
     padding: 0;
     border: 0;
