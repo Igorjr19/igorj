@@ -1,0 +1,35 @@
+@layer app.components {
+  /* Eight rows by sixteen cells is square on screen, since a cell is about twice as tall as it is wide. */
+  .about__photo {
+    display: grid;
+    float: right;
+    inline-size: calc(16 * var(--cell-width));
+    block-size: calc(8 * var(--cell-height));
+    margin: 0 0 var(--cell-height) var(--cell-width);
+  }
+
+  .about__ink {
+    grid-area: 1 / 1;
+    mask-mode: luminance;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: cover;
+  }
+
+  .about__ink--on-bright {
+    background-color: light-dark(transparent, var(--color-text));
+    mask-image: var(--photo);
+  }
+
+  .about__ink--on-dark {
+    background-color: light-dark(var(--color-text), transparent);
+    mask-image: var(--photo-inverted);
+  }
+
+  @container screen (width < 80ch) {
+    .about__photo {
+      float: none;
+      margin-inline: 0;
+    }
+  }
+}

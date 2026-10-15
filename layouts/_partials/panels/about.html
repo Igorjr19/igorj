@@ -1,4 +1,14 @@
 {{- with index hugo.Data.about (printf "about.%s" site.Language.Lang) }}
+{{- $about := . }}
+{{- with index (resources.Match "about/photo.*") 0 }}
+{{- $dithered := (.Resize "480x").Filter (images.Dither (dict "colors" (slice "#000000" "#ffffff"))) }}
+{{- $inverted := $dithered.Filter images.Invert }}
+{{- /* Ink goes where the photo is bright on dark themes and where it is dark on light ones, so the face reads the right way round. */}}
+<div class="about__photo" role="img" aria-label="{{ $about.photoAlt }}" style="--photo: url('{{ $dithered.RelPermalink }}'); --photo-inverted: url('{{ $inverted.RelPermalink }}')">
+  <span class="about__ink about__ink--on-bright"></span>
+  <span class="about__ink about__ink--on-dark"></span>
+</div>
+{{- end }}
 {{- range .lines }}
 <p>{{ . }}</p>
 {{- end }}

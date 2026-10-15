@@ -21,6 +21,10 @@ target = "content"
 source = "assets"
 target = "assets"
 [[module.mounts]]
+source = "tests/fixtures/content"
+target = "assets"
+files = ["about/photo.*"]
+[[module.mounts]]
 source = "generated/css"
 target = "assets/css/generated"
 [[module.mounts]]
