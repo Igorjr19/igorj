@@ -30,3 +30,9 @@ name = "iTerm2-Color-Schemes"
 license = "MIT"
 homepage = "https://github.com/mbadolato/iTerm2-Color-Schemes"
 text = { url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/LICENSE", sha256 = "2373168614b527494dff99eb393024608216db79f687d58bad420f6c1e0ad192" }
+
+[[entries]]
+name = "One palette (Atom One)"
+license = "MIT"
+homepage = "https://github.com/atom/atom"
+text = { url = "https://raw.githubusercontent.com/atom/atom/1c3bd35ce238dc0491def9e1780d04748d8e18af/LICENSE.md", sha256 = "c12bd50daf08ccccc2f5471d396b576f10ffa263288506e3217e9e3c7a20e41b" }

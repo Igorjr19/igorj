@@ -133,6 +133,7 @@ Deno.test('the key bar follows the screen and the page', async (t) => {
       '1–8 panels',
       'j k move',
       'enter open',
+      't theme',
       '? help',
       'Single-key shortcuts',
     ]);
@@ -143,12 +144,13 @@ Deno.test('the key bar follows the screen and the page', async (t) => {
     assertEquals(await page.evaluate(visibleControls), [
       'q back',
       'p n previous / next post',
+      't theme',
       '? help',
       'Single-key shortcuts',
     ]);
   });
 
-  await t.step('narrow home: three buttons tall enough to tap, stuck to the bottom', async () => {
+  await t.step('narrow home: four buttons tall enough to tap, stuck to the bottom', async () => {
     const page = await session.open(HOME_EN, { viewport: NARROW });
     const bar = await page.evaluate(() => {
       const buttons = [...document.querySelectorAll<HTMLElement>('.keybar__buttons button')];
@@ -158,7 +160,7 @@ Deno.test('the key bar follows the screen and the page', async (t) => {
         bottom: document.querySelector('.keybar')?.getBoundingClientRect().bottom,
       };
     });
-    assertEquals(bar.labels, ['‹ previous', 'next ›', '? help']);
+    assertEquals(bar.labels, ['‹ previous', 'next ›', 't theme', '? help']);
     for (const height of bar.heights) {
       assert(height >= 44, `${height}px is below the 44px touch target`);
     }

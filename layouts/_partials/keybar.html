@@ -11,6 +11,7 @@
     <span><kbd>p</kbd> <kbd>n</kbd> {{ i18n "keyPosts" }}</span>
     {{- end }}
     {{- end }}
+    <button type="button" data-action="theme"><kbd>t</kbd> {{ i18n "keyTheme" }}</button>
     <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
     <button type="button" data-action="toggle-shortcuts" data-shortcuts-toggle aria-pressed="true">{{ i18n "shortcutsToggle" }}</button>
   </p>
@@ -19,6 +20,7 @@
     <button type="button" data-action="previous-panel">‹ {{ i18n "previousPanel" }}</button>
     <button type="button" data-action="next-panel">{{ i18n "nextPanel" }} ›</button>
     {{- end }}
+    <button type="button" data-action="theme">t {{ i18n "keyTheme" }}</button>
     <button type="button" data-action="help">? {{ i18n "keyHelp" }}</button>
   </p>
 </div>
@@ -42,6 +44,8 @@
     <dd>{{ i18n "helpNext" }}</dd>
     {{- end }}
     {{- end }}
+    <dt><kbd>t</kbd></dt>
+    <dd>{{ i18n "helpTheme" }}</dd>
     <dt><kbd>tab</kbd></dt>
     <dd>{{ i18n "helpTab" }}</dd>
     <dt><kbd>?</kbd></dt>
@@ -55,6 +59,7 @@
     <button type="submit">{{ i18n "helpClose" }}</button>
   </form>
 </dialog>
+{{ partial "theme-picker.html" . }}
 {{- with resources.Get "ts/shortcuts/main.ts" | js.Build (dict "minify" true) | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
 {{- end }}

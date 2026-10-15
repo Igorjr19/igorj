@@ -1,0 +1,12 @@
+name = "One Dark"
+family = "one"
+variant = "dark"
+
+[credit]
+author = "GitHub Inc. (Atom One)"
+license = "MIT"
+url = "https://github.com/atom/atom"
+
+[palette]
+url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/windowsterminal/Atom%20One%20Dark.json"
+sha256 = "34427e8c004ca85325c4835f8986823b6ad56871651d6d4084be56898ae964ff"

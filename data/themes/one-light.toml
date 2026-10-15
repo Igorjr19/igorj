@@ -1,0 +1,25 @@
+name = "One Light"
+family = "one"
+variant = "light"
+
+[credit]
+author = "GitHub Inc. (Atom One)"
+license = "MIT"
+url = "https://github.com/atom/atom"
+
+[palette]
+url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/windowsterminal/Atom%20One%20Light.json"
+sha256 = "3f48bd365a6ce4e0f73d488c6c65532187b437dd7d0724f30fdadf8af09645db"
+
+# Most One Light accents are below 4.5:1 as text on its light background, so those roles
+# fall back to the text color; the blue (links, focus) and the purple (keywords) pass.
+[roles]
+text-muted = "@text"
+success = "@text"
+warning = "@text"
+error = "@text"
+cursor = "@text"
+syntax-string = "@text"
+syntax-number = "@text"
+syntax-function = "@text"
+syntax-comment = "@text"

@@ -13,6 +13,7 @@ export type ShortcutAction =
   | { readonly kind: 'panel'; readonly index: number }
   | { readonly kind: 'move'; readonly step: 1 | -1 }
   | { readonly kind: 'navigate'; readonly target: NavigationTarget }
+  | { readonly kind: 'theme' }
   | { readonly kind: 'help' };
 
 /** Single-key shortcuts must never fire while someone types or uses a browser or system combination. */
@@ -35,6 +36,7 @@ const KEY_ACTIONS: ReadonlyMap<string, ShortcutAction> = new Map([
   ['q', { kind: 'navigate', target: 'back' }],
   ['n', { kind: 'navigate', target: 'next' }],
   ['p', { kind: 'navigate', target: 'previous' }],
+  ['t', { kind: 'theme' }],
   ['?', { kind: 'help' }],
 ]);
 

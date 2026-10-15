@@ -1,0 +1,20 @@
+{{- with hugo.Data.generated.themes }}
+<dialog class="panel theme-picker" box-="square" aria-labelledby="theme-title" data-default-family="{{ .defaultFamily }}">
+  <h2 class="panel__title" id="theme-title">{{ i18n "themeTitle" }}</h2>
+  <form method="dialog">
+    {{- range .families }}
+    <fieldset>
+      <legend>{{ .label }}</legend>
+      <label><input type="radio" name="theme" value="family:{{ .name }}"> {{ i18n "themeFollowSystem" }}</label>
+      {{- range .themes }}
+      <label><input type="radio" name="theme" value="theme:{{ .id }}"> {{ .name }}</label>
+      {{- end }}
+    </fieldset>
+    {{- end }}
+    <p class="theme-picker__actions">
+      <button type="submit" value="apply">{{ i18n "themeApply" }}</button>
+      <button type="submit" value="cancel" formnovalidate>{{ i18n "themeCancel" }}</button>
+    </p>
+  </form>
+</dialog>
+{{- end }}
