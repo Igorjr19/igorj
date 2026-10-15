@@ -4,6 +4,8 @@
 {{ partial "lists/projects.html" . }}
 {{- else if eq .Section "research" }}
 {{ partial "lists/research.html" . }}
+{{- else if eq .Section "credits" }}
+{{ partial "lists/credits.html" . }}
 {{- else if eq .Section "cv" }}
 {{ partial "lists/cv.html" . }}
 {{- else }}
