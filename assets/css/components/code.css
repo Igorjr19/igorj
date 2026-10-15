@@ -1,5 +1,10 @@
 /* Chroma (Hugo's highlighter) classes. Weight and style also carry meaning for themes whose syntax colors fall back to the text color. */
 @layer app.components {
+  /* Long lines scroll inside the block instead of widening the page. */
+  .prose pre {
+    overflow-x: auto;
+  }
+
   .chroma {
     background-color: var(--color-surface-1);
     color: var(--color-text);
