@@ -19,6 +19,8 @@
     {{- if .IsHome }}
     <button type="button" data-action="previous-panel">‹ {{ i18n "previousPanel" }}</button>
     <button type="button" data-action="next-panel">{{ i18n "nextPanel" }} ›</button>
+    {{- else if ne .Kind "404" }}
+    <button type="button" data-action="back">‹ {{ i18n "keyBack" }}</button>
     {{- end }}
     <button type="button" data-action="theme">t {{ i18n "keyTheme" }}</button>
     <button type="button" data-action="help">? {{ i18n "keyHelp" }}</button>
