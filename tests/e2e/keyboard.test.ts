@@ -2,6 +2,7 @@
 import type { Page } from '@astral/astral';
 import { assert, assertEquals } from '@std/assert';
 import { findAccessibilityViolations } from './support/axe.ts';
+import { waitToLeave } from './support/navigation.ts';
 import { HOME_EN, POST_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
 
@@ -182,4 +183,16 @@ Deno.test('the key bar follows the screen and the page', async (t) => {
     }
     assertEquals(visited, ['now', 'projects', 'now']);
   });
+});
+
+Deno.test('the narrow bar of an inner page has a back button beside theme and help', async () => {
+  await using session = await Session.start();
+  const page = await session.open(POST_EN, { viewport: NARROW });
+  const labels = await page.evaluate(() =>
+    [...document.querySelectorAll('.keybar__buttons button')].map((button) => button.textContent?.trim()),
+  );
+  assertEquals(labels, ['‹ back', 't theme', '? help']);
+  await page.locator('.keybar__buttons [data-action="back"]').click();
+  await waitToLeave(page, POST_EN);
+  assertEquals(new URL(page.url).pathname, '/en/posts/');
 });

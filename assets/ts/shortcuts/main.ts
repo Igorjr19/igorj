@@ -132,6 +132,9 @@ function onClick(event: MouseEvent): void {
     case 'next-panel':
       showNeighbourPanel(1);
       break;
+    case 'back':
+      navigate('back');
+      break;
     case 'help':
       openHelp();
       break;
