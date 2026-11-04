@@ -50,6 +50,9 @@ jobs:
     if: github.event_name != 'pull_request' && vars.CLOUDFLARE_PAGES_PROJECT != ''
     runs-on: ubuntu-24.04
     environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    env:
+      # The Cloudflare project serves its custom domain from the "production" branch; any other branch is a preview.
+      PAGES_BRANCH: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
@@ -57,7 +60,8 @@ jobs:
         env:
           CONTENT_REPO: ${{ vars.CONTENT_REPO }}
           CONTENT_TOKEN: ${{ secrets.CONTENT_TOKEN }}
-          ALLOW_EXAMPLE_CONTENT: ${{ vars.ALLOW_EXAMPLE_CONTENT }}
+          # Production never publishes example content, whatever the repository variable says.
+          ALLOW_EXAMPLE_CONTENT: ${{ github.ref_name != 'main' && vars.ALLOW_EXAMPLE_CONTENT || '' }}
       # The action installs Wrangler with npm, which cannot read the node_modules layout Deno creates.
       - run: rm -rf node_modules
       - uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
@@ -65,4 +69,4 @@ jobs:
           wranglerVersion: '4.149.0'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy public --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=${{ github.ref_name }}
+          command: pages deploy public --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=${{ env.PAGES_BRANCH }}
