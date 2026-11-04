@@ -84,4 +84,4 @@ No third-party files are versioned. Packages are pinned in `deno.json` and `deno
 
 ## License
 
-Code under the MIT license (see `LICENSE`).
+Code under the MIT license (see `LICENSE`). The texts and images published on the site belong to Ígor José Rodrigues, all rights reserved; they live in a separate private repository and are not covered by this license.

@@ -46,6 +46,23 @@ Deno.test('the credits page names every third-party item with its license and li
     assert(response.ok && text.includes('MIT License'), 'the license texts file is missing or empty');
   });
 
+  await t.step('the page says the texts are reserved and the code is MIT, in each language', async () => {
+    for (const [path, expected] of [
+      [
+        '/en/credits/',
+        'Texts and images © Ígor José Rodrigues, all rights reserved. The site code is under the MIT license.',
+      ],
+      [
+        '/pt/credits/',
+        'Textos e imagens © Ígor José Rodrigues, todos os direitos reservados. O código do site está sob a licença MIT.',
+      ],
+    ] as const) {
+      const page = await session.open(path, { viewport: WIDE, javascript: false });
+      const notice = await page.evaluate(() => document.querySelector('.zoom__body > p')?.textContent?.trim());
+      assertEquals(notice, expected);
+    }
+  });
+
   await t.step('the system panel of each language links to it', async () => {
     for (const [path, label, target] of [
       [HOME_EN, 'Credits', '/en/credits/'],
