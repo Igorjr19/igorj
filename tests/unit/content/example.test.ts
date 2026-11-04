@@ -17,6 +17,11 @@ Deno.test('isCheckedContentFile covers Markdown and YAML, not the repository REA
   assertEquals(isCheckedContentFile('content/posts/a/cover.png'), false);
 });
 
+Deno.test('isCheckedContentFile skips hidden folders, so the content repository workflows are not read as content', () => {
+  assertEquals(isCheckedContentFile('content/.github/workflows/notify-site.yml'), false);
+  assertEquals(isCheckedContentFile('content/projects/a/index.en.md'), true);
+});
+
 Deno.test('containsExampleContent also detects the flag in JSON written by the daily data job', () => {
   assertEquals(containsExampleContent('{\n  "example": true,\n  "updated": "2026-10-10"\n}'), true);
   assertEquals(containsExampleContent('{\n  "example": false\n}'), false);
