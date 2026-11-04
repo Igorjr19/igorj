@@ -9,6 +9,8 @@ Paragraph with **bold**, *italic*, `inline code` and a [link](https://example.co
 
 A long address that cannot break by itself: https://example.com/a-very-long-path-without-any-break/that-keeps-going-and-going/until-it-is-much-wider-than-a-phone-screen/index.html
 
+![A screenshot wider than a phone screen](wide.png)
+
 - First item
 - Second item
 

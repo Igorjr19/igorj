@@ -3,7 +3,7 @@
 [[module.mounts]]
 source = "tests/fixtures/content"
 target = "content"
-files = ["**/*.md"]
+files = ["**/*.md", "**/*.png", "**/*.jpg", "**/*.webp", "**/*.svg", "**/*.pdf"]
 [[module.mounts]]
 source = "tests/fixtures/content"
 target = "data"

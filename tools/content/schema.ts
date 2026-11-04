@@ -42,6 +42,7 @@ const ResearchSchema = v.strictObject({
   venue: Text,
   file: v.optional(Text),
   doi: v.optional(v.pipe(v.string(), v.regex(/^10\.\d{4,9}\/\S+$/, 'Expected a DOI such as 10.1000/xyz'))),
+  draft: v.optional(v.boolean()),
   slug: v.optional(Slug),
 });
 
