@@ -76,18 +76,6 @@
     }
   }
 
-  .status--completed {
-    color: var(--color-success);
-  }
-
-  .status--paused {
-    color: var(--color-warning);
-  }
-
-  .status--abandoned {
-    color: var(--color-error);
-  }
-
   /* Two rows keep the toggle above the minimum touch target. */
   .panel__summary {
     display: flex;

@@ -76,24 +76,30 @@ Deno.test('the post list shows every published post, newest first, with a catego
 Deno.test('projects show their facts in the list and on their own page', async (t) => {
   await using session = await Session.start();
 
-  await t.step('the list shows status and stack', async () => {
+  await t.step('the list shows stack and summary, ordered by weight before title', async () => {
     const page = await session.open(PROJECTS_EN, { viewport: WIDE, javascript: false });
     assertEquals(
       await page.evaluate(() => [
         document.querySelector('h1')?.textContent,
-        document.querySelector('.zoom__body .entries li')?.textContent?.replace(/\s+/g, ' ').trim(),
+        ...[...document.querySelectorAll('.zoom__body .entries li')].map((row) =>
+          row.textContent?.replace(/\s+/g, ' ').trim(),
+        ),
       ]),
-      ['Projects', 'Fixture project in progress hugo · deno A project used by the end-to-end tests.'],
+      [
+        'Projects',
+        'Second fixture project go A project the weight puts first, although its title sorts after the other.',
+        'Fixture project hugo · deno A project used by the end-to-end tests.',
+      ],
     );
   });
 
-  await t.step('the project page lists status, period and stack, with an open period shown as present', async () => {
+  await t.step('the project page lists the stack, with no period or status', async () => {
     const page = await session.open(PROJECT_EN, { viewport: WIDE, javascript: false });
     assertEquals(
       await page.evaluate(() =>
         [...document.querySelectorAll('.zoom__body .facts > *')].map((cell) => cell.textContent?.trim()),
       ),
-      ['Status', 'in progress', 'Period', '2026-01 – present', 'Stack', 'hugo · deno'],
+      ['Stack', 'hugo · deno'],
     );
   });
 });
