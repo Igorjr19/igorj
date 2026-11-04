@@ -1,3 +1,4 @@
+<p>{{ i18n "creditsRights" (dict "Author" site.Params.author "Repository" site.Params.repository) | safeHTML }}</p>
 <p>{{ i18n "creditsIntro" }}</p>
 <dl class="facts">
   {{- range index hugo.Data "third-party" "entries" }}
