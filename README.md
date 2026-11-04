@@ -74,9 +74,9 @@ Fonts come from Fontsource packages; `data/fonts.toml` lists families, weights, 
 
 ## CI and deployment
 
-GitHub Actions runs `deno task ci` in one job and, on `main`, builds with the real content and deploys to Cloudflare Pages with Wrangler. A local composite action (`.github/actions/setup`) installs the pinned tools and caches Deno dependencies. A pull request merges once that check passes; a dependency audit runs weekly. Pushes to `main` deploy to the Cloudflare `production` branch, which serves igorj.dev, and never allow example content; other branches deploy previews. The content repository can trigger a rebuild with a `content-updated` repository dispatch.
+GitHub Actions runs `deno task ci` in one job and, on `main`, builds with the real content and deploys to Cloudflare Pages with Wrangler. A local composite action (`.github/actions/setup`) installs the pinned tools and caches Deno dependencies. A pull request merges once that check passes; a dependency audit runs weekly. Pushes to `main` deploy to the Cloudflare `production` branch, which serves igorj.dev, and never allow example content; other branches deploy previews. Running the workflow by hand with another `content_ref` builds that content branch into a preview named after it, which accepts example content (for instance `example`, which fills every section with placeholder text). The content repository can trigger a rebuild with a `content-updated` repository dispatch.
 
-Required repository settings: secrets `CONTENT_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; variables `CONTENT_REPO`, `CLOUDFLARE_PAGES_PROJECT`, and optionally `ALLOW_EXAMPLE_CONTENT` for previews.
+Required repository settings: secrets `CONTENT_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; variables `CONTENT_REPO` and `CLOUDFLARE_PAGES_PROJECT`.
 
 ## Third-party material
 
