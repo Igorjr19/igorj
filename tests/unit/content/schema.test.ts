@@ -23,8 +23,6 @@ const POST = {
 const PROJECT = {
   title: 'A project',
   summary: 'One sentence.',
-  period: { start: '2025-03', end: '2025-09' },
-  status: 'completed',
   stack: ['go'],
 };
 
@@ -70,15 +68,15 @@ Deno.test('a post date must be a real ISO date', () => {
   assertRejected('posts/a/index.pt.md', { ...POST, date: '05/10/2026' }, 'YYYY-MM-DD');
 });
 
-Deno.test('a project status is one of the English identifiers the interface translates', () => {
-  assertEquals(issuesFor('projects/a/index.pt.md', { ...PROJECT, status: 'in-progress' }), null);
-  assertRejected('projects/a/index.pt.md', { ...PROJECT, status: 'concluido' }, '"completed"');
+Deno.test('a project has no period or status, so old front matter with them fails instead of being ignored', () => {
+  assertRejected('projects/a/index.pt.md', { ...PROJECT, period: { start: '2026-02' } }, 'period');
+  assertRejected('projects/a/index.pt.md', { ...PROJECT, status: 'completed' }, 'status');
 });
 
-Deno.test('a project period uses months and cannot end before it starts', () => {
-  assertEquals(issuesFor('projects/a/index.pt.md', { ...PROJECT, period: { start: '2026-02' } }), null);
-  assertRejected('projects/a/index.pt.md', { ...PROJECT, period: { start: '2025-03-01' } }, 'YYYY-MM');
-  assertRejected('projects/a/index.pt.md', { ...PROJECT, period: { start: '2025-09', end: '2025-03' } }, 'ends before');
+Deno.test('a project weight is a positive integer, the only way to order projects', () => {
+  assertEquals(issuesFor('projects/a/index.pt.md', { ...PROJECT, weight: 2 }), null);
+  assertRejected('projects/a/index.pt.md', { ...PROJECT, weight: 0 }, 'weight');
+  assertRejected('projects/a/index.pt.md', { ...PROJECT, weight: 1.5 }, 'weight');
 });
 
 Deno.test('a project rejects unknown link names to catch typos', () => {

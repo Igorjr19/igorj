@@ -25,14 +25,11 @@ const ProjectSchema = v.strictObject({
   example: Example,
   title: Text,
   summary: Text,
-  period: v.pipe(
-    v.strictObject({ start: Month, end: v.optional(Month) }),
-    v.check(({ start, end }) => end === undefined || end >= start, 'The period ends before it starts'),
-  ),
-  status: v.picklist(['completed', 'in-progress', 'paused', 'abandoned']),
   stack: v.array(Text),
   links: v.optional(v.strictObject({ repository: v.optional(Url), demo: v.optional(Url) })),
   featured: v.optional(v.boolean()),
+  // Projects carry no dates, so Hugo's weight is the only way to put one before another.
+  weight: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
   slug: v.optional(Slug),
 });
 
