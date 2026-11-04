@@ -1,13 +1,7 @@
 /// <reference lib="dom" />
-import { type HomeOrigin, saveOrigin, shouldRestoreFocus, takeOrigin } from './origin.ts';
 
-function storage(): Storage | null {
-  try {
-    return sessionStorage;
-  } catch {
-    return null;
-  }
-}
+import { browserStorage } from '../shared/storage.ts';
+import { type HomeOrigin, saveOrigin, shouldRestoreFocus, takeOrigin } from './origin.ts';
 
 function followedLink(event: MouseEvent): HomeOrigin | null {
   const plain = event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey;
@@ -26,7 +20,7 @@ function placeToRestore(origin: HomeOrigin): HTMLElement | null {
   return link ?? panel;
 }
 
-const saved = storage();
+const saved = browserStorage('sessionStorage');
 
 const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
 const origin = saved ? takeOrigin(saved) : null;

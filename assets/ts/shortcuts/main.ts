@@ -1,5 +1,6 @@
 /// <reference lib="dom" />
 import { LANGUAGE_STORAGE_KEY, siteLanguageOf } from '../language/choice.ts';
+import { browserStorage } from '../shared/storage.ts';
 import { openThemePicker } from '../theme/picker.ts';
 import { readShortcutsEnabled, saveShortcutsEnabled } from './preference.ts';
 import { actionForKey, isShortcutCandidate, type NavigationTarget, type ShortcutAction, stepIndex } from './rules.ts';
@@ -80,15 +81,7 @@ function perform(action: ShortcutAction): boolean {
   }
 }
 
-function storage(): Storage | null {
-  try {
-    return localStorage;
-  } catch {
-    return null;
-  }
-}
-
-let enabled = readShortcutsEnabled(storage() ?? { getItem: () => null });
+let enabled = readShortcutsEnabled(browserStorage('localStorage') ?? { getItem: () => null });
 
 function renderEnabled(): void {
   document.documentElement.dataset['shortcuts'] = enabled ? 'on' : 'off';

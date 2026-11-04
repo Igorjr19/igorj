@@ -1,14 +1,8 @@
 /// <reference lib="dom" />
+
+import { browserStorage } from '../shared/storage.ts';
 import { choiceToSaved, savedToChoice } from './choice.ts';
 import { applyThemeChoice, type SavedTheme, saveTheme } from './storage.ts';
-
-function storage(): Storage | null {
-  try {
-    return localStorage;
-  } catch {
-    return null;
-  }
-}
 
 function currentChoice(): SavedTheme | null {
   const { themeFamily, theme } = document.documentElement.dataset;
@@ -38,7 +32,7 @@ function wire(dialog: HTMLDialogElement): void {
     const chosen = radios(dialog).find((radio) => radio.checked);
     const keep = applied ? choiceToSaved(chosen?.value ?? '') : before;
     applyThemeChoice(document.documentElement, keep);
-    const saved = storage();
+    const saved = browserStorage('localStorage');
     if (applied && saved) {
       try {
         saveTheme(saved, keep);
