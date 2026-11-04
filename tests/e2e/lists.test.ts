@@ -44,6 +44,17 @@ Deno.test('the post list shows every published post, newest first, with a catego
     });
   });
 
+  await t.step('a post written only in Portuguese is listed in English with a language label', async () => {
+    const page = await session.open(POSTS_EN, { viewport: WIDE, javascript: false });
+    const labels = await page.evaluate(() =>
+      [...document.querySelectorAll('.zoom__body .entries > li span[lang]')].map((label) => [
+        label.closest('li')?.querySelector('a')?.textContent?.trim(),
+        label.textContent?.trim(),
+      ]),
+    );
+    assertEquals(labels, [['Post só em português', 'Português']]);
+  });
+
   await t.step('the heading follows the interface language', async () => {
     const page = await session.open(POSTS_PT, { viewport: WIDE, javascript: false });
     assertEquals((await page.evaluate(readList)).heading, 'Escrita');
