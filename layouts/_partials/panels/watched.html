@@ -1,4 +1,7 @@
-{{- with hugo.Data.external.films.films }}
+{{- with hugo.Data.external.films }}
+{{- $updated := .updated }}
+{{- with .films }}
+{{ partial "external-age.html" $updated }}
 <ul class="entries">
   {{- range $film := . }}
   <li>
@@ -7,6 +10,9 @@
   </li>
   {{- end }}
 </ul>
+{{- else }}
+{{ partial "panels/empty.html" . }}
+{{- end }}
 {{- else }}
 {{ partial "panels/empty.html" . }}
 {{- end }}

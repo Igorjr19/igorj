@@ -1,0 +1,5 @@
+{{- /* Data a week old or more says when it was saved, so a stalled daily job does not pass as fresh. */}}
+{{- $updated := time.AsTime . }}
+{{- if ge (now.Sub $updated).Hours 168 }}
+<p class="panel__meta">{{ i18n "dataFrom" (dict "Date" ($updated.Format "2006-01-02")) }}</p>
+{{- end }}

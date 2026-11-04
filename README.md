@@ -36,6 +36,7 @@ deno task ci             # everything the CI runs, browser tests included
 | `test:e2e` | Builds the fixture site, validates its HTML and runs browser tests: layout, themes, focus, accessibility with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA in both color schemes), reading with JavaScript disabled, search metadata, size budgets per page from `data/budgets.toml` |
 | `build:fixtures` | Builds the site from `tests/fixtures/content` into `generated/fixture-site` |
 | `validate:html` | Checks the fixture site with [html-validate](https://html-validate.org) (standard, accessibility and document rules) |
+| `external:fetch` | Refreshes `content/external/` from Last.fm (`LASTFM_USER`, `LASTFM_API_KEY`) and Letterboxd (`LETTERBOXD_USER`); run daily by the content repository. A source that fails keeps its last file |
 | `fonts`, `themes`, `licenses` | Generate font faces, theme colors and the third-party notices (all run by `prepare`) |
 
 ## Content
@@ -44,7 +45,7 @@ Posts, projects, research and CV live in a separate private repository. The buil
 
 `deno task content:check` validates every Markdown front matter and YAML file against the schemas in `tools/content/schema.ts`: Hugo's own keys (`title`, `date`, `lastmod`, `draft`, `slug`, `summary`, `categories`) plus the site's fields in English, one category per post, and JSON Resume keys for the CV. Unknown keys and files outside the expected structure fail the check. The build runs it on the real content, and the fixture build on `tests/fixtures/content`.
 
-The home page reads the about text, contact links and reading list from YAML files, and the music and film summaries from `external/*.json`, which a daily job in the content repository refreshes; the site build never calls an external service. `deno task build:info` records the commit shown in the system panel.
+The home page reads the about text, contact links and reading list from YAML files, and the music and film summaries from `external/*.json`, which a daily job in the content repository refreshes with `deno task external:fetch`; the site build never calls an external service. Data a week old or more shows the date it was saved. `deno task build:info` records the commit shown in the system panel.
 
 The production build fails on example content (`example: true` or `[EXAMPLE]`). Set `ALLOW_EXAMPLE_CONTENT=1` for previews.
 
