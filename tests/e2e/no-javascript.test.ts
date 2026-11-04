@@ -12,6 +12,7 @@ Deno.test('content is readable with JavaScript disabled', async (t) => {
       [...document.querySelectorAll('.panel a')].map((link) => link.textContent?.trim()),
     );
     assert(links.includes('Fixture post'), `missing post link in ${JSON.stringify(links)}`);
+    assert(links.includes('Fixture project'), `missing project link in ${JSON.stringify(links)}`);
   });
 
   await t.step('a post shows its title and full text', async () => {

@@ -12,34 +12,28 @@ Work in progress. The previous site stays at [igorj.dev.br](https://igorj.dev.br
 - [Deno](https://deno.com) runs the build tools, type checks and tests, and installs the CSS and font packages.
 - [Biome](https://biomejs.dev) formats and lints TypeScript, CSS and JSON.
 - [Taplo](https://taplo.tamasfe.dev) formats and checks TOML.
-- [Lefthook](https://lefthook.dev) runs the checks on commit and push.
+- [Lefthook](https://lefthook.dev) checks formatting and the commit message on commit.
 - [actionlint](https://github.com/rhysd/actionlint) checks the GitHub Actions workflow.
-- [gitleaks](https://github.com/gitleaks/gitleaks) looks for committed secrets.
 
 ```sh
 mise install
 deno task hooks          # install the git hooks (once)
 deno task dev            # local server at http://localhost:1313 (renders in memory)
 deno task build          # production build
-deno task ci             # everything the CI runs
+deno task check          # lint, types and unit tests (seconds)
+deno task ci             # everything the CI runs, browser tests included
 ```
 
 | Task | What it does |
 |---|---|
 | `lint` | Biome (with the project rules in `tools/quality/biome/`), Taplo, actionlint and `conventions` |
 | `conventions` | Rejects references to planning documents in versioned files |
-| `deps` | [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) rules in `.dependency-cruiser.json`: no cycles, no orphans, layer boundaries, stable dependencies |
-| `duplication` | [jscpd](https://github.com/kucherenko/jscpd): fails above 3% duplicated lines in TypeScript and CSS |
-| `deps:metrics`, `deps:graph` | Afferent and efferent coupling and instability per module, and a Mermaid graph (also in every CI run summary) |
-| `secrets` | Scans the whole git history for secrets (staged files on every commit) |
-| `audit` | Checks dependencies against known vulnerabilities |
-| `risk` | Lists what in the current branch needs human review (specs, gates, dependencies, external data, deployment, tests changed with code, large changes) |
+| `audit` | Checks dependencies against known vulnerabilities (weekly in CI) |
 | `format` | Applies Biome and Taplo formatting and safe fixes |
 | `typecheck` | `deno check` over tools, tests and browser code |
 | `test` | Unit tests |
-| `coverage` | Unit tests with coverage, written to `.cache/coverage.lcov`; CI sends it to [Codecov](https://codecov.io), which requires 80% coverage of changed lines (`codecov.yml`) |
+| `check` | `lint`, `typecheck` and `test` |
 | `test:e2e` | Builds the fixture site, validates its HTML and runs browser tests: layout, themes, focus, accessibility with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA in both color schemes), reading with JavaScript disabled, search metadata, size budgets per page from `data/budgets.toml` |
-| `specs` | Runs the Gherkin specifications in `specs/` against the fixture site (also part of `test:e2e`) |
 | `build:fixtures` | Builds the site from `tests/fixtures/content` into `generated/fixture-site` |
 | `validate:html` | Checks the fixture site with [html-validate](https://html-validate.org) (standard, accessibility and document rules) |
 | `fonts`, `themes`, `licenses` | Generate font faces, theme colors and the third-party notices (all run by `prepare`) |
@@ -79,7 +73,7 @@ Fonts come from Fontsource packages; `data/fonts.toml` lists families, weights, 
 
 ## CI and deployment
 
-GitHub Actions runs lint, type checks and unit tests, then the HTML validation and browser tests, and only then builds with the real content and deploys to Cloudflare Pages with Wrangler. A local composite action (`.github/actions/setup`) installs the pinned tools and caches Deno dependencies. On pull requests a risk report classifies the change; flagged changes wait for approval on the `review` environment, the rest can merge on their own. Pushes to `main` deploy to production; other branches deploy previews. The content repository can trigger a rebuild with a `content-updated` repository dispatch.
+GitHub Actions runs `deno task ci` in one job and, on `main`, builds with the real content and deploys to Cloudflare Pages with Wrangler. A local composite action (`.github/actions/setup`) installs the pinned tools and caches Deno dependencies. A pull request merges once that check passes; a dependency audit runs weekly. Pushes to `main` deploy to production; other branches deploy previews. The content repository can trigger a rebuild with a `content-updated` repository dispatch.
 
 Required repository settings: secrets `CONTENT_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; variables `CONTENT_REPO`, `CLOUDFLARE_PAGES_PROJECT`, and `ALLOW_EXAMPLE_CONTENT` until the real content is in place.
 
