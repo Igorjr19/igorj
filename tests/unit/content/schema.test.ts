@@ -94,6 +94,11 @@ Deno.test('a research item uses kind, because type would select a Hugo layout', 
   assertRejected('research/a/index.pt.md', { ...research, kind: 'monografia' }, '"thesis"');
 });
 
+Deno.test('a research item can be a draft, so a placeholder waits unpublished until its year is known', () => {
+  const research = { title: 'A thesis', kind: 'thesis', year: 2026, authors: ['Someone'], venue: 'A university' };
+  assertEquals(issuesFor('research/a/index.pt.md', { ...research, draft: true }), null);
+});
+
 Deno.test('the about text has exactly three lines and the now block', () => {
   assertEquals(issuesFor('about/about.pt.yaml', ABOUT), null);
   assertRejected('about/about.pt.yaml', { ...ABOUT, lines: ['one', 'two'] }, 'exactly three lines');
