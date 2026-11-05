@@ -30,10 +30,10 @@ Deno.test('feeds carry posts only, for the whole blog and for each category', as
   });
 
   await t.step('a category feed holds the posts of that category with its name in the title', async () => {
-    const feed = await fetchText('/en/categories/testing/index.xml');
+    const feed = await fetchText('/en/categories/notes/index.xml');
     assertEquals(feed.status, 200);
     assertEquals(itemTitles(feed.text), ['Fixture post']);
-    assert(feed.text.includes('<title>Ígor José Rodrigues — Testing</title>'));
+    assert(feed.text.includes('<title>Ígor José Rodrigues — Notes</title>'));
   });
 
   await t.step('lists and sections publish no feed of their own', async () => {
@@ -48,10 +48,10 @@ Deno.test('feeds carry posts only, for the whole blog and for each category', as
     assertEquals(await home.evaluate(links), ['https://igorj.dev/en/index.xml']);
     const post = await session.open(POST_EN, { javascript: false });
     assertEquals(await post.evaluate(links), ['https://igorj.dev/en/index.xml']);
-    const category = await session.open('/en/categories/testing/', { javascript: false });
+    const category = await session.open('/en/categories/notes/', { javascript: false });
     assertEquals(await category.evaluate(links), [
       'https://igorj.dev/en/index.xml',
-      'https://igorj.dev/en/categories/testing/index.xml',
+      'https://igorj.dev/en/categories/notes/index.xml',
     ]);
   });
 });

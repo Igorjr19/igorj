@@ -1,11 +1,11 @@
 /// <reference lib="dom" />
 import { assertEquals } from '@std/assert';
 import {
-  DEVOPS_EN,
   FILM_POST_EN,
   FIRST_POST_EN,
   POSTS_EN,
   POSTS_PT,
+  PROFESSIONAL_EN,
   PROJECT_EN,
   PROJECTS_EN,
   SECOND_POST_EN,
@@ -37,7 +37,7 @@ Deno.test('the post list shows every published post, newest first, with a catego
     assertEquals(await page.evaluate(readList), {
       heading: 'Posts',
       titles: ['Film fixture post', 'Post só em português', 'Second fixture post', 'Fixture post'],
-      filter: ['all', 'Devops 1', 'Film reviews 1', 'Testing 1'],
+      filter: ['all', 'Entertainment 1', 'Notes 1', 'Professional 1'],
       current: 'all',
       feeds: ['RSS: all posts /en/index.xml'],
       back: '/en/',
@@ -55,19 +55,20 @@ Deno.test('the post list shows every published post, newest first, with a catego
     assertEquals(labels, [['Post só em português', 'Português']]);
   });
 
-  await t.step('the heading follows the interface language', async () => {
+  await t.step('the heading and the category names follow the interface language', async () => {
     const page = await session.open(POSTS_PT, { viewport: WIDE, javascript: false });
-    assertEquals((await page.evaluate(readList)).heading, 'Escrita');
+    const { heading, filter } = await page.evaluate(readList);
+    assertEquals([heading, filter.slice(1)], ['Escrita', ['Notas 2']]);
   });
 
   await t.step('a category lists only its posts and goes back to the blog, not to the categories', async () => {
-    const page = await session.open(DEVOPS_EN, { viewport: WIDE, javascript: false });
+    const page = await session.open(PROFESSIONAL_EN, { viewport: WIDE, javascript: false });
     assertEquals(await page.evaluate(readList), {
-      heading: 'Devops',
+      heading: 'Professional',
       titles: ['Second fixture post'],
-      filter: ['all', 'Devops 1', 'Film reviews 1', 'Testing 1'],
-      current: 'Devops',
-      feeds: ['RSS: all posts /en/index.xml', 'RSS: Devops /en/categories/devops/index.xml'],
+      filter: ['all', 'Entertainment 1', 'Notes 1', 'Professional 1'],
+      current: 'Professional',
+      feeds: ['RSS: all posts /en/index.xml', 'RSS: Professional /en/categories/professional/index.xml'],
       back: '/en/posts/',
     });
   });
