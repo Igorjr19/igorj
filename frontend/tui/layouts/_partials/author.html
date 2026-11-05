@@ -1,4 +1,1 @@
-{{- /* The author named by the content repository; the config value covers content that predates the site file. */ -}}
-{{- $author := site.Params.author }}
-{{- with hugo.Data.site }}{{ with .site }}{{ $author = .author }}{{ end }}{{ end }}
-{{- return $author }}
+{{- return hugo.Data.site.site.author }}
