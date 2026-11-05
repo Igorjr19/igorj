@@ -139,3 +139,17 @@ Deno.test('the reading list accepts books and papers only', () => {
   assertEquals(issuesFor('reading/reading.yaml', reading), null);
   assertRejected('reading/reading.yaml', { items: [{ title: 'A', authors: ['B'], kind: 'podcast' }] }, '"paper"');
 });
+
+Deno.test('the site file names the author and declares the languages as two-letter codes', () => {
+  const site = { author: 'Someone', languages: ['pt', 'en'] };
+  assertEquals(issuesFor('site/site.yaml', site), null);
+  assertRejected('site/site.yaml', { ...site, languages: [] }, 'languages');
+  assertRejected('site/site.yaml', { ...site, languages: ['pt-BR'] }, 'two-letter');
+});
+
+Deno.test('every category has a slug and a name per language, so the interface never shows a slug', () => {
+  const categories = { categories: [{ slug: 'notes', name: { pt: 'Notas', en: 'Notes' } }] };
+  assertEquals(issuesFor('categories/categories.yaml', categories), null);
+  assertRejected('categories/categories.yaml', { categories: [{ slug: 'Notas', name: { pt: 'Notas' } }] }, 'slug');
+  assertRejected('categories/categories.yaml', { categories: [{ slug: 'notes', name: { pt: '' } }] }, 'name');
+});

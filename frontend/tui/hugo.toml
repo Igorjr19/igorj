@@ -46,7 +46,15 @@ files = ["posts/**", "projects/**", "research/**"]
 [[module.mounts]]
 source = "content"
 target = "data"
-files = ["about/*.yaml", "contact/*.yaml", "cv/*.yaml", "reading/*.yaml", "external/*.json"]
+files = [
+  "about/*.yaml",
+  "categories/*.yaml",
+  "contact/*.yaml",
+  "cv/*.yaml",
+  "reading/*.yaml",
+  "site/*.yaml",
+  "external/*.json",
+]
 [[module.mounts]]
 source = "frontend/tui/layouts"
 target = "layouts"

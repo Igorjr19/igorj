@@ -1,11 +1,11 @@
 <header class="site-header">
   <div class="site-header__identity">
     {{- if .IsHome }}
-    <h1 class="site-header__name">{{ site.Params.author }}</h1>
+    <h1 class="site-header__name">{{ (partial "author.html" .) }}</h1>
     {{- else }}
-    <p class="site-header__name"><a href="{{ site.Home.RelPermalink }}">{{ site.Params.author }}</a></p>
+    <p class="site-header__name"><a href="{{ site.Home.RelPermalink }}">{{ (partial "author.html" .) }}</a></p>
     {{- end }}
-    <p class="site-header__role">{{ i18n "role" }}<span class="cursor" aria-hidden="true"></span></p>
+    <p class="site-header__role">{{ partial "role.html" . }}<span class="cursor" aria-hidden="true"></span></p>
   </div>
   {{- if ne .Kind "404" }}{{ with .Translations }}
   <nav class="site-header__languages" aria-label="{{ i18n "languages" }}">
