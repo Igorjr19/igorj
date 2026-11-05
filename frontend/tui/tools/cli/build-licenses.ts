@@ -1,10 +1,10 @@
 import { parse } from '@std/toml';
+import { fetchVerified } from '../../../../tools/shared/download.ts';
 import { renderNotices } from '../licenses/render.ts';
 import { parseThirdPartyEntries } from '../licenses/schema.ts';
 import type { Notice, ThirdPartyEntry } from '../licenses/types.ts';
-import { fetchVerified } from '../shared/download.ts';
 
-const MANIFEST_PATH = 'data/third-party.toml';
+const MANIFEST_PATH = 'frontend/tui/data/third-party.toml';
 const CACHE_DIR = '.cache/licenses';
 const OUTPUT_DIR = 'generated/static';
 const OUTPUT_PATH = `${OUTPUT_DIR}/third-party-licenses.txt`;

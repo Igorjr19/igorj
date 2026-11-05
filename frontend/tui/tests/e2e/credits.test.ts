@@ -12,7 +12,7 @@ interface Entry {
   readonly homepage: string;
 }
 
-const manifest = parse(await Deno.readTextFile('data/third-party.toml')) as { entries: Entry[] };
+const manifest = parse(await Deno.readTextFile('frontend/tui/data/third-party.toml')) as { entries: Entry[] };
 
 Deno.test('the credits page names every third-party item with its license and link', async (t) => {
   await using session = await Session.start();

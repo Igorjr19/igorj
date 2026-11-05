@@ -14,7 +14,7 @@ async function mounts(path: string): Promise<Mount[]> {
 const isContentMount = ({ source }: Mount) => source === 'content' || source.startsWith('tests/fixtures/content');
 
 Deno.test('the fixture Hugo config mirrors every non-content mount of the main config', async () => {
-  const main = (await mounts('hugo.toml')).filter((mount) => !isContentMount(mount));
-  const fixtures = (await mounts('tests/fixtures/hugo.toml')).filter((mount) => !isContentMount(mount));
+  const main = (await mounts('frontend/tui/hugo.toml')).filter((mount) => !isContentMount(mount));
+  const fixtures = (await mounts('frontend/tui/tests/fixtures/hugo.toml')).filter((mount) => !isContentMount(mount));
   assertEquals(fixtures, main);
 });

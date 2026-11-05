@@ -33,7 +33,7 @@ deno task ci             # everything the CI runs, browser tests included
 | `typecheck` | `deno check` over tools, tests and browser code |
 | `test` | Unit tests |
 | `check` | `lint`, `typecheck` and `test` |
-| `test:e2e` | Builds the fixture site, validates its HTML and runs browser tests: layout, themes, focus, accessibility with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA in both color schemes), reading with JavaScript disabled, search metadata, size budgets per page from `data/budgets.toml` |
+| `test:e2e` | Builds the fixture site, validates its HTML and runs browser tests: layout, themes, focus, accessibility with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA in both color schemes), reading with JavaScript disabled, search metadata, size budgets per page from `frontend/tui/data/budgets.toml` |
 | `build:fixtures` | Builds the site from `tests/fixtures/content` into `generated/fixture-site` |
 | `validate:html` | Checks the fixture site with [html-validate](https://html-validate.org) (standard, accessibility and document rules) |
 | `external:fetch` | Refreshes `content/external/` from Last.fm (`LASTFM_USER`, `LASTFM_API_KEY`) and Letterboxd (`LETTERBOXD_USER`); run daily by the content repository. A source that fails keeps its last file |
@@ -51,25 +51,32 @@ The production build fails on example content (`example: true` or `[EXAMPLE]`). 
 
 ## Themes and fonts
 
-Each theme is a terminal color scheme: 16 ANSI colors plus background, foreground, cursor and selection. A manifest in `data/themes/` points at the palette published by its authors, pinned by commit and checksum, and maps palette colors to interface roles (`data/theme-defaults.toml` holds the default mapping). The build downloads each palette, audits contrast (4.5:1 for text, 3:1 for focus and borders) and fails below the minimum. Adding a theme means adding a manifest.
+Each theme is a terminal color scheme: 16 ANSI colors plus background, foreground, cursor and selection. A manifest in `frontend/tui/data/themes/` points at the palette published by its authors, pinned by commit and checksum, and maps palette colors to interface roles (`frontend/tui/data/theme-defaults.toml` holds the default mapping). The build downloads each palette, audits contrast (4.5:1 for text, 3:1 for focus and borders) and fails below the minimum. Adding a theme means adding a manifest.
 
 Without a saved choice, the theme follows the system light or dark preference. A saved choice is applied before the first paint.
 
-Fonts come from Fontsource packages; `data/fonts.toml` lists families, weights, styles, subsets and the files to preload, and the build generates the `@font-face` rules, copies only those files and writes the preload list read by the templates. The monospace font is preloaded because the layout cell is measured with it.
+Fonts come from Fontsource packages; `frontend/tui/data/fonts.toml` lists families, weights, styles, subsets and the files to preload, and the build generates the `@font-face` rules, copies only those files and writes the preload list read by the templates. The monospace font is preloaded because the layout cell is measured with it.
 
 ## Structure
 
+The repository reads the content, applies its rules and hands the result to a frontend. The frontend is the only part that knows about the look; it can be replaced without touching the rest.
+
 | Path | Contents |
 |---|---|
-| `assets/css/` | Styles in cascade layers: WebTUI first, then `app.tokens`, `app.base`, `app.layout`, `app.components` |
-| `assets/ts/` | Browser TypeScript, bundled by Hugo |
-| `layouts/` | Hugo templates and partials |
-| `i18n/` | Interface text per language |
-| `data/` | Theme, font and third-party manifests |
-| `tools/` | Build tools: pure modules by domain, command-line entry points in `tools/cli/` |
-| `tests/unit/` | Unit tests, mirroring `tools/` |
-| `tests/e2e/` | Browser tests against the fixture site |
-| `tests/fixtures/` | Fixture content and the Hugo config that uses it |
+| `tools/content/` | Reads and validates the content repository; the only code that knows its folders and files |
+| `tools/cli/` | Command-line entry points for the content, git and convention checks |
+| `tools/shared/` | Helpers shared by every part (downloads, files, hashes) |
+| `tests/unit/` | Unit tests for `tools/`, mirroring its paths |
+| `tests/fixtures/content/` | Fixture content in the content repository format |
+| `frontend/tui/` | The terminal-style frontend: everything below is specific to it |
+| `frontend/tui/hugo.toml` | Hugo configuration; Hugo runs from the repository root with `--config frontend/tui/hugo.toml` |
+| `frontend/tui/layouts/`, `pages/`, `static/` | Hugo templates, partials and site pages |
+| `frontend/tui/assets/css/` | Styles in cascade layers: WebTUI first, then `app.tokens`, `app.base`, `app.layout`, `app.components` |
+| `frontend/tui/assets/ts/` | Browser TypeScript, bundled by Hugo |
+| `frontend/tui/i18n/` | Interface text per language |
+| `frontend/tui/data/` | Theme, font, third-party and size budget manifests |
+| `frontend/tui/tools/` | Build tools of this frontend: themes, fonts, licenses, colors, budgets |
+| `frontend/tui/tests/` | Its unit tests, browser tests against the fixture site, and the fixture Hugo config |
 | `generated/` | Build output (not versioned): `css/` and `data/` read by Hugo, `static/` served as is, `fixture-site/` used by the tests |
 
 ## CI and deployment
@@ -80,7 +87,7 @@ Required repository settings: secrets `CONTENT_TOKEN`, `CLOUDFLARE_API_TOKEN`, `
 
 ## Third-party material
 
-No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`; [Renovate](https://docs.renovatebot.com) proposes updates to packages, tools and actions. The build publishes every license text at `/third-party-licenses.txt`, listed in `data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: [Catppuccin](https://catppuccin.com) (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT).
+No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`; [Renovate](https://docs.renovatebot.com) proposes updates to packages, tools and actions. The build publishes every license text at `/third-party-licenses.txt`, listed in `frontend/tui/data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: [Catppuccin](https://catppuccin.com) (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT).
 
 ## License
 

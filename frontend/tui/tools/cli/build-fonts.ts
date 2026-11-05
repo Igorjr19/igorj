@@ -1,12 +1,12 @@
 import { dirname } from '@std/path';
 import { parse } from '@std/toml';
+import { removeIfExists } from '../../../../tools/shared/fs.ts';
 import { planFontFaces, selectPreloads } from '../fonts/plan.ts';
 import { renderFontFaceCss } from '../fonts/render.ts';
 import { parseFontPackage, parseFontsManifest } from '../fonts/schema.ts';
 import type { FontPackage } from '../fonts/types.ts';
-import { removeIfExists } from '../shared/fs.ts';
 
-const MANIFEST_PATH = 'data/fonts.toml';
+const MANIFEST_PATH = 'frontend/tui/data/fonts.toml';
 const PUBLIC_DIR = '/fonts';
 const FONT_OUTPUT_DIR = 'generated/static/fonts';
 const CSS_OUTPUT_PATH = 'generated/css/fonts.css';
