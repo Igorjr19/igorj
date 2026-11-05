@@ -1,0 +1,24 @@
+name = "Gruvbox Dark"
+family = "gruvbox"
+variant = "dark"
+
+[credit]
+author = "Pavel Pertsev"
+license = "MIT"
+url = "https://github.com/morhetz/gruvbox"
+
+[palette]
+url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/windowsterminal/Gruvbox%20Dark.json"
+sha256 = "629123a65b64e129732c0918bc038a62786b36e27123efe93fd07fc89d641b89"
+
+# On the dark background the bright shades are the ones that pass as text, except the red,
+# which stays below 4.5:1, so errors use the text color.
+[roles]
+accent = "brightBlue"
+success = "brightGreen"
+warning = "brightYellow"
+error = "@text"
+syntax-keyword = "brightPurple"
+syntax-string = "brightGreen"
+syntax-number = "brightYellow"
+syntax-function = "brightBlue"

@@ -28,6 +28,7 @@
     "@astral/astral": "jsr:@astral/astral@0.5.6",
     "@fontsource/fira-code": "npm:@fontsource/fira-code@5.3.0",
     "@fontsource/fira-sans": "npm:@fontsource/fira-sans@5.3.0",
+    "@fortawesome/fontawesome-free": "npm:@fortawesome/fontawesome-free@7.3.1",
     "@std/assert": "jsr:@std/assert@1.0.19",
     "@std/http": "jsr:@std/http@1.1.4",
     "@std/path": "jsr:@std/path@1.1.6",

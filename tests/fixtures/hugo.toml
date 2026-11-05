@@ -24,6 +24,11 @@ target = "assets"
 source = "tests/fixtures/content"
 target = "assets"
 files = ["about/photo.*"]
+# Only the brand icons the site links to; Font Awesome itself is never loaded.
+[[module.mounts]]
+source = "node_modules/@fortawesome/fontawesome-free/svgs/brands"
+target = "assets/icons"
+files = ["github.svg", "linkedin.svg", "instagram.svg", "lastfm.svg", "letterboxd.svg"]
 [[module.mounts]]
 source = "generated/css"
 target = "assets/css/generated"
