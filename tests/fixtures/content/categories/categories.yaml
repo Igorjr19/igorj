@@ -1,0 +1,9 @@
+categories:
+  - slug: academic
+    name: { pt: "Acadêmico", en: "Academic" }
+  - slug: professional
+    name: { pt: "Profissional", en: "Professional" }
+  - slug: entertainment
+    name: { pt: "Entretenimento", en: "Entertainment" }
+  - slug: notes
+    name: { pt: "Notas", en: "Notes" }

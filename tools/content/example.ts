@@ -8,7 +8,18 @@ export function containsExampleContent(text: string): boolean {
 }
 
 /** The folders that hold content; the repository's README, tooling and workflows sit beside them and are never read. */
-export const CONTENT_SECTIONS = ['about', 'contact', 'cv', 'external', 'posts', 'projects', 'reading', 'research'];
+export const CONTENT_SECTIONS = [
+  'about',
+  'categories',
+  'contact',
+  'cv',
+  'external',
+  'posts',
+  'projects',
+  'reading',
+  'research',
+  'site',
+];
 
 /** Takes a path relative to the content root. */
 export function isCheckedContentFile(path: string): boolean {

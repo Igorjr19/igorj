@@ -1,0 +1,4 @@
+{{- /* The role from the about file of the page language; the interface text covers content that predates the key. */ -}}
+{{- $role := i18n "role" }}
+{{- with index hugo.Data.about (printf "about.%s" site.Language.Lang) }}{{ with .role }}{{ $role = . }}{{ end }}{{ end }}
+{{- return $role }}

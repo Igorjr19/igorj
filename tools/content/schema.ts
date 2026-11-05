@@ -49,8 +49,22 @@ const ResearchSchema = v.strictObject({
   slug: v.optional(Slug),
 });
 
+const LanguageCode = v.pipe(v.string(), v.regex(/^[a-z]{2}$/, 'Expected a two-letter language code such as pt'));
+
+const SiteSchema = v.strictObject({
+  example: Example,
+  author: Text,
+  languages: v.pipe(v.array(LanguageCode), v.nonEmpty()),
+});
+
+const CategoriesSchema = v.strictObject({
+  example: Example,
+  categories: v.pipe(v.array(v.strictObject({ slug: Slug, name: v.record(LanguageCode, Text) })), v.nonEmpty()),
+});
+
 const AboutSchema = v.strictObject({
   example: Example,
+  role: v.optional(Text),
   lines: v.pipe(v.array(Text), v.length(3, 'The about text has exactly three lines')),
   photoAlt: Text,
   location: Text,
@@ -152,6 +166,8 @@ const SCHEMAS_BY_PATH: readonly (readonly [RegExp, ContentSchema])[] = [
   [new RegExp(`^about/about\\.${LANGUAGE}\\.yaml$`), AboutSchema],
   [new RegExp(`^cv/cv\\.${LANGUAGE}\\.yaml$`), CvSchema],
   [/^contact\/contact\.yaml$/, ContactSchema],
+  [/^site\/site\.yaml$/, SiteSchema],
+  [/^categories\/categories\.yaml$/, CategoriesSchema],
   [/^reading\/reading\.yaml$/, ReadingSchema],
   [/^external\/music\.json$/, MusicSchema],
   [/^external\/films\.json$/, FilmsSchema],

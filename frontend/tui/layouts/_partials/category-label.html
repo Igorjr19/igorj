@@ -1,3 +1,8 @@
-{{- /* Category names are translated; the slug is the same in both languages. */ -}}
+{{- /* Category names come from the content repository; the interface text covers content that predates the file. The slug is the same in both languages. */ -}}
 {{- $keys := dict "academic" "categoryAcademic" "professional" "categoryProfessional" "entertainment" "categoryEntertainment" "notes" "categoryNotes" }}
-{{- return i18n (index $keys .Data.Term) }}
+{{- $label := "" }}
+{{- with index $keys .Data.Term }}{{ $label = i18n . }}{{ end }}
+{{- with hugo.Data.categories }}{{ with .categories }}
+{{- range .categories }}{{ if eq .slug $.Data.Term }}{{ with index .name site.Language.Lang }}{{ $label = . }}{{ end }}{{ end }}{{ end }}
+{{- end }}{{ end }}
+{{- return $label }}

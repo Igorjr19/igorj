@@ -2,11 +2,11 @@
 {{- $description := .Params.summary }}
 {{- $about := index hugo.Data.about (printf "about.%s" site.Language.Lang) }}
 {{- if and .IsHome $about }}{{ $description = delimit $about.lines " " }}{{ end }}
-{{- $title := cond .IsHome site.Title .Title }}
+{{- $title := cond .IsHome (partial "site-title.html" .) .Title }}
 {{- if $description }}
 <meta name="description" content="{{ $description }}">
 {{- end }}
-<meta property="og:site_name" content="{{ site.Params.author }}">
+<meta property="og:site_name" content="{{ (partial "author.html" .) }}">
 <meta property="og:title" content="{{ $title }}">
 {{- if $description }}
 <meta property="og:description" content="{{ $description }}">
@@ -21,7 +21,7 @@
 <meta property="article:published_time" content="{{ .Date.Format "2006-01-02" }}">
 {{- end }}
 {{- if .IsHome }}
-{{- $person := dict "@context" "https://schema.org" "@type" "Person" "name" site.Params.author "jobTitle" (i18n "role") "url" .Permalink }}
+{{- $person := dict "@context" "https://schema.org" "@type" "Person" "name" (partial "author.html" .) "jobTitle" (partial "role.html" .) "url" .Permalink }}
 {{- with hugo.Data.contact.contact }}
 {{- $person = merge $person (dict "sameAs" (apply .professional "index" "." "url")) }}
 {{- end }}
