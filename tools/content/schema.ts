@@ -180,3 +180,15 @@ export function summarizeIssues(schema: ContentSchema, data: unknown): string | 
   const result = v.safeParse(schema, data);
   return result.success ? null : v.summarize(result.issues);
 }
+
+export type Post = v.InferOutput<typeof PostSchema>;
+export type Project = v.InferOutput<typeof ProjectSchema>;
+export type Research = v.InferOutput<typeof ResearchSchema>;
+export type Site = v.InferOutput<typeof SiteSchema>;
+export type Categories = v.InferOutput<typeof CategoriesSchema>;
+export type About = v.InferOutput<typeof AboutSchema>;
+export type Cv = v.InferOutput<typeof CvSchema>;
+export type Contact = v.InferOutput<typeof ContactSchema>;
+export type Reading = v.InferOutput<typeof ReadingSchema>;
+export type Music = v.InferOutput<typeof MusicSchema>;
+export type Films = v.InferOutput<typeof FilmsSchema>;

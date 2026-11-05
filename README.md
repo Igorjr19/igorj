@@ -34,6 +34,7 @@ deno task ci             # everything the CI runs, browser tests included
 | `test` | Unit tests |
 | `check` | `lint`, `typecheck` and `test` |
 | `test:e2e` | Builds the fixture site, validates its HTML and runs browser tests: layout, themes, focus, accessibility with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA in both color schemes), reading with JavaScript disabled, search metadata, size budgets per page from `frontend/tui/data/budgets.toml` |
+| `model` | Builds the model from `content/` (or the folder given) into `generated/model/` and `generated/media/`; `dev` keeps it current with `model:watch` |
 | `build:fixtures` | Builds the site from `tests/fixtures/content` into `generated/fixture-site` |
 | `validate:html` | Checks the fixture site with [html-validate](https://html-validate.org) (standard, accessibility and document rules) |
 | `fonts`, `themes`, `licenses` | Generate font faces, theme colors and the third-party notices (all run by `prepare`) |
@@ -63,7 +64,8 @@ The repository reads the content, applies its rules and hands the result to a fr
 | Path | Contents |
 |---|---|
 | `tools/content/` | Reads and validates the content repository; the only code that knows its folders and files |
-| `tools/cli/` | Command-line entry points for the content, git and convention checks |
+| `tools/model/` | The content rules, applied per language: which posts each language lists, project and research order, CV fallback, category names, page titles. `deno task model` writes `generated/model/<lang>.json` and copies the media to `generated/media/`; the frontend will read only these |
+| `tools/cli/` | Command-line entry points for the content, model, git and convention checks |
 | `tools/shared/` | Helpers shared by every part (downloads, files, hashes) |
 | `tests/unit/` | Unit tests for `tools/`, mirroring its paths |
 | `tests/fixtures/content/` | Fixture content in the content repository format |

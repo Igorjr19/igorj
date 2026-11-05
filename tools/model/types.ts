@@ -1,0 +1,150 @@
+/**
+ * What a frontend receives for one language. Every rule about the content is already applied;
+ * dates stay as the content gives them (YYYY-MM-DD), since anything relative to today is the frontend's.
+ */
+export interface SiteModel {
+  readonly language: string;
+  readonly languages: readonly string[];
+  readonly profile: ProfileModel | null;
+  readonly contact: ContactModel | null;
+  readonly categories: readonly CategoryModel[];
+  readonly posts: readonly PostModel[];
+  readonly projects: readonly ProjectModel[];
+  readonly research: readonly ResearchModel[];
+  readonly cv: CvModel | null;
+  readonly reading: readonly ReadingModel[];
+  readonly music: MusicModel | null;
+  readonly films: FilmsModel | null;
+}
+
+export interface ProfileModel {
+  readonly author: string;
+  readonly role: string;
+  /** Author and role, for page titles. */
+  readonly title: string;
+  /** The about lines as one sentence, for search engines and link previews. */
+  readonly description: string;
+  readonly lines: readonly string[];
+  readonly location: string;
+  /** Path under the generated media folder. */
+  readonly photo: string | null;
+  readonly photoAlt: string;
+  readonly now: { readonly work: string; readonly masters: string; readonly studying: string };
+}
+
+export interface LinkModel {
+  readonly network: string;
+  readonly url: string;
+  readonly note?: string | undefined;
+}
+
+export interface ContactModel {
+  readonly email: string;
+  readonly professional: readonly LinkModel[];
+  readonly personal: readonly LinkModel[];
+}
+
+export interface CategoryModel {
+  readonly slug: string;
+  readonly name: string;
+}
+
+/** Shared by posts, projects and research: where the item lives and what it shows. */
+export interface ItemModel {
+  /** Folder name in the content repository, the same in every language. */
+  readonly id: string;
+  readonly slug: string;
+  /** The language the item is written in; a post may be listed under another one. */
+  readonly language: string;
+  /** Every language the item exists in. */
+  readonly translations: readonly string[];
+  readonly title: string;
+  /** Markdown without front matter. */
+  readonly body: string;
+  /** Paths under the generated media folder, for the images and files the body or the item refers to. */
+  readonly media: readonly string[];
+}
+
+export interface PostModel extends ItemModel {
+  readonly summary: string;
+  readonly date: string;
+  readonly lastmod?: string | undefined;
+  readonly category: CategoryModel;
+}
+
+export interface ProjectModel extends ItemModel {
+  readonly summary: string;
+  readonly stack: readonly string[];
+  readonly links: { readonly repository?: string | undefined; readonly demo?: string | undefined };
+  readonly featured: boolean;
+}
+
+export interface ResearchModel extends ItemModel {
+  readonly kind: 'article' | 'thesis' | 'presentation' | 'poster';
+  readonly year: number;
+  readonly authors: readonly string[];
+  readonly venue: string;
+  readonly doi?: string | undefined;
+  readonly file?: string | undefined;
+}
+
+export interface CvModel {
+  /** The language of the CV shown; another one when this language has none. */
+  readonly language: string;
+  readonly fallback: boolean;
+  readonly basics: {
+    readonly label: string;
+    readonly summary: string;
+    readonly email: string;
+    readonly location: string;
+    readonly profiles: readonly LinkModel[];
+  };
+  readonly work: readonly {
+    readonly name: string;
+    readonly position: string;
+    readonly startDate: string;
+    readonly endDate?: string | undefined;
+    readonly location?: string | undefined;
+    readonly summary?: string | undefined;
+    readonly highlights: readonly string[];
+  }[];
+  readonly education: readonly {
+    readonly institution: string;
+    readonly studyType: string;
+    readonly area: string;
+    readonly startDate?: string | undefined;
+    readonly endDate?: string | undefined;
+  }[];
+  readonly skills: readonly { readonly name: string; readonly keywords: readonly string[] }[];
+  readonly languages: readonly { readonly language: string; readonly fluency: string }[];
+  /** Research items of this language the CV lists; ones missing here are left out. */
+  readonly publications: readonly {
+    readonly id: string;
+    readonly slug: string;
+    readonly title: string;
+    readonly year: number;
+  }[];
+}
+
+export interface ReadingModel {
+  readonly title: string;
+  readonly authors: readonly string[];
+  readonly kind: 'book' | 'paper';
+  readonly url?: string | undefined;
+}
+
+export interface MusicModel {
+  readonly updated: string;
+  readonly period: 'week' | 'month';
+  readonly artists: readonly { readonly name: string; readonly plays: number; readonly url?: string | undefined }[];
+}
+
+export interface FilmsModel {
+  readonly updated: string;
+  readonly films: readonly {
+    readonly title: string;
+    readonly year: number;
+    readonly rating?: number | undefined;
+    readonly url?: string | undefined;
+  }[];
+}
