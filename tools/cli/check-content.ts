@@ -8,14 +8,15 @@ const allowExample = Deno.env.get('ALLOW_EXAMPLE_CONTENT') === '1';
 const exampleFiles: string[] = [];
 const invalidFiles: string[] = [];
 for await (const path of walkFiles(contentDir)) {
-  if (!isCheckedContentFile(path)) {
+  const relativePath = path.slice(contentDir.length + 1);
+  if (!isCheckedContentFile(relativePath)) {
     continue;
   }
   const text = await Deno.readTextFile(path);
   if (containsExampleContent(text)) {
     exampleFiles.push(path);
   }
-  const problem = checkContentFile(path.slice(contentDir.length + 1), text);
+  const problem = checkContentFile(relativePath, text);
   if (problem !== null) {
     invalidFiles.push(`${path}\n${problem.replace(/^/gm, '    ')}`);
   }
