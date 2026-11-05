@@ -5,33 +5,35 @@
   {{- if and .Lastmod (ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02")) }} · {{ i18n "postUpdated" }} <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "2006-01-02" }}</time>{{ end }}
 </p>
 {{- else if eq .Section "projects" }}
+{{- $item := partial "model-item.html" . }}
 <dl class="facts">
   <dt>{{ i18n "factStack" }}</dt>
-  <dd>{{ delimit .Params.stack " · " }}</dd>
-  {{- with .Params.links.repository }}
+  <dd>{{ delimit $item.stack " · " }}</dd>
+  {{- with $item.links.repository }}
   <dt>{{ i18n "factRepository" }}</dt>
   <dd><a href="{{ . }}">{{ . }}</a></dd>
   {{- end }}
-  {{- with .Params.links.demo }}
+  {{- with $item.links.demo }}
   <dt>{{ i18n "factDemo" }}</dt>
   <dd><a href="{{ . }}">{{ . }}</a></dd>
   {{- end }}
 </dl>
 {{- else if eq .Section "research" }}
+{{- $item := partial "model-item.html" . }}
 <dl class="facts">
   <dt>{{ i18n "factKind" }}</dt>
-  <dd>{{ i18n (printf "research%s" (title .Params.kind)) }}</dd>
+  <dd>{{ i18n (printf "research%s" (title $item.kind)) }}</dd>
   <dt>{{ i18n "factYear" }}</dt>
-  <dd>{{ .Params.year }}</dd>
+  <dd>{{ $item.year }}</dd>
   <dt>{{ i18n "factAuthors" }}</dt>
-  <dd>{{ delimit .Params.authors ", " }}</dd>
+  <dd>{{ delimit $item.authors ", " }}</dd>
   <dt>{{ i18n "factVenue" }}</dt>
-  <dd>{{ .Params.venue }}</dd>
-  {{- with .Params.doi }}
+  <dd>{{ $item.venue }}</dd>
+  {{- with $item.doi }}
   <dt>{{ i18n "factDoi" }}</dt>
   <dd><a href="https://doi.org/{{ . }}">{{ . }}</a></dd>
   {{- end }}
-  {{- with .Params.file }}{{ with $.Resources.GetMatch . }}
+  {{- with $item.file }}{{ with $.Resources.GetMatch (path.Base .) }}
   <dt>{{ i18n "factFile" }}</dt>
   <dd><a href="{{ .RelPermalink }}">{{ .Name }}</a></dd>
   {{- end }}{{ end }}

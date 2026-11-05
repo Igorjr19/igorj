@@ -1,9 +1,12 @@
 <ul class="entries">
-  {{- range .Pages }}
+  {{- range (partial "model.html" .).projects }}
+  {{- $item := . }}
+  {{- with partial "item-page.html" (dict "section" "projects" "item" .) }}
   <li>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-    <span class="panel__meta">{{ delimit .Params.stack " · " }}</span>
-    <span class="entries__summary panel__meta">{{ .Params.summary }}</span>
+    <a href="{{ .RelPermalink }}">{{ $item.title }}</a>
+    <span class="panel__meta">{{ delimit $item.stack " · " }}</span>
+    <span class="entries__summary panel__meta">{{ $item.summary }}</span>
   </li>
+  {{- end }}
   {{- end }}
 </ul>

@@ -1,11 +1,13 @@
-{{- $projects := where (where site.RegularPages "Section" "projects") "Params.featured" true }}
-{{- with $projects }}
+{{- with where (partial "model.html" .).projects "featured" true }}
 <ul class="entries">
   {{- range . }}
+  {{- $item := . }}
+  {{- with partial "item-page.html" (dict "section" "projects" "item" .) }}
   <li>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-    <span class="panel__meta">{{ delimit .Params.stack " · " }}</span>
+    <a href="{{ .RelPermalink }}">{{ $item.title }}</a>
+    <span class="panel__meta">{{ delimit $item.stack " · " }}</span>
   </li>
+  {{- end }}
   {{- end }}
 </ul>
 {{- else }}

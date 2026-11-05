@@ -8,6 +8,8 @@ export interface ContentFile {
 
 /** A post, project or research item in one language: its folder, front matter, body and the other files beside it. */
 export interface ContentItem<T> {
+  /** The Markdown file, relative to the content root. */
+  readonly path: string;
   readonly folder: string;
   readonly language: string;
   readonly data: T;

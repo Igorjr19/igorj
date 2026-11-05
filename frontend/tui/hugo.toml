@@ -38,9 +38,8 @@ weight = 2
 # Hugo runs from the repository root, so every source is relative to it.
 [module]
 [[module.mounts]]
-source = "content"
+source = "frontend/tui/adapters"
 target = "content"
-files = ["posts/**", "projects/**", "research/**"]
 [[module.mounts]]
 source = "frontend/tui/layouts"
 target = "layouts"

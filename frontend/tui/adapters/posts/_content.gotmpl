@@ -1,0 +1,24 @@
+{{- /* Posts come from the content model; each page is built in the language the post is written in. */ -}}
+{{- .EnableAllLanguages }}
+{{- $lang := .Site.Language.Lang }}
+{{- range (index hugo.Data.model $lang).posts }}
+  {{- if eq .language $lang }}
+    {{- $item := . }}
+    {{- $page := dict
+      "path" .id
+      "title" .title
+      "dates" (dict "date" (time.AsTime .date) "lastmod" (time.AsTime (.lastmod | default .date)))
+      "content" (dict "mediaType" "text/markdown" "value" .body)
+      "sitemap" (dict "priority" -1)
+      "params" (dict "id" .id "source" .source "summary" .summary "categories" (slice .category.slug))
+    }}
+    {{- if ne .slug .id }}{{ $page = merge $page (dict "slug" .slug) }}{{ end }}
+    {{- $.AddPage $page }}
+    {{- range .media }}
+      {{- $file := strings.TrimPrefix (printf "posts/%s/" $item.id) . }}
+      {{- with resources.Get (printf "media/%s" .) }}
+        {{- $.AddResource (dict "path" (printf "%s/%s" $item.id $file) "content" (dict "value" .)) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

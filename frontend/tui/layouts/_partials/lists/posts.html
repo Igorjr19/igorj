@@ -13,18 +13,11 @@
   {{- with site.Home.OutputFormats.Get "rss" }}<a href="{{ .RelPermalink }}">{{ i18n "feedAll" }}</a>{{ end }}
   {{- if eq $.Kind "term" }}{{ with $.OutputFormats.Get "rss" }} · <a href="{{ .RelPermalink }}">{{ i18n "feedCategory" (partial "category-label.html" $) }}</a>{{ end }}{{ end }}
 </p>
+{{- /* A category lists only the posts written in the page language; the blog lists every post the model gives it. */ -}}
+{{- $posts := (partial "model.html" .).posts }}
+{{- if eq .Kind "term" }}{{ $posts = where (where $posts "language" site.Language.Lang) "category.slug" .Data.Term }}{{ end }}
 <ul class="entries">
-  {{- range cond (eq .Kind "section") (partial "posts-for-language.html") .Pages.ByDate.Reverse }}
-  <li>
-    <time class="panel__meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
-    <a href="{{ .RelPermalink }}"{{ if ne .Language.Lang site.Language.Lang }} lang="{{ .Language.Locale }}"{{ end }}>{{ .Title }}</a>
-    {{- if ne .Language.Lang site.Language.Lang }}
-    <span class="panel__meta" lang="{{ .Language.Locale }}">{{ .Language.Label }}</span>
-    {{- end }}
-    {{- range .GetTerms "categories" }}
-    <a class="panel__meta" href="{{ .RelPermalink }}">{{ partial "category-label.html" . }}</a>
-    {{- end }}
-    <span class="entries__summary panel__meta">{{ .Params.summary }}</span>
-  </li>
+  {{- range $posts }}
+  {{ partial "post-entry.html" (dict "item" . "summary" true) }}
   {{- end }}
 </ul>

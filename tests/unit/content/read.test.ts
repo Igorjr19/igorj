@@ -15,7 +15,10 @@ Deno.test('readContent keeps each item with its folder, language, body and the f
   const paths = ['site/site.yaml', 'categories/categories.yaml', 'posts/hello/index.en.md', 'posts/hello/figure.png'];
   const content = readContent([SITE, CATEGORIES, POST], paths);
   const [hello] = content.posts;
-  assertEquals([hello?.folder, hello?.language, hello?.data.title], ['hello', 'en', 'Hello']);
+  assertEquals(
+    [hello?.path, hello?.folder, hello?.language, hello?.data.title],
+    ['posts/hello/index.en.md', 'hello', 'en', 'Hello'],
+  );
   assertEquals(hello?.body, '\nBody with ![image](figure.png).\n');
   assertEquals(hello?.media, ['posts/hello/figure.png']);
 });
