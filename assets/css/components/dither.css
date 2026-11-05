@@ -1,0 +1,28 @@
+@layer app.components {
+  .dither {
+    display: grid;
+  }
+
+  .dither__ink {
+    grid-area: 1 / 1;
+    mask-mode: luminance;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: cover;
+  }
+
+  .dither__ink--on-bright {
+    background-color: light-dark(transparent, var(--color-text));
+    mask-image: var(--dither);
+  }
+
+  .dither__ink--on-dark {
+    background-color: light-dark(var(--color-text), transparent);
+    mask-image: var(--dither-inverted);
+  }
+
+  /* Screenshots fill the text column, never wider than the dithered image itself. */
+  .dither--figure {
+    inline-size: 100%;
+  }
+}

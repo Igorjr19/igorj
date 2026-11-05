@@ -1,0 +1,7 @@
+{{- /* Images in posts and projects get the same dithering as the photo; vector and remote images stay as they are. */}}
+{{- $image := .PageInner.Resources.Get .Destination }}
+{{- if and $image (eq $image.ResourceType "image") (ne $image.MediaType.SubType "svg") }}
+{{- partial "dither.html" (dict "image" $image "alt" .PlainText "class" "dither--figure" "width" (cond (gt $image.Width 960) 960 $image.Width)) }}
+{{- else }}
+<img src="{{ .Destination | safeURL }}" alt="{{ .PlainText }}">
+{{- end }}
