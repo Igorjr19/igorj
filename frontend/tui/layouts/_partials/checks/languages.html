@@ -1,6 +1,6 @@
 {{- /* The content repository declares the languages; Hugo needs them in its config too, so the two lists must match. */ -}}
 {{- with hugo.Data.site }}{{ with .site }}
-{{- $built := slice }}{{ range site.Languages }}{{ $built = $built | append .Lang }}{{ end }}
+{{- $built := slice }}{{ range hugo.Sites }}{{ $built = $built | append .Language.Lang }}{{ end }}
 {{- if ne (delimit (sort .languages) ",") (delimit (sort $built) ",") }}
 {{- errorf "Languages differ: the content declares %v, frontend/tui/hugo.toml builds %v" .languages $built }}
 {{- end }}
