@@ -10,16 +10,13 @@ const DAY_FORMAT = 'Expected a date as YYYY-MM-DD';
 const Day = v.union([v.date(), v.pipe(v.string(), v.isoDate(DAY_FORMAT))], DAY_FORMAT);
 const Example = v.optional(v.boolean());
 
-/** The blog's categories; the interface translates their names, so a new one needs a label too. */
-export const CATEGORIES = ['academic', 'professional', 'entertainment', 'notes'] as const;
-
 const PostSchema = v.strictObject({
   example: Example,
   title: Text,
   summary: Text,
   date: Day,
   lastmod: v.optional(Day),
-  categories: v.pipe(v.array(v.picklist(CATEGORIES)), v.length(1, 'A post has exactly one category')),
+  categories: v.pipe(v.array(Slug), v.length(1, 'A post has exactly one category')),
   draft: v.optional(v.boolean()),
   slug: v.optional(Slug),
 });
@@ -64,7 +61,7 @@ const CategoriesSchema = v.strictObject({
 
 const AboutSchema = v.strictObject({
   example: Example,
-  role: v.optional(Text),
+  role: Text,
   lines: v.pipe(v.array(Text), v.length(3, 'The about text has exactly three lines')),
   photoAlt: Text,
   location: Text,

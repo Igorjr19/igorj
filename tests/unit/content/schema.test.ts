@@ -27,6 +27,7 @@ const PROJECT = {
 };
 
 const ABOUT = {
+  role: 'Developer',
   lines: ['one', 'two', 'three'],
   photoAlt: 'Photo',
   location: 'Somewhere',
@@ -58,11 +59,10 @@ Deno.test('a post rejects the old Portuguese keys so a half-migrated file cannot
   assertRejected('posts/a/index.pt.md', { ...POST, idioma: 'pt' }, '"idioma"');
 });
 
-Deno.test('a post has exactly one of the blog categories, so a typo cannot start a new one', () => {
+Deno.test('a post has exactly one category, written as a slug that the categories file names', () => {
   assertRejected('posts/a/index.pt.md', { ...POST, categories: ['professional', 'notes'] }, 'exactly one category');
   assertRejected('posts/a/index.pt.md', { ...POST, categories: [] }, 'exactly one category');
-  assertRejected('posts/a/index.pt.md', { ...POST, categories: ['devops'] }, '"academic"');
-  assertRejected('posts/a/index.pt.md', { ...POST, categories: ['Notas'] }, '"notes"');
+  assertRejected('posts/a/index.pt.md', { ...POST, categories: ['Notas'] }, 'lowercase slug');
 });
 
 Deno.test('a post date must be a real ISO date', () => {

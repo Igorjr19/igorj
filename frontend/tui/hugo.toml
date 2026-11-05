@@ -1,5 +1,4 @@
 baseURL = "https://igorj.dev/"
-title = "Ígor José Rodrigues — Developer"
 
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = true
@@ -7,7 +6,6 @@ defaultContentLanguageInSubdir = true
 enableRobotsTXT = true
 
 [params]
-author = "Ígor José Rodrigues"
 shell = "igorj"
 repository = "https://github.com/Igorjr19/igorj"
 

@@ -2,7 +2,7 @@ import { parse } from '@std/yaml';
 import { extractFrontMatter } from './front-matter.ts';
 import { schemaForPath, summarizeIssues } from './schema.ts';
 
-function readData(path: string, text: string): { data: unknown } | { problem: string } {
+export function readData(path: string, text: string): { data: unknown } | { problem: string } {
   const yaml = path.endsWith('.md') ? extractFrontMatter(text) : text;
   if (yaml === null) {
     return { problem: 'Missing front matter between --- lines' };
