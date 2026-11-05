@@ -10,16 +10,17 @@ Deno.test('containsExampleContent ignores real content and explicit example: fal
   assertEquals(containsExampleContent('---\nexample: false\ntitle: Real\n---\n'), false);
 });
 
-Deno.test('isCheckedContentFile covers Markdown and YAML, not the repository README', () => {
-  assertEquals(isCheckedContentFile('content/posts/a/index.pt.md'), true);
-  assertEquals(isCheckedContentFile('content/cv/cv.en.yaml'), true);
-  assertEquals(isCheckedContentFile('content/README.md'), false);
-  assertEquals(isCheckedContentFile('content/posts/a/cover.png'), false);
+Deno.test('isCheckedContentFile reads Markdown, YAML and JSON inside the content folders only', () => {
+  assertEquals(isCheckedContentFile('posts/a/index.pt.md'), true);
+  assertEquals(isCheckedContentFile('cv/cv.en.yaml'), true);
+  assertEquals(isCheckedContentFile('external/music.json'), true);
+  assertEquals(isCheckedContentFile('posts/a/cover.png'), false);
 });
 
-Deno.test('isCheckedContentFile skips hidden folders, so the content repository workflows are not read as content', () => {
-  assertEquals(isCheckedContentFile('content/.github/workflows/notify-site.yml'), false);
-  assertEquals(isCheckedContentFile('content/projects/a/index.en.md'), true);
+Deno.test('isCheckedContentFile skips what sits beside the content, so tooling in the content repository is not read as content', () => {
+  for (const path of ['README.md', 'deno.json', 'biome.json', '.github/workflows/check.yml', 'tools/data.json']) {
+    assertEquals(isCheckedContentFile(path), false, path);
+  }
 });
 
 Deno.test('containsExampleContent also detects the flag in JSON written by the daily data job', () => {

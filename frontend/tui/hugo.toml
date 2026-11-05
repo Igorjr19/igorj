@@ -42,11 +42,11 @@ weight = 2
 [[module.mounts]]
 source = "content"
 target = "content"
-files = ["**/*.md", "**/*.png", "**/*.jpg", "**/*.webp", "**/*.svg", "**/*.pdf", "! README.md"]
+files = ["posts/**", "projects/**", "research/**"]
 [[module.mounts]]
 source = "content"
 target = "data"
-files = ["**/*.yaml", "**/*.json"]
+files = ["about/*.yaml", "contact/*.yaml", "cv/*.yaml", "reading/*.yaml", "external/*.json"]
 [[module.mounts]]
 source = "frontend/tui/layouts"
 target = "layouts"

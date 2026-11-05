@@ -7,9 +7,11 @@ export function containsExampleContent(text: string): boolean {
   return EXAMPLE_FLAG.test(text) || text.includes(EXAMPLE_MARKER);
 }
 
-// Hidden folders such as .github hold the content repository's own tooling, not content.
-const HIDDEN_SEGMENT = /(^|\/)\.[^/]/;
+/** The folders that hold content; the repository's README, tooling and workflows sit beside them and are never read. */
+export const CONTENT_SECTIONS = ['about', 'contact', 'cv', 'external', 'posts', 'projects', 'reading', 'research'];
 
+/** Takes a path relative to the content root. */
 export function isCheckedContentFile(path: string): boolean {
-  return CHECKED_FILE.test(path) && !path.endsWith('README.md') && !HIDDEN_SEGMENT.test(path);
+  const [section = ''] = path.split('/');
+  return CHECKED_FILE.test(path) && CONTENT_SECTIONS.includes(section);
 }
