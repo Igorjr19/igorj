@@ -6,7 +6,6 @@
     "fonts": "deno run --allow-read --allow-write=generated frontend/tui/tools/cli/build-fonts.ts",
     "themes": "deno run --allow-read --allow-write=generated,.cache --allow-net=raw.githubusercontent.com frontend/tui/tools/cli/build-themes.ts",
     "licenses": "deno run --allow-read --allow-write=generated,.cache --allow-net=raw.githubusercontent.com frontend/tui/tools/cli/build-licenses.ts",
-    "external:fetch": "deno run --allow-env=LASTFM_USER,LASTFM_API_KEY,LETTERBOXD_USER --allow-net=ws.audioscrobbler.com,letterboxd.com --allow-write=content/external tools/cli/fetch-external.ts",
     "build:info": "deno run --allow-run=git --allow-write=generated tools/cli/build-info.ts",
     "prepare": "deno task install && deno task fonts && deno task themes && deno task licenses && deno task build:info",
     "dev": "deno task content:fetch && deno task prepare && hugo server --config frontend/tui/hugo.toml --renderToMemory",
