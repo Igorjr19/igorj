@@ -6,8 +6,8 @@ import { renderThemeCss } from '../themes/render.ts';
 import { resolveColors } from '../themes/resolve.ts';
 import type { ContrastResult, ResolvedTheme } from '../themes/types.ts';
 
-const DEFAULTS_PATH = 'data/theme-defaults.toml';
-const THEMES_DIR = 'data/themes';
+const DEFAULTS_PATH = 'frontend/tui/data/theme-defaults.toml';
+const THEMES_DIR = 'frontend/tui/data/themes';
 const CACHE_DIR = '.cache/palettes';
 const OUTPUT_DIR = 'generated/css';
 const OUTPUT_PATH = `${OUTPUT_DIR}/themes.css`;

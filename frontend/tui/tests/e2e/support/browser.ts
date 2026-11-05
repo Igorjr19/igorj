@@ -1,6 +1,6 @@
 import { type Browser, launch } from '@astral/astral';
-import { fetchVerified } from '../../../tools/shared/download.ts';
-import { pathExists } from '../../../tools/shared/fs.ts';
+import { fetchVerified } from '../../../../../tools/shared/download.ts';
+import { pathExists } from '../../../../../tools/shared/fs.ts';
 
 // Astral's bundled Chromium (125) predates CSS round(); tests run on a pinned Chrome for Testing build.
 const VERSION = '154.0.8037.92';

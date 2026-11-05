@@ -6,7 +6,7 @@ import { HOME_EN, HOME_PT, POST_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
 
 const SITE = 'generated/fixture-site';
-const budgets = parseBudgets(parse(await Deno.readTextFile('data/budgets.toml')));
+const budgets = parseBudgets(parse(await Deno.readTextFile('frontend/tui/data/budgets.toml')));
 
 async function gzipSize(path: string): Promise<number> {
   const stream = (await Deno.open(path)).readable.pipeThrough(new CompressionStream('gzip'));

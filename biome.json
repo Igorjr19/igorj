@@ -6,7 +6,15 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["assets/**", "tools/**", "tests/**", "*.json", "!deno.lock"]
+    "includes": [
+      "frontend/*/assets/**",
+      "frontend/*/tools/**",
+      "frontend/*/tests/**",
+      "tools/**",
+      "tests/**",
+      "*.json",
+      "!deno.lock"
+    ]
   },
   "plugins": [
     {
@@ -149,7 +157,7 @@
   },
   "overrides": [
     {
-      "includes": ["tools/cli/**"],
+      "includes": ["tools/cli/**", "frontend/*/tools/cli/**"],
       "linter": {
         "rules": {
           "suspicious": {

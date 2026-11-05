@@ -36,7 +36,8 @@ label = "English"
 weight = 2
 
 # Defining any mount replaces Hugo's defaults for that target, so every source is listed.
-# tests/fixtures/hugo.toml mirrors this list with the fixture content.
+# tests/fixtures/hugo.toml next to this file mirrors this list with the fixture content.
+# Hugo runs from the repository root, so every source is relative to it.
 [module]
 [[module.mounts]]
 source = "content"
@@ -47,16 +48,22 @@ source = "content"
 target = "data"
 files = ["**/*.yaml", "**/*.json"]
 [[module.mounts]]
-source = "data"
+source = "frontend/tui/layouts"
+target = "layouts"
+[[module.mounts]]
+source = "frontend/tui/i18n"
+target = "i18n"
+[[module.mounts]]
+source = "frontend/tui/data"
 target = "data"
 [[module.mounts]]
-source = "static"
+source = "frontend/tui/static"
 target = "static"
 [[module.mounts]]
-source = "pages"
+source = "frontend/tui/pages"
 target = "content"
 [[module.mounts]]
-source = "assets"
+source = "frontend/tui/assets"
 target = "assets"
 # The photo is processed at build time, so it reaches the asset pipeline instead of the content.
 [[module.mounts]]

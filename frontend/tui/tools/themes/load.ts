@@ -1,5 +1,5 @@
 import { parse } from '@std/toml';
-import { fetchVerified } from '../shared/download.ts';
+import { fetchVerified } from '../../../../tools/shared/download.ts';
 import { parsePalette, parseThemeDefaults, parseThemeManifest } from './schema.ts';
 import type { Palette, ThemeDefaults, ThemeManifest } from './types.ts';
 
