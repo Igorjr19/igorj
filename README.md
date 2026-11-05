@@ -1,8 +1,44 @@
 # igorj.dev
 
-Personal site of Ígor José Rodrigues: portfolio, blog and CV on a page that behaves like a terminal UI, with bordered panels, keyboard shortcuts and terminal color schemes. Every piece of content is in the HTML; JavaScript only adds shortcuts and theme switching.
+The personal site of Ígor José Rodrigues, live at **[igorj.dev](https://igorj.dev)**: portfolio, blog, research and CV on one page that looks and behaves like a terminal UI.
 
-Work in progress. The previous site stays at [igorj.dev.br](https://igorj.dev.br) until launch.
+Think of a tmux session or btop: a grid of bordered panels, each with a title and a shortcut number, all of them already filled when the page loads. Nothing to boot, no commands to learn, no fake typing. It is a regular website that reads well on a phone, in a screen reader and with JavaScript turned off; the keyboard and the themes are a layer on top.
+
+## What is on the page
+
+The home shows eight panels at once: about, now, projects, writing, reading, listening, watched and system. The professional ones are larger and on top; music, films and reading are smaller summaries underneath. Every project, post and research item opens as a single full-screen panel, the way tmux zooms into a pane, with the path at the top and a status line at the bottom (file, language, reading time, how much is read).
+
+- **Keyboard first, never keyboard only.** `Tab` works as in any page; single-key shortcuts are an alternative, can be turned off, and stay quiet while you type.
+- **Terminal color schemes.** Catppuccin, One and Gruvbox, each in a light and a dark variant, following the system preference until you pick one with `t`. Every theme passes a contrast audit at build time.
+- **Images in two-color dithering**, inked with the theme's text color, so the photo and screenshots change color with the theme.
+- **Portuguese and English**, at `/pt/` and `/en/`. The root picks one from the browser; a post written in only one language still shows up in the other's list, labeled.
+- **Real data only.** Listening comes from Last.fm and films from Letterboxd, as weekly summaries without times or dates. No chart or number without a source.
+- **Static and light.** HTML built ahead of time, no framework, a few kilobytes of TypeScript, size budgets checked on every page. No cookies; the only analytics are Cloudflare's cookieless ones.
+- RSS for the whole blog and for each category, a printable CV, and a `command not found` 404.
+
+| Key | Action |
+|---|---|
+| `1`–`8` | Jump to a panel on the home |
+| `j` `k` or arrows | Move between the items of a panel |
+| `Enter` | Open the selected item |
+| `q` | Go back up (post, list, home) |
+| `n` / `p` | Next or previous post |
+| `t` | Theme picker with live preview |
+| `?` | Help, and the switch to turn shortcuts off |
+
+## How it is built
+
+[Hugo](https://gohugo.io) builds the pages and [Deno](https://deno.com) runs everything else: build tools, type checks, unit and browser tests. The interface starts from [WebTUI](https://github.com/webtui/webtui) with the site's own CSS layers on top. GitHub Actions checks every change and deploys to Cloudflare Pages.
+
+The content lives in a separate private repository and goes through three layers, each knowing only the one before it:
+
+```text
+content repository ──► reader (tools/content) ──► model (tools/model) ──► frontend (frontend/tui) ──► igorj.dev
+   Markdown, YAML        validates every file       content rules,           Hugo templates, CSS,
+   and daily data                                   one JSON per language    themes and fonts
+```
+
+The look can be replaced with a new `frontend/<name>/` reading the same model, without touching the content or its rules. The sections below are for working on the code.
 
 ## Tooling
 
@@ -96,7 +132,7 @@ Required repository settings: secrets `CONTENT_TOKEN`, `CLOUDFLARE_API_TOKEN`, `
 
 ## Third-party material
 
-No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`; [Renovate](https://docs.renovatebot.com) proposes updates to packages, tools and actions. The build publishes every license text at `/third-party-licenses.txt`, listed in `frontend/tui/data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: [Catppuccin](https://catppuccin.com) (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT).
+No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`; [Renovate](https://docs.renovatebot.com) proposes updates to packages, tools and actions. The build publishes every license text at `/third-party-licenses.txt`, listed in `frontend/tui/data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: Catppuccin, One and Gruvbox (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT). Brand icons: [Font Awesome Free](https://fontawesome.com) (CC BY 4.0).
 
 ## License
 
