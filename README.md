@@ -42,13 +42,19 @@ deno task ci             # everything the CI runs, browser tests included
 
 ## Content
 
-Posts, projects, research and CV live in a separate private repository. The build reads `content/`, a local clone of it; `deno task content:fetch` clones it when `CONTENT_REPO` and `CONTENT_TOKEN` are set.
+Everything the site says lives in a separate private repository: posts, projects, research, CV, the about and now texts, contact links, the author's name and role, the languages and the category names. The build reads `content/`, a local clone of it; `deno task content:fetch` clones it when `CONTENT_REPO` and `CONTENT_TOKEN` are set.
 
-`deno task content:check` validates every Markdown front matter and YAML file against the schemas in `tools/content/schema.ts`: Hugo's own keys (`title`, `date`, `lastmod`, `draft`, `slug`, `summary`, `categories`) plus the site's fields in English, one category per post, and JSON Resume keys for the CV. Unknown keys and files outside the expected structure fail the check. The build runs it on the real content, and the fixture build on `tests/fixtures/content`.
+It flows through three layers, each knowing only the one before it:
 
-The home page reads the about text, contact links and reading list from YAML files, and the music and film summaries from `external/*.json`, which a daily job in the content repository refreshes with its own tools; the site build never calls an external service. Data a week old or more shows the date it was saved. `deno task build:info` records the commit shown in the system panel.
+1. **Reader** (`tools/content/`). `deno task content:check` validates every file of the content folders against the schemas in `tools/content/schema.ts` and the rules across files in `tools/content/consistency.ts`. Those rules: the site, category and about files are required, every post uses a declared category, and unknown keys or misplaced files fail. Anything beside the content folders, such as the content repository's own tools, is never read.
+2. **Model** (`tools/model/`). `deno task model` applies the content rules per language and writes `generated/model/<lang>.json`, with the media copied to `generated/media/`. The rules are: which posts each language lists, project and research order, CV fallback, category names, titles and descriptions. Dates stay as written; anything relative to today is left to the frontend.
+3. **Frontend** (`frontend/tui/`). Hugo reads only the model and its media. Content adapters build the post, project and research pages from it; templates display and decide nothing about the content.
 
-The production build fails on example content (`example: true` or `[EXAMPLE]`). Set `ALLOW_EXAMPLE_CONTENT=1` for previews.
+A new frontend would read the same model, so the content and its rules do not change with the look.
+
+The music and film summaries come from `external/*.json`, which a daily job in the content repository refreshes with its own tools; the site build never calls an external service. Data a week old or more shows the date it was saved. `deno task build:info` records the commit shown in the system panel.
+
+The content repository validates its pull requests with `deno task content:verify` from this repository. The production build fails on example content (`example: true` or `[EXAMPLE]`); previews may hold it.
 
 ## Themes and fonts
 
