@@ -5,18 +5,6 @@ source = "tests/fixtures/content"
 target = "content"
 files = ["posts/**", "projects/**", "research/**"]
 [[module.mounts]]
-source = "tests/fixtures/content"
-target = "data"
-files = [
-  "about/*.yaml",
-  "categories/*.yaml",
-  "contact/*.yaml",
-  "cv/*.yaml",
-  "reading/*.yaml",
-  "site/*.yaml",
-  "external/*.json",
-]
-[[module.mounts]]
 source = "frontend/tui/layouts"
 target = "layouts"
 [[module.mounts]]
@@ -34,10 +22,6 @@ target = "content"
 [[module.mounts]]
 source = "frontend/tui/assets"
 target = "assets"
-[[module.mounts]]
-source = "tests/fixtures/content"
-target = "assets"
-files = ["about/photo.*"]
 # Only the brand icons the site links to; Font Awesome itself is never loaded.
 [[module.mounts]]
 source = "node_modules/@fortawesome/fontawesome-free/svgs/brands"
@@ -46,6 +30,12 @@ files = ["github.svg", "linkedin.svg", "instagram.svg", "lastfm.svg", "letterbox
 [[module.mounts]]
 source = "generated/css"
 target = "assets/css/generated"
+[[module.mounts]]
+source = "generated/model"
+target = "data/model"
+[[module.mounts]]
+source = "generated/media"
+target = "assets/media"
 [[module.mounts]]
 source = "generated/data"
 target = "data/generated"

@@ -1,4 +1,4 @@
-{{- /* Category names come from the content repository; the slug is the same in both languages. */ -}}
+{{- /* The slug is the same in both languages; the model names it in the page language. */ -}}
 {{- $label := .Data.Term }}
-{{- range hugo.Data.categories.categories.categories }}{{ if eq .slug $.Data.Term }}{{ with index .name site.Language.Lang }}{{ $label = . }}{{ end }}{{ end }}{{ end }}
+{{- range (partial "model.html" .).categories }}{{ if eq .slug $.Data.Term }}{{ $label = .name }}{{ end }}{{ end }}
 {{- return $label }}

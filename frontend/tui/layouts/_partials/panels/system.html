@@ -6,8 +6,8 @@
   {{- end }}
   <dt>{{ i18n "systemBuilt" }}</dt>
   <dd><time datetime="{{ now.Format "2006-01-02" }}">{{ now.Format "2006-01-02" }}</time></dd>
-  {{- with hugo.Data.contact.contact }}
-  {{- with index .email site.Language.Lang }}
+  {{- with (partial "model.html" .).contact }}
+  {{- with .email }}
   <dt>{{ i18n "systemContact" }}</dt>
   <dd><a href="mailto:{{ . }}">{{ . }}</a></dd>
   {{- end }}

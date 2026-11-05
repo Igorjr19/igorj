@@ -1,5 +1,5 @@
 {{- $kind := dict "book" "kindBook" "paper" "kindPaper" }}
-{{- with hugo.Data.reading.reading.items }}
+{{- with (partial "model.html" .).reading }}
 <ul class="entries">
   {{- range $item := . }}
   <li>

@@ -1,20 +1,9 @@
-{{- $lang := site.Language.Lang }}
-{{- $cv := false }}
-{{- $fallback := "" }}
-{{- with hugo.Data.cv }}
-  {{- $cv = index . (printf "cv.%s" $lang) }}
-  {{- if not $cv }}
-    {{- range where hugo.Sites "Language.Lang" "ne" $lang }}
-      {{- if not $cv }}
-        {{- $cv = index hugo.Data.cv (printf "cv.%s" .Language.Lang) }}
-        {{- if $cv }}{{ $fallback = .Language.Label }}{{ end }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
-{{- end }}
-{{- with $cv }}
-{{- if $fallback }}
-<p class="panel__meta">{{ i18n "cvOtherLanguage" $fallback }}</p>
+{{- with (partial "model.html" .).cv }}
+{{- if .fallback }}
+{{- $shown := .language }}
+{{- range hugo.Sites }}{{ if eq .Language.Lang $shown }}
+<p class="panel__meta">{{ i18n "cvOtherLanguage" .Language.Label }}</p>
+{{- end }}{{ end }}
 {{- end }}
 <p>{{ .basics.label }} · {{ .basics.location }}</p>
 <p>{{ .basics.summary }}</p>
@@ -80,8 +69,9 @@
   <h2>{{ i18n "cvPublications" }}</h2>
   <ul>
     {{- range . }}
-    {{- with site.GetPage (printf "/research/%s" .research) }}
-    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a> <span class="panel__meta">{{ .Params.year }}</span></li>
+    {{- $publication := . }}
+    {{- with site.GetPage (printf "/research/%s" .id) }}
+    <li><a href="{{ .RelPermalink }}">{{ $publication.title }}</a> <span class="panel__meta">{{ $publication.year }}</span></li>
     {{- end }}
     {{- end }}
   </ul>

@@ -1,4 +1,4 @@
-{{- with index hugo.Data.about (printf "about.%s" site.Language.Lang) }}
+{{- with (partial "model.html" .).profile }}
 <dl class="facts">
   <dt>{{ i18n "nowWork" }}</dt>
   <dd>{{ .now.work }}</dd>
