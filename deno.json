@@ -1,8 +1,8 @@
 {
   "tasks": {
     "install": "deno install --frozen",
-    "content:fetch": "deno run --allow-read=content --allow-env=CONTENT_REPO,CONTENT_TOKEN,CONTENT_REF --allow-run=git tools/cli/fetch-content.ts",
-    "content:check": "deno run --allow-read=content,tests/fixtures/content --allow-env=ALLOW_EXAMPLE_CONTENT tools/cli/check-content.ts",
+    "content:fetch": "deno run --allow-read=content --allow-env=CONTENT_REPO,CONTENT_TOKEN --allow-run=git tools/cli/fetch-content.ts",
+    "content:check": "deno run --allow-read=content,tests/fixtures/content tools/cli/check-content.ts",
     "fonts": "deno run --allow-read --allow-write=generated frontend/tui/tools/cli/build-fonts.ts",
     "themes": "deno run --allow-read --allow-write=generated,.cache --allow-net=raw.githubusercontent.com frontend/tui/tools/cli/build-themes.ts",
     "licenses": "deno run --allow-read --allow-write=generated,.cache --allow-net=raw.githubusercontent.com frontend/tui/tools/cli/build-licenses.ts",

@@ -4,7 +4,6 @@ import { containsExampleContent, isCheckedContentFile } from '../content/example
 import { walkFiles } from '../shared/fs.ts';
 
 const contentDir = Deno.args[0] ?? 'content';
-const allowExample = Deno.env.get('ALLOW_EXAMPLE_CONTENT') === '1';
 
 const exampleFiles: string[] = [];
 const invalidFiles: string[] = [];
@@ -55,14 +54,9 @@ if (invalidFiles.length > 0) {
   Deno.exit(1);
 }
 if (exampleFiles.length > 0) {
-  if (!allowExample) {
-    console.error(
-      `Example content found:\n${bulletList(exampleFiles)}\nReplace it, or set ALLOW_EXAMPLE_CONTENT=1 for previews.`,
-    );
-    Deno.exit(1);
-  }
-  console.warn(
-    `${exampleFiles.length} example file(s) allowed by ALLOW_EXAMPLE_CONTENT=1:\n${bulletList(exampleFiles)}`,
+  console.error(
+    `Example content found:\n${bulletList(exampleFiles)}\nReplace it with real content or a [TODO] placeholder.`,
   );
+  Deno.exit(1);
 }
 console.log('Content check passed.');

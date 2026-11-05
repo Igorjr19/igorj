@@ -90,7 +90,7 @@ A new frontend would read the same model, so the content and its rules do not ch
 
 The music and film summaries come from `external/*.json`, which a daily job in the content repository refreshes with its own tools; the site build never calls an external service. Data a week old or more shows the date it was saved. `deno task build:info` records the commit shown in the system panel.
 
-The content repository validates its pull requests with `deno task content:verify` from this repository. The production build fails on example content (`example: true` or `[EXAMPLE]`); previews may hold it.
+The content repository validates its pull requests with `deno task content:verify` from this repository. Every build fails on example content (`example: true` or `[EXAMPLE]`); missing text is a visible `[TODO]` instead. To see a content change before it goes live, run `deno task dev` with the change in `content/`.
 
 ## Themes and fonts
 
@@ -126,13 +126,13 @@ The repository reads the content, applies its rules and hands the result to a fr
 
 ## CI and deployment
 
-GitHub Actions runs `deno task ci` in one job and, on `main`, builds with the real content and deploys to Cloudflare Pages with Wrangler. A local composite action (`.github/actions/setup`) installs the pinned tools and caches Deno dependencies. A pull request merges once that check passes; a dependency audit runs weekly. Pushes to `main` deploy to the Cloudflare `production` branch, which serves igorj.dev, and never allow example content; other branches deploy previews. Running the workflow by hand with another `content_ref` builds that content branch into a preview named after it, which accepts example content (for instance `example`, which fills every section with placeholder text). The content repository triggers a rebuild with a `content-updated` repository dispatch, and asks for a preview of each open content pull request with `content-preview`, which carries the branch; the deploy summary shows the preview address.
+GitHub Actions runs `deno task ci` in one job and, on `main`, builds with the real content and deploys to Cloudflare Pages with Wrangler. A local composite action (`.github/actions/setup`) installs the pinned tools and caches Deno dependencies. A pull request merges once that check passes; a dependency audit runs weekly. Only `main` is published, to the Cloudflare `production` branch, which serves igorj.dev; there are no preview deployments. The content repository triggers a rebuild with a `content-updated` repository dispatch, and the workflow can also be run by hand.
 
 Required repository settings: secrets `CONTENT_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; variables `CONTENT_REPO` and `CLOUDFLARE_PAGES_PROJECT`.
 
 ## Third-party material
 
-No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`; [Renovate](https://docs.renovatebot.com) proposes updates to packages, tools and actions. The build publishes every license text at `/third-party-licenses.txt`, listed in `frontend/tui/data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: Catppuccin, One and Gruvbox (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT). Brand icons: [Font Awesome Free](https://fontawesome.com) (CC BY 4.0).
+No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`, tools in `mise.toml` and actions by commit; updates are made by hand, and the weekly `deno audit` flags known vulnerabilities. The build publishes every license text at `/third-party-licenses.txt`, listed in `frontend/tui/data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: Catppuccin, One and Gruvbox (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT). Brand icons: [Font Awesome Free](https://fontawesome.com) (CC BY 4.0).
 
 ## License
 
