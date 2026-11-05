@@ -1,9 +1,10 @@
 {{ define "main" }}
 {{- partial "checks/languages.html" . }}
 {{- $listeningSummary := i18n "noData" }}
-{{- with hugo.Data.external.music }}{{ with index .artists 0 }}{{ $listeningSummary = .name }}{{ end }}{{ end }}
+{{- $model := partial "model.html" . }}
+{{- with $model.music }}{{ with index .artists 0 }}{{ $listeningSummary = .name }}{{ end }}{{ end }}
 {{- $watchedSummary := i18n "noData" }}
-{{- with hugo.Data.external.films }}{{ with index .films 0 }}{{ $watchedSummary = .title }}{{ end }}{{ end }}
+{{- with $model.films }}{{ with index .films 0 }}{{ $watchedSummary = .title }}{{ end }}{{ end }}
 {{- $projectsHref := "" }}
 {{- with site.GetPage "/projects" }}{{ $projectsHref = .RelPermalink }}{{ end }}
 {{- $postsHref := "" }}

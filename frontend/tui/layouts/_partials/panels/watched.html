@@ -1,4 +1,4 @@
-{{- with hugo.Data.external.films }}
+{{- with (partial "model.html" .).films }}
 {{- $updated := .updated }}
 {{- with .films }}
 {{ partial "external-age.html" $updated }}

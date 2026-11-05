@@ -1,7 +1,7 @@
 {{- /* Description, Open Graph and, on the home, the structured data about the person. */ -}}
 {{- $description := .Params.summary }}
-{{- $about := index hugo.Data.about (printf "about.%s" site.Language.Lang) }}
-{{- if and .IsHome $about }}{{ $description = delimit $about.lines " " }}{{ end }}
+{{- $model := partial "model.html" . }}
+{{- if .IsHome }}{{ with $model.profile }}{{ $description = .description }}{{ end }}{{ end }}
 {{- $title := cond .IsHome (partial "site-title.html" .) .Title }}
 {{- if $description }}
 <meta name="description" content="{{ $description }}">
@@ -22,7 +22,7 @@
 {{- end }}
 {{- if .IsHome }}
 {{- $person := dict "@context" "https://schema.org" "@type" "Person" "name" (partial "author.html" .) "jobTitle" (partial "role.html" .) "url" .Permalink }}
-{{- with hugo.Data.contact.contact }}
+{{- with $model.contact }}
 {{- $person = merge $person (dict "sameAs" (apply .professional "index" "." "url")) }}
 {{- end }}
 <script type="application/ld+json">{{ $person | jsonify | safeJS }}</script>

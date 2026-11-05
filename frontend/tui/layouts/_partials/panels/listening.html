@@ -1,4 +1,4 @@
-{{- with hugo.Data.external.music }}
+{{- with (partial "model.html" .).music }}
 {{- $period := .period }}
 {{- $updated := .updated }}
 {{- with .artists }}
