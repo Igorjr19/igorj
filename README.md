@@ -34,6 +34,7 @@ deno task ci             # everything the CI runs, browser tests included
 | `test` | Unit tests |
 | `check` | `lint`, `typecheck` and `test` |
 | `test:e2e` | Builds the fixture site, validates its HTML and runs browser tests: layout, themes, focus, accessibility with [axe-core](https://github.com/dequelabs/axe-core) (WCAG 2.1 AA in both color schemes), reading with JavaScript disabled, search metadata, size budgets per page from `frontend/tui/data/budgets.toml` |
+| `content:verify` | What the content repository runs on its pull requests: the content check, the model and a full build of `content/` into `generated/content-check`, without publishing |
 | `model` | Builds the model from `content/` (or the folder given) into `generated/model/` and `generated/media/`; `dev` keeps it current with `model:watch` |
 | `build:fixtures` | Builds the site from `tests/fixtures/content` into `generated/fixture-site` |
 | `validate:html` | Checks the fixture site with [html-validate](https://html-validate.org) (standard, accessibility and document rules) |

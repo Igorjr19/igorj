@@ -12,6 +12,7 @@
     "prepare": "deno task install && deno task fonts && deno task themes && deno task licenses && deno task build:info",
     "dev": "deno task content:fetch && deno task prepare && deno task model && (deno task model:watch & hugo server --config frontend/tui/hugo.toml --renderToMemory)",
     "build": "deno task content:fetch && deno task content:check && deno task model && deno task prepare && hugo build --config frontend/tui/hugo.toml --minify --cleanDestinationDir",
+    "content:verify": "deno task content:check && deno task model && deno task prepare && hugo build --config frontend/tui/hugo.toml --minify --cleanDestinationDir --destination generated/content-check",
     "build:fixtures": "deno task prepare && deno task content:check tests/fixtures/content && deno task model tests/fixtures/content && hugo build --minify --cleanDestinationDir --config frontend/tui/hugo.toml,frontend/tui/tests/fixtures/hugo.toml --destination generated/fixture-site",
     "lint": "biome ci . && taplo fmt --check && taplo lint && actionlint && deno task conventions",
     "conventions": "deno run --allow-run=git --allow-read tools/cli/check-conventions.ts",
