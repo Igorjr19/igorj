@@ -7,7 +7,7 @@ import { Session } from './support/session.ts';
 // Long enough for the root script to have redirected, had it run on a page it should leave alone.
 const SETTLE_MS = 300;
 
-Deno.test('the root page sends visitors to a language home on the same host, even in previews', async () => {
+Deno.test('the root page sends visitors to a language home on the same host, wherever the site is served', async () => {
   await using session = await Session.start();
   const page = await session.open('/', { acceptLanguage: 'en-US' });
   await waitToLeave(page, '/');

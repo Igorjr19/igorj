@@ -15,8 +15,7 @@ if (!(repo && token)) {
   Deno.exit(1);
 }
 
-const ref = Deno.env.get('CONTENT_REF');
-const args = cloneArgs({ repo, token, destination: DESTINATION, ...(ref && { ref }) });
+const args = cloneArgs({ repo, token, destination: DESTINATION });
 // Git output is discarded so the token never reaches the logs.
 const { success } = await new Deno.Command('git', { args, stdout: 'null', stderr: 'null' }).output();
 if (!success) {
