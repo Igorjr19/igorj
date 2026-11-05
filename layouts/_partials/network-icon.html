@@ -1,0 +1,6 @@
+{{- /* The brand icon of a network, inline so it takes the link color; the name next to it is the text alternative. */}}
+{{- with resources.Get (printf "icons/%s.svg" (replaceRE `[^a-z]` "" (lower .))) }}
+{{- $svg := replaceRE `<!--[\s\S]*?-->` "" .Content }}
+{{- replace $svg "<svg " `<svg class="icon" aria-hidden="true" focusable="false" preserveAspectRatio="xMinYMid meet" ` | safeHTML }}
+{{- end }}
+{{- /**/ -}}

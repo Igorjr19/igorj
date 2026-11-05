@@ -1,0 +1,8 @@
+@layer app.components {
+  /* Three cells wide with the icon at the start, so it has room before the name and the name stays on the character grid. */
+  .icon {
+    inline-size: calc(3 * var(--cell-width));
+    block-size: 1em;
+    vertical-align: -0.125em;
+  }
+}

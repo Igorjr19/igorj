@@ -37,6 +37,9 @@ Deno.test('t opens the theme picker with every family and previews while moving'
       'family:catppuccin',
       'theme:catppuccin-latte',
       'theme:catppuccin-mocha',
+      'family:gruvbox',
+      'theme:gruvbox-light',
+      'theme:gruvbox-dark',
       'family:one',
       'theme:one-light',
       'theme:one-dark',
@@ -65,7 +68,7 @@ Deno.test('t opens the theme picker with every family and previews while moving'
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('ArrowDown');
     const previewed = await page.evaluate(state);
-    assertEquals([previewed.theme, previewed.saved], ['one-dark', null]);
+    assertEquals([previewed.theme, previewed.saved], ['gruvbox-dark', null]);
     assertEquals(previewed.background !== initial.background, true);
   });
 });
@@ -91,9 +94,9 @@ Deno.test('the picker keeps only what is applied', async (t) => {
     }
     await page.keyboard.press('Enter');
     const applied = await page.evaluate(state);
-    assertEquals([applied.open, applied.theme, applied.saved], [false, 'one-dark', '{"theme":"one-dark"}']);
+    assertEquals([applied.open, applied.theme, applied.saved], [false, 'gruvbox-dark', '{"theme":"gruvbox-dark"}']);
     await page.reload();
-    assertEquals((await page.evaluate(state)).theme, 'one-dark');
+    assertEquals((await page.evaluate(state)).theme, 'gruvbox-dark');
     await page.evaluate(() => localStorage.clear());
   });
 
@@ -115,7 +118,7 @@ Deno.test('the open picker is accessible in every theme', async (t) => {
 
   await t.step('it passes the accessibility checks in both color schemes of each family', async () => {
     for (const colorScheme of ['light', 'dark'] as const) {
-      for (const family of ['catppuccin', 'one']) {
+      for (const family of ['catppuccin', 'gruvbox', 'one']) {
         const page = await openSaved(session, POST_EN, JSON.stringify({ family }), colorScheme);
         await page.keyboard.press('t');
         assertEquals(await findAccessibilityViolations(page), []);

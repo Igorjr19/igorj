@@ -14,7 +14,7 @@
   {{- with append .personal .professional }}
   <dt>{{ i18n "systemLinks" }}</dt>
   {{- range . }}
-  <dd><a href="{{ .url }}">{{ .network }}</a>{{ with .note }} <span class="panel__meta">{{ . }}</span>{{ end }}</dd>
+  <dd><a href="{{ .url }}">{{ partial "network-icon.html" .network }}{{ .network }}</a>{{ with .note }} <span class="panel__meta">{{ . }}</span>{{ end }}</dd>
   {{- end }}
   {{- end }}
   {{- end }}

@@ -37,6 +37,7 @@
     "jsr:@zip-js/zip-js@^2.7.52": "2.18.2",
     "npm:@fontsource/fira-code@5.3.0": "5.3.0",
     "npm:@fontsource/fira-sans@5.3.0": "5.3.0",
+    "npm:@fortawesome/fontawesome-free@7.3.1": "7.3.1",
     "npm:@webtui/css@0.1.10": "0.1.10",
     "npm:axe-core@4.14.0": "4.14.0",
     "npm:html-validate@*": "11.16.2",
@@ -169,6 +170,9 @@
     "@fontsource/fira-sans@5.3.0": {
       "integrity": "sha512-z1SKSG7eRhm3srlb7rQ3j77QP4TP7OFxCZ4wUWhCdt+3hOF9K0AyvybpAsz6+JWNcCVV7AqC7dbOT3e67P2r5A=="
     },
+    "@fortawesome/fontawesome-free@7.3.1": {
+      "integrity": "sha512-wmglKKPDIkgV3aWlZzWECCPoGIkYCulzBwxG9+w7rc5BGapZ6cPMpoPOT8k36J0Ni7PPX6c/rsoMWfS4d1MUMg=="
+    },
     "@html-validate/stylish@6.1.0": {
       "integrity": "sha512-ceNvF6/5hgvw/OrxXtdl2KurRVLN/Q/OkD/qminRRY/IIERmVaqJOpDF1nhRZMrOG/vyKKW0+Nxw6lSoHUP4Ow=="
     },
@@ -249,6 +253,7 @@
       "jsr:@valibot/valibot@1.5.0",
       "npm:@fontsource/fira-code@5.3.0",
       "npm:@fontsource/fira-sans@5.3.0",
+      "npm:@fortawesome/fontawesome-free@7.3.1",
       "npm:@webtui/css@0.1.10",
       "npm:axe-core@4.14.0",
       "npm:html-validate@11.16.2"
