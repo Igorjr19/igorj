@@ -1,0 +1,4 @@
+{{- /* The model item a post, project or research page was built from. */ -}}
+{{- $found := false }}
+{{- range index (index hugo.Data.model .Language.Lang) .Section }}{{ if eq .id $.Params.id }}{{ $found = . }}{{ end }}{{ end }}
+{{- return $found }}

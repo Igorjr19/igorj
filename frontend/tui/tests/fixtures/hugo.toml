@@ -1,9 +1,8 @@
 # Same mounts as hugo.toml, reading the fixture content instead of the private content repository.
 [module]
 [[module.mounts]]
-source = "tests/fixtures/content"
+source = "frontend/tui/adapters"
 target = "content"
-files = ["posts/**", "projects/**", "research/**"]
 [[module.mounts]]
 source = "frontend/tui/layouts"
 target = "layouts"

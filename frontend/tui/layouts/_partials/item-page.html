@@ -1,0 +1,4 @@
+{{- /* The page of a model item, built in the item's own language, which may differ from the page that lists it. */ -}}
+{{- $found := false }}
+{{- range hugo.Sites }}{{ if eq .Language.Lang $.item.language }}{{ $found = .GetPage (printf "/%s/%s" $.section $.item.id) }}{{ end }}{{ end }}
+{{- return $found }}

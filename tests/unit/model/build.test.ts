@@ -3,7 +3,7 @@ import type { ContentItem, RawContent } from '../../../tools/content/types.ts';
 import { buildModel, cvFor, postsFor, projectsFor, researchFor } from '../../../tools/model/build.ts';
 
 function item<T>(folder: string, language: string, data: T, media: string[] = []): ContentItem<T> {
-  return { folder, language, data, body: `Body of ${folder}.`, media };
+  return { path: `items/${folder}/index.${language}.md`, folder, language, data, body: `Body of ${folder}.`, media };
 }
 
 const post = (title: string, date: string | Date, extra: object = {}) => ({

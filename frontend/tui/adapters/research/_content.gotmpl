@@ -1,0 +1,23 @@
+{{- /* Research items come from the content model; each page is built in the language the item is written in. */ -}}
+{{- .EnableAllLanguages }}
+{{- $lang := .Site.Language.Lang }}
+{{- range (index hugo.Data.model $lang).research }}
+  {{- if eq .language $lang }}
+    {{- $item := . }}
+    {{- $page := dict
+      "path" .id
+      "title" .title
+      "content" (dict "mediaType" "text/markdown" "value" .body)
+      "sitemap" (dict "priority" -1)
+      "params" (dict "id" .id "source" .source)
+    }}
+    {{- if ne .slug .id }}{{ $page = merge $page (dict "slug" .slug) }}{{ end }}
+    {{- $.AddPage $page }}
+    {{- range .media }}
+      {{- $file := strings.TrimPrefix (printf "research/%s/" $item.id) . }}
+      {{- with resources.Get (printf "media/%s" .) }}
+        {{- $.AddResource (dict "path" (printf "%s/%s" $item.id $file) "content" (dict "value" .)) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

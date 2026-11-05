@@ -1,0 +1,17 @@
+{{- /* One row of a post list; a post written in another language carries that language as a label. */ -}}
+{{- with partial "item-page.html" (dict "section" "posts" "item" .item) }}
+{{- $foreign := ne .Language.Lang site.Language.Lang }}
+<li>
+  <time class="panel__meta" datetime="{{ $.item.date }}">{{ $.item.date }}</time>
+  <a href="{{ .RelPermalink }}"{{ if $foreign }} lang="{{ .Language.Locale }}"{{ end }}>{{ $.item.title }}</a>
+  {{- if $foreign }}
+  <span class="panel__meta" lang="{{ .Language.Locale }}">{{ .Language.Label }}</span>
+  {{- end }}
+  {{- range .GetTerms "categories" }}
+  <a class="panel__meta" href="{{ .RelPermalink }}">{{ partial "category-label.html" . }}</a>
+  {{- end }}
+  {{- if $.summary }}
+  <span class="entries__summary panel__meta">{{ $.item.summary }}</span>
+  {{- end }}
+</li>
+{{- end }}

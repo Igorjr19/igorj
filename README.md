@@ -65,14 +65,15 @@ The repository reads the content, applies its rules and hands the result to a fr
 | Path | Contents |
 |---|---|
 | `tools/content/` | Reads and validates the content repository; the only code that knows its folders and files |
-| `tools/model/` | The content rules, applied per language: which posts each language lists, project and research order, CV fallback, category names, page titles. `deno task model` writes `generated/model/<lang>.json` and copies the media to `generated/media/`; the frontend will read only these |
+| `tools/model/` | The content rules, applied per language: which posts each language lists, project and research order, CV fallback, category names, page titles. `deno task model` writes `generated/model/<lang>.json` and copies the media to `generated/media/`; the frontend reads only these |
 | `tools/cli/` | Command-line entry points for the content, model, git and convention checks |
 | `tools/shared/` | Helpers shared by every part (downloads, files, hashes) |
 | `tests/unit/` | Unit tests for `tools/`, mirroring its paths |
 | `tests/fixtures/content/` | Fixture content in the content repository format |
 | `frontend/tui/` | The terminal-style frontend: everything below is specific to it |
 | `frontend/tui/hugo.toml` | Hugo configuration; Hugo runs from the repository root with `--config frontend/tui/hugo.toml` |
-| `frontend/tui/layouts/`, `pages/`, `static/` | Hugo templates, partials and site pages |
+| `frontend/tui/layouts/`, `pages/`, `static/` | Hugo templates, partials and the frontend's own pages (CV, credits) |
+| `frontend/tui/adapters/` | Hugo content adapters that build the post, project and research pages from the model, each in its own language, with its media attached |
 | `frontend/tui/assets/css/` | Styles in cascade layers: WebTUI first, then `app.tokens`, `app.base`, `app.layout`, `app.components` |
 | `frontend/tui/assets/ts/` | Browser TypeScript, bundled by Hugo |
 | `frontend/tui/i18n/` | Interface text per language |

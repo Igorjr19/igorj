@@ -1,9 +1,12 @@
 <ul class="entries">
-  {{- range sort .Pages "Params.year" "desc" }}
+  {{- range (partial "model.html" .).research }}
+  {{- $item := . }}
+  {{- with partial "item-page.html" (dict "section" "research" "item" .) }}
   <li>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-    <span class="panel__meta">{{ i18n (printf "research%s" (title .Params.kind)) }} · {{ .Params.year }}</span>
-    <span class="entries__summary panel__meta">{{ delimit .Params.authors ", " }} · {{ .Params.venue }}</span>
+    <a href="{{ .RelPermalink }}">{{ $item.title }}</a>
+    <span class="panel__meta">{{ i18n (printf "research%s" (title $item.kind)) }} · {{ $item.year }}</span>
+    <span class="entries__summary panel__meta">{{ delimit $item.authors ", " }} · {{ $item.venue }}</span>
   </li>
+  {{- end }}
   {{- end }}
 </ul>

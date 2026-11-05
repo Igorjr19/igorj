@@ -53,6 +53,8 @@ export interface CategoryModel {
 export interface ItemModel {
   /** Folder name in the content repository, the same in every language. */
   readonly id: string;
+  /** The file the item comes from, relative to the content root; frontends may show it, never read it. */
+  readonly source: string;
   readonly slug: string;
   /** The language the item is written in; a post may be listed under another one. */
   readonly language: string;

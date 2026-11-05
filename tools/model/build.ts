@@ -32,6 +32,7 @@ function itemBase<T extends { title: string; slug?: string | undefined }>(
 ): ItemModel {
   return {
     id: item.folder,
+    source: item.path,
     slug: item.data.slug ?? item.folder,
     language: item.language,
     translations: translations.get(item.folder) ?? [item.language],

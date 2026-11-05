@@ -52,6 +52,7 @@ export function readContent(files: readonly ContentFile[], paths: readonly strin
       const [, section = '', folder = '', language = ''] = item;
       const media = mediaBeside(`${section}/${folder}`, paths);
       const entry: ContentItem<unknown> = {
+        path: file.path,
         folder,
         language,
         data: parse(file),
