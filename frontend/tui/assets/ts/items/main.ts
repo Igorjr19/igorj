@@ -2,6 +2,20 @@
 import { browserStorage } from '../shared/storage.ts';
 import { type ItemsView, otherView, readView, saveView } from './view.ts';
 
+/** The switch between list and grid is animated where the browser can, unless motion is reduced. */
+function animate(update: () => void): void {
+  const reduced =
+    document.documentElement.dataset['motion'] === 'reduced' || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const start = (
+    document as Document & { startViewTransition?: (options: { update: () => void; types: string[] }) => unknown }
+  ).startViewTransition;
+  if (start && !reduced) {
+    start.call(document, { update, types: ['view'] });
+  } else {
+    update();
+  }
+}
+
 function setup(root: HTMLElement): void {
   const storage = browserStorage('localStorage');
   const items = [...root.querySelectorAll<HTMLElement>('.item')];
@@ -40,12 +54,13 @@ function setup(root: HTMLElement): void {
     }
   };
 
-  document.addEventListener('items:toggle-view', () => show(otherView(view), true));
+  document.addEventListener('items:toggle-view', () => animate(() => show(otherView(view), true)));
   document.addEventListener('click', (event) => {
     const button =
       event.target instanceof Element ? event.target.closest<HTMLElement>('.view-switch [data-view]') : null;
     if (button?.dataset['view'] === 'list' || button?.dataset['view'] === 'grid') {
-      show(button.dataset['view'], true);
+      const next = button.dataset['view'];
+      animate(() => show(next, true));
     }
   });
 

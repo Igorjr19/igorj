@@ -1,5 +1,6 @@
 /// <reference lib="dom" />
 import { assertEquals } from '@std/assert';
+import { settle } from './support/axe.ts';
 import {
   FILM_POST_EN,
   FIRST_POST_EN,
@@ -152,6 +153,7 @@ Deno.test('the view switch says which view is on and changes it with a click', a
     });
     const before = await page.evaluate(read);
     await page.locator('.view-switch [data-view="grid"]').click();
+    await settle(page);
     assertEquals(
       [before, await page.evaluate(read)],
       [

@@ -10,8 +10,20 @@ export interface AxeViolation {
 const AXE_SOURCE = await Deno.readTextFile('node_modules/axe-core/axe.min.js');
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
-/** Runs axe-core inside the page against WCAG 2.1 A and AA. */
+/** Waits for the page to stop moving: a dialog fading in would be read half transparent. */
+export async function settle(page: Page): Promise<void> {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const finite = document
+      .getAnimations()
+      .filter((animation) => animation.effect?.getComputedTiming().endTime !== Number.POSITIVE_INFINITY);
+    await Promise.all(finite.map((animation) => animation.finished.catch(() => undefined)));
+  });
+}
+
+/** Runs axe-core inside the page against WCAG 2.1 A and AA, once nothing is moving. */
 export async function findAccessibilityViolations(page: Page): Promise<AxeViolation[]> {
+  await settle(page);
   await page.evaluate(AXE_SOURCE);
   return await page.evaluate(
     async (tags: string[]) => {

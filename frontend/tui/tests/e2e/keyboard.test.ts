@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 import type { Page } from '@astral/astral';
 import { assert, assertEquals } from '@std/assert';
-import { findAccessibilityViolations } from './support/axe.ts';
+import { findAccessibilityViolations, settle } from './support/axe.ts';
 import { waitToLeave } from './support/navigation.ts';
 import { HOME_EN, POST_EN, POSTS_EN, PROJECTS_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
@@ -89,6 +89,7 @@ Deno.test('single-key shortcuts change the view, zoom the pane and stay out of t
     const view = () => document.querySelector<HTMLElement>('[data-items]')?.dataset['view'];
     assertEquals(await page.evaluate(view), 'list');
     await page.keyboard.press('v');
+    await settle(page);
     assertEquals(await page.evaluate(view), 'grid');
     await page.reload();
     assertEquals(await page.evaluate(view), 'grid');
