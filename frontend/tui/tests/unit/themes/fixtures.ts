@@ -49,15 +49,25 @@ export function manifest(id: string, family: string, variant: Variant): ThemeMan
     name: id,
     family,
     variant,
+    system: false,
     credit: { author: 'Test', license: 'MIT', url: 'https://example.com' },
     palette: { url: 'https://example.com/palette.json', sha256: '0'.repeat(64) },
     roles: {},
   };
 }
 
-export function resolvedTheme(id: string, family: string, variant: Variant, background: string): ResolvedTheme {
+export function resolvedTheme(
+  id: string,
+  family: string,
+  variant: Variant,
+  background: string,
+  system = false,
+): ResolvedTheme {
   const colors = Object.fromEntries(
     [...Object.keys(defaults), 'surface-1', 'surface-2', 'surface-3'].map((name) => [name, '#000000']),
   );
-  return { manifest: manifest(id, family, variant), colors: { ...colors, background } } as ResolvedTheme;
+  return {
+    manifest: { ...manifest(id, family, variant), system },
+    colors: { ...colors, background, text: variant === 'light' ? '#000000' : '#ffffff' },
+  } as ResolvedTheme;
 }

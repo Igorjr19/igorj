@@ -11,15 +11,10 @@ url = "https://github.com/morhetz/gruvbox"
 url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/windowsterminal/Gruvbox%20Light.json"
 sha256 = "57b36c1f2a142233a04945dce1748b112544974322105c71e431a9e663d68d33"
 
-# On the light background Gruvbox's bright colors are its dark shades; blue, red and purple pass as text,
-# the green, yellow and gray do not, so those roles fall back to the text color.
+# On the light background Gruvbox's bright colors are its dark shades. The green, yellow and gray
+# are faint as text; the build darkens each one just enough to pass its contrast check.
 [roles]
-text-muted = "@text"
 accent = "brightBlue"
-success = "@text"
-warning = "@text"
 error = "brightRed"
 syntax-keyword = "brightPurple"
-syntax-string = "@text"
-syntax-number = "@text"
 syntax-function = "brightBlue"

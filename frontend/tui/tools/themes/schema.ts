@@ -21,6 +21,7 @@ const ThemeManifestSchema = v.strictObject({
   name: v.pipe(v.string(), v.nonEmpty()),
   family: v.pipe(v.string(), v.regex(/^[a-z0-9-]+$/)),
   variant: v.picklist(['light', 'dark']),
+  system: v.optional(v.boolean(), false),
   credit: v.strictObject({
     author: v.pipe(v.string(), v.nonEmpty()),
     license: v.pipe(v.string(), v.nonEmpty()),
@@ -60,4 +61,35 @@ export function parseThemeDefaults(input: unknown): ThemeDefaults {
 
 export function parsePalette(input: unknown, context: string): Palette {
   return parseWith(PaletteSchema, input, context) as Palette;
+}
+
+const AccentSourceSchema = v.strictObject({
+  family: v.pipe(v.string(), v.regex(/^[a-z0-9-]+$/)),
+  default: v.pipe(v.string(), v.nonEmpty()),
+  palette: v.strictObject({
+    url: v.pipe(v.string(), v.url()),
+    sha256: v.pipe(v.string(), v.regex(/^[0-9a-f]{64}$/)),
+  }),
+  flavors: v.record(v.string(), v.pipe(v.string(), v.nonEmpty())),
+});
+
+export type AccentSourceFile = v.InferOutput<typeof AccentSourceSchema>;
+
+/** Only what the accents need from a palette that names its colors: each flavor's colors, marked as accents or not. */
+const AccentPaletteSchema = v.record(
+  v.string(),
+  v.union([
+    v.object({
+      colors: v.record(v.string(), v.object({ hex: HexColorSchema, accent: v.boolean(), order: v.number() })),
+    }),
+    v.unknown(),
+  ]),
+);
+
+export function parseAccentSource(input: unknown): AccentSourceFile {
+  return parseWith(AccentSourceSchema, input, 'Accents');
+}
+
+export function parseAccentPalette(input: unknown): Record<string, unknown> {
+  return parseWith(AccentPaletteSchema, input, 'Accent palette') as Record<string, unknown>;
 }

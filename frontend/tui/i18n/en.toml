@@ -35,6 +35,7 @@ creditsIntro = "The site is built with the following third-party material, each 
 creditsTexts = "Full license texts"
 themeTitle = "Theme"
 themeFollowSystem = "follows the system (light or dark)"
+themeAccent = "Accent for {{ . }}"
 themeApply = "Apply"
 themeCancel = "Cancel"
 notFoundHome = "Go to the home page"

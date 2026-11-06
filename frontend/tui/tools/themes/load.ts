@@ -1,6 +1,14 @@
 import { parse } from '@std/toml';
 import { fetchVerified } from '../../../../tools/shared/download.ts';
-import { parsePalette, parseThemeDefaults, parseThemeManifest } from './schema.ts';
+import type { AccentFlavor } from './accents.ts';
+import {
+  type AccentSourceFile,
+  parseAccentPalette,
+  parseAccentSource,
+  parsePalette,
+  parseThemeDefaults,
+  parseThemeManifest,
+} from './schema.ts';
 import type { Palette, ThemeDefaults, ThemeManifest } from './types.ts';
 
 export async function loadThemeDefaults(path: string): Promise<ThemeDefaults> {
@@ -25,4 +33,19 @@ export async function loadPalette(manifest: ThemeManifest, cacheDir: string): Pr
     cachePath: `${cacheDir}/${manifest.palette.sha256}.json`,
   });
   return parsePalette(JSON.parse(new TextDecoder().decode(data)), `Palette of "${manifest.id}"`);
+}
+
+/** The accent source and its palette, downloaded once and verified by its checksum. */
+export async function loadAccents(
+  path: string,
+  cacheDir: string,
+): Promise<{ source: AccentSourceFile; palette: Record<string, AccentFlavor> }> {
+  const source = parseAccentSource(parse(await Deno.readTextFile(path)));
+  const data = await fetchVerified({
+    url: source.palette.url,
+    sha256: source.palette.sha256,
+    cachePath: `${cacheDir}/${source.palette.sha256}.json`,
+  });
+  const palette = parseAccentPalette(JSON.parse(new TextDecoder().decode(data)));
+  return { source, palette: palette as Record<string, AccentFlavor> };
 }

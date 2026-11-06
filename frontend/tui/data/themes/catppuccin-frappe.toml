@@ -1,0 +1,12 @@
+name = "Catppuccin Frappé"
+family = "catppuccin"
+variant = "dark"
+
+[credit]
+author = "Catppuccin"
+license = "MIT"
+url = "https://catppuccin.com"
+
+[palette]
+url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/windowsterminal/Catppuccin%20Frappe.json"
+sha256 = "5af41e4e2850e7d3a15b91e814bd8042f91da108dfd498efb4af89a84b2326f3"

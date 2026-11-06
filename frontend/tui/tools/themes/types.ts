@@ -68,6 +68,8 @@ export interface ThemeManifest {
   readonly name: string;
   readonly family: string;
   readonly variant: Variant;
+  /** The variant used when the family follows the system; needed only when a family has more than one of a variant. */
+  readonly system: boolean;
   readonly credit: { readonly author: string; readonly license: string; readonly url: string };
   readonly palette: { readonly url: string; readonly sha256: string };
   readonly roles: RoleOverrides;
@@ -85,8 +87,26 @@ export interface ResolvedTheme {
 
 export interface ThemeFamily {
   readonly name: string;
+  /** The variants used when the family follows the system. */
   readonly light: ResolvedTheme;
   readonly dark: ResolvedTheme;
+  /** Every theme of the family, light ones first. */
+  readonly themes: readonly ResolvedTheme[];
+}
+
+/** The accents a visitor can choose for one family, read from a palette that names them per theme. */
+export interface AccentSet {
+  readonly family: string;
+  readonly default: string;
+  /** Accent names in palette order. */
+  readonly names: readonly string[];
+  /** Theme id → accent name → the accent and link colors, already legible on that theme. */
+  readonly colors: Readonly<Record<string, Readonly<Record<string, AccentColors>>>>;
+}
+
+export interface AccentColors {
+  readonly accent: string;
+  readonly link: string;
 }
 
 export interface ContrastRequirement {

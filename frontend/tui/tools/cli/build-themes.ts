@@ -1,13 +1,16 @@
-import { auditContrast } from '../themes/audit.ts';
+import { resolveAccents } from '../themes/accents.ts';
+import { auditContrast, CONTRAST_REQUIREMENTS } from '../themes/audit.ts';
 import { groupFamilies } from '../themes/families.ts';
 import { describeThemes } from '../themes/index-data.ts';
-import { loadPalette, loadThemeDefaults, loadThemeManifests } from '../themes/load.ts';
+import { ensureLegible } from '../themes/legible.ts';
+import { loadAccents, loadPalette, loadThemeDefaults, loadThemeManifests } from '../themes/load.ts';
 import { renderThemeCss } from '../themes/render.ts';
 import { resolveColors } from '../themes/resolve.ts';
 import type { ContrastResult, ResolvedTheme } from '../themes/types.ts';
 
 const DEFAULTS_PATH = 'frontend/tui/data/theme-defaults.toml';
 const THEMES_DIR = 'frontend/tui/data/themes';
+const ACCENTS_PATH = 'frontend/tui/data/accents.toml';
 const CACHE_DIR = '.cache/palettes';
 const OUTPUT_DIR = 'generated/css';
 const OUTPUT_PATH = `${OUTPUT_DIR}/themes.css`;
@@ -25,7 +28,7 @@ const themes: ResolvedTheme[] = [];
 let failures = 0;
 for (const manifest of manifests) {
   const palette = await loadPalette(manifest, CACHE_DIR);
-  const colors = resolveColors(palette, defaults.roles, manifest.roles);
+  const colors = ensureLegible(resolveColors(palette, defaults.roles, manifest.roles), CONTRAST_REQUIREMENTS);
   const results = auditContrast(colors);
   failures += results.filter((result) => !result.passes).length;
   console.log([manifest.name, ...results.map(formatResult)].join('\n'));
@@ -39,7 +42,12 @@ if (failures > 0) {
 
 await Deno.mkdir(OUTPUT_DIR, { recursive: true });
 const families = groupFamilies(themes);
-await Deno.writeTextFile(OUTPUT_PATH, renderThemeCss(families, defaults.defaultFamily));
+const { source, palette: accentPalette } = await loadAccents(ACCENTS_PATH, CACHE_DIR);
+const accents = resolveAccents(source, accentPalette, themes);
+await Deno.writeTextFile(OUTPUT_PATH, renderThemeCss(families, defaults.defaultFamily, accents));
 await Deno.mkdir('generated/data', { recursive: true });
-await Deno.writeTextFile(INDEX_PATH, `${JSON.stringify(describeThemes(families, defaults.defaultFamily), null, 2)}\n`);
+await Deno.writeTextFile(
+  INDEX_PATH,
+  `${JSON.stringify(describeThemes(families, defaults.defaultFamily, accents), null, 2)}\n`,
+);
 console.log(`Wrote ${OUTPUT_PATH} (${themes.length} themes).`);
