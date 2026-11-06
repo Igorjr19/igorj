@@ -47,6 +47,12 @@
 {{- end }}{{ end }}
 {{- if eq .Section "posts" }}{{ partial "toc.html" . }}{{ end }}
 {{ .Content }}
+{{- if in (slice "posts" "projects" "research") .Section }}
+{{- /* Shown once the reading script can make it work: the system's sharing where there is one, a copied link elsewhere. */}}
+<p class="share" data-share hidden>
+  <button type="button" class="share__button" data-copied="{{ i18n "shareCopied" }}">{{ partial "icon.html" "share-nodes" }} <span>{{ i18n "share" }}</span></button>
+</p>
+{{- end }}
 {{- if eq .Section "posts" }}
 <nav class="pager" aria-label="{{ i18n "pagerLabel" }}">
   {{- with .PrevInSection }}

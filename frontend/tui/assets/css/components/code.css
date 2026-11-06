@@ -83,4 +83,25 @@
     color: var(--color-link);
     font-weight: bold;
   }
+
+  /* Sharing, at the end of the text. */
+  .share {
+    margin-block: calc(2 * var(--cell-height)) 0;
+  }
+
+  .share__button {
+    display: inline-flex;
+    gap: var(--cell-width);
+    align-items: center;
+    padding: 0 var(--cell-width);
+    border: var(--line);
+    background: none;
+    color: var(--color-link);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .share__button:is(:hover, :focus-visible) {
+    background-color: var(--color-surface-1);
+  }
 }

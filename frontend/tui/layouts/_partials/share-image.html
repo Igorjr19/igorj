@@ -1,0 +1,38 @@
+{{- /*
+  The picture a link preview shows: the background of the default dark theme, what the page is (a post, a
+  project or a research work) and its title in Fira Code, the author's name, and the dithered photo on the right.
+  Pages that are not one item show the name and the role. Returns the image, made once per page at build time.
+*/ -}}
+{{- $themes := hugo.Data.generated.themes }}
+{{- $family := index (where $themes.families "name" $themes.defaultFamily) 0 }}
+{{- $theme := index (where $family.themes "id" $family.system.dark) 0 }}
+{{- $background := index $theme.swatch 0 }}
+{{- $text := index $theme.swatch 1 }}
+{{- $accent := $text }}
+{{- with $themes.accents }}{{ $default := .default }}{{ range .options }}{{ if eq .name $default }}{{ with index .colors $theme.id }}{{ $accent = . }}{{ end }}{{ end }}{{ end }}{{ end }}
+{{- $profile := (partial "model.html" .).profile }}
+{{- $author := partial "author.html" . }}
+{{- $host := urls.Parse site.BaseURL }}
+{{- $label := $host.Host }}
+{{- $title := $author }}
+{{- $footer := partial "role.html" . }}
+{{- if and .IsPage (in (slice "posts" "projects" "research") .Section) }}
+  {{- $label = printf "%s · %s" $host.Host (i18n (printf "section%s" (title .Section))) }}
+  {{- $title = .Title }}
+  {{- $footer = $author }}
+{{- end }}
+{{- $canvas := resources.Get "share/canvas.png" }}
+{{- $bold := resources.Get "share/fonts/FiraCode-Bold.ttf" }}
+{{- $regular := resources.Get "share/fonts/FiraCode-Regular.ttf" }}
+{{- $image := $canvas.Process (printf "resize 1200x630 jpg q90 %s" $background) }}
+{{- /* The title is drawn on a layer as wide as the room beside the photo, so its lines wrap before reaching it. */}}
+{{- $titleLayer := ($canvas.Process "resize 680x360 png").Filter (images.Text $title (dict "color" $text "size" 58 "linespacing" 14 "x" 0 "y" 0 "font" $bold)) }}
+{{- $filters := slice
+  (images.Text $label (dict "color" $accent "size" 26 "x" 72 "y" 72 "font" $regular))
+  (images.Overlay $titleLayer 72 150)
+  (images.Text $footer (dict "color" $text "size" 28 "x" 72 "y" 528 "font" $regular)) }}
+{{- with and $profile $profile.photo }}{{ with resources.Get (printf "media/%s" .) }}
+  {{- $photo := (.Resize "x486").Filter (images.Dither (dict "colors" (slice $background $accent))) }}
+  {{- $filters = $filters | append (images.Overlay $photo (sub 1128 $photo.Width) 72) }}
+{{- end }}{{ end }}
+{{- return $image.Filter $filters }}

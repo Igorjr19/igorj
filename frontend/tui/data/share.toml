@@ -1,0 +1,11 @@
+# Fonts the share images are drawn with at build time. The site's own fonts only come as WOFF, which
+# Hugo cannot draw with, so these TTF files are downloaded once and checked against their checksums.
+[[fonts]]
+file = "FiraCode-Bold.ttf"
+url = "https://raw.githubusercontent.com/tonsky/FiraCode/5.2/distr/ttf/FiraCode-Bold.ttf"
+sha256 = "37a609b7e27516ce0cf55cb7550edd1a1cbd8cd5bc028415a1d520c426c10357"
+
+[[fonts]]
+file = "FiraCode-Regular.ttf"
+url = "https://raw.githubusercontent.com/tonsky/FiraCode/5.2/distr/ttf/FiraCode-Regular.ttf"
+sha256 = "28c3ae21a853f1d74673384c7a0d620abb0e877b8c6cd8b64173a95512476824"
