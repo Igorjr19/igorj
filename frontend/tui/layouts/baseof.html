@@ -2,7 +2,7 @@
 <html lang="{{ site.Language.Locale }}">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   {{ partial "head/theme-script.html" . }}
   <title>{{ if eq .Kind "404" }}404{{ else if .IsHome }}{{ partial "site-title.html" . }}{{ else }}{{ partial "page-title.html" . }} · {{ partial "site-title.html" . }}{{ end }}</title>
@@ -15,12 +15,18 @@
   {{ partial "head/font-preloads.html" . }}
   {{ partial "head/styles.html" . }}
 </head>
-<body>
-  {{ partial "header.html" . }}
-  <main>
-    {{ block "main" . }}{{ end }}
-  </main>
-  {{ partial "dock.html" . }}
+<body{{ if .IsPage }} class="is-zoomed"{{ end }}>
+  <div class="win">
+    {{ partial "window/top.html" . }}
+    <div class="win__body">
+      {{ partial "window/side.html" . }}
+      <main class="pane" id="pane" tabindex="-1">
+        {{ block "main" . }}{{ end }}
+      </main>
+    </div>
+    {{ partial "window/statusbar.html" . }}
+  </div>
+  {{ partial "keybar.html" . }}
   {{- if eq .Kind "404" }}
   {{- with resources.Get "ts/not-found/main.ts" | js.Build (dict "minify" true) | fingerprint }}
   <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>

@@ -1,0 +1,37 @@
+{{- $model := partial "model.html" . }}
+<div class="listening">
+  <section aria-labelledby="music-title">
+    <h2 class="label" id="music-title">{{ i18n "panelListening" }}</h2>
+    {{- with $model.music }}{{ with .artists }}
+    {{- $total := 0 }}{{ $max := 1 }}
+    {{- range . }}{{ $total = add $total .plays }}{{ if gt .plays $max }}{{ $max = .plays }}{{ end }}{{ end }}
+    <p class="panel__meta">{{ i18n (cond (eq $model.music.period "month") "periodMonth" "periodWeek") }} · {{ i18n "playsTotal" (dict "Count" $total) }}</p>
+    {{ partial "external-age.html" $model.music.updated }}
+    {{ partial "bars.html" (dict "artists" . "max" $max) }}
+    <p class="panel__meta">{{ i18n "sourceLastfm" }}</p>
+    {{- else }}{{ partial "panels/empty.html" $ }}{{ end }}{{ else }}{{ partial "panels/empty.html" . }}{{ end }}
+  </section>
+  <section aria-labelledby="films-title">
+    <h2 class="label" id="films-title">{{ i18n "panelWatched" }}</h2>
+    {{- with $model.films }}{{ with .films }}
+    {{ partial "external-age.html" $model.films.updated }}
+    {{ partial "films.html" . }}
+    <p class="panel__meta">{{ i18n "sourceLetterboxd" }}</p>
+    {{- else }}{{ partial "panels/empty.html" $ }}{{ end }}{{ else }}{{ partial "panels/empty.html" . }}{{ end }}
+  </section>
+  <section aria-labelledby="reading-title">
+    <h2 class="label" id="reading-title">{{ i18n "panelReading" }}</h2>
+    {{- $kind := dict "book" "kindBook" "paper" "kindPaper" }}
+    {{- with $model.reading }}
+    <ul class="films">
+      {{- range $item := . }}
+      <li class="films__row films__row--reading">
+        <span class="films__title">{{ with .url }}<a href="{{ . }}">{{ $item.title }}</a>{{ else }}<cite>{{ $item.title }}</cite>{{ end }}</span>
+        <span class="films__year">{{ i18n (index $kind .kind) }}</span>
+        <span class="films__authors">{{ delimit .authors ", " }}</span>
+      </li>
+      {{- end }}
+    </ul>
+    {{- else }}{{ partial "panels/empty.html" . }}{{ end }}
+  </section>
+</div>

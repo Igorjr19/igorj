@@ -8,11 +8,11 @@ const SHORT = { width: 600, height: 200 };
 
 function readFrame() {
   return {
-    path: [...document.querySelectorAll('.zoom__path a')].map((link) => ({
+    path: [...document.querySelectorAll('.pane__path a')].map((link) => ({
       text: link.textContent,
       href: link.getAttribute('href'),
     })),
-    back: document.querySelector('.zoom__back')?.getAttribute('href'),
+    back: document.querySelector('.pane__back')?.getAttribute('href'),
     status: [...document.querySelectorAll('.status-line > span')]
       .filter((item) => item.checkVisibility())
       .map((item) => item.textContent?.replace(/\s+/g, ' ').trim()),
@@ -57,19 +57,21 @@ Deno.test('inner pages show the path, a way back and a status line', async (t) =
     assertEquals(frame.status, ['en', '4 items']);
   });
 
-  await t.step('the frame is a whole number of cells wide and the content stops at 80 columns', async () => {
+  await t.step('the text of a post stops at 80 columns, centered in the zoomed pane', async () => {
     const page = await session.open(POST_EN, { viewport: { width: 1441, height: 900 } });
     const sizes = await page.evaluate(async () => {
       await document.fonts.load(`${getComputedStyle(document.body).fontSize} 'Fira Code'`);
       const cell = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-width'));
+      const pane = document.querySelector('.pane')?.getBoundingClientRect();
+      const body = document.querySelector('.zoom__body')?.getBoundingClientRect();
       return {
         cell,
-        frame: document.querySelector('.zoom')?.getBoundingClientRect().width ?? 0,
-        body: document.querySelector('.zoom__body')?.getBoundingClientRect().width ?? 0,
+        body: body?.width ?? 0,
+        offCenter: Math.abs((body?.left ?? 0) - (pane?.left ?? 0) - ((pane?.right ?? 0) - (body?.right ?? 0))),
       };
     });
-    assert(Math.abs(sizes.frame / sizes.cell - Math.round(sizes.frame / sizes.cell)) < 0.01);
     assertEquals(Math.round(sizes.body / sizes.cell), 80);
+    assert(sizes.offCenter < 2 * sizes.cell, `${sizes.offCenter}px off center`);
   });
 });
 
@@ -97,7 +99,7 @@ Deno.test('the read percentage follows the scroll and exists only with JavaScrip
   });
 });
 
-Deno.test('q goes to the parent page, and the status line sits right above the key bar', async (t) => {
+Deno.test('q goes to the parent page, and the status line closes the window at the bottom of the screen', async (t) => {
   await using session = await Session.start();
 
   await t.step('q on a post leads to the list; on the list, to the home', async () => {
@@ -116,14 +118,20 @@ Deno.test('q goes to the parent page, and the status line sits right above the k
     assertEquals(new URL(page.url).pathname, HOME_EN);
   });
 
-  await t.step('the status line ends where the key bar starts, at the bottom of the window', async () => {
+  await t.step('the status line is the last row of the window, one cell above the bottom of the screen', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
-    const edges = await page.evaluate(() => ({
-      statusBottom: document.querySelector('.status-line')?.getBoundingClientRect().bottom,
-      keybarTop: document.querySelector('.keybar')?.getBoundingClientRect().top,
-      keybarBottom: document.querySelector('.keybar')?.getBoundingClientRect().bottom,
-    }));
-    assertEquals(edges.statusBottom, edges.keybarTop);
-    assertEquals(edges.keybarBottom, WIDE.height);
+    const edges = await page.evaluate(() => {
+      const win = document.querySelector('.win')?.getBoundingClientRect();
+      return {
+        statusBottom: Math.round(document.querySelector('.statusbar')?.getBoundingClientRect().bottom ?? 0),
+        windowBottom: Math.round((win?.bottom ?? 0) - 1),
+        gap: Math.round(innerHeight - (win?.bottom ?? 0)),
+        cell: Math.round(
+          Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-height')),
+        ),
+      };
+    });
+    assertEquals(edges.statusBottom, edges.windowBottom);
+    assertEquals(edges.gap, edges.cell);
   });
 });

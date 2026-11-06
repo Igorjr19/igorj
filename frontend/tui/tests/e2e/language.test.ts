@@ -11,7 +11,7 @@ Deno.test('the language switcher is remembered and the root address follows it',
 
   await t.step('choosing Portuguese with the switcher beats an English browser at the root next time', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.site-header__languages a')?.click());
+    await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.win__languages a')?.click());
     await page.waitForNavigation();
     assertEquals(await page.evaluate(() => localStorage.getItem('language')), 'pt');
     const root = await session.open('/', { viewport: WIDE, acceptLanguage: 'en-US', savedStorage: { language: 'pt' } });
@@ -30,27 +30,27 @@ Deno.test('the language switcher is remembered and the root address follows it',
   );
 });
 
-Deno.test('posts written only in the other language carry a language label on the home too', async (t) => {
+Deno.test('posts written only in the other language are marked with their language on the home too', async (t) => {
   await using session = await Session.start();
 
   const rows = () =>
-    [...document.querySelectorAll('#posts li')].map((row) => [
-      row.querySelector('a')?.textContent?.trim(),
-      row.querySelector('span[lang]')?.textContent?.trim() ?? null,
+    [...document.querySelectorAll('#recent .recent__row')].map((row) => [
+      row.querySelector('.recent__title')?.textContent?.trim(),
+      row.getAttribute('lang'),
     ]);
 
   await t.step('the English home labels the Portuguese-only post and leaves the others alone', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
     const labelled = (await page.evaluate(rows)).filter(([, label]) => label !== null);
-    assertEquals(labelled, [['Post só em português', 'Português']]);
+    assertEquals(labelled, [['Post só em português', 'pt-BR']]);
   });
 
   await t.step('the Portuguese home labels the English-only posts', async () => {
     const page = await session.open(HOME_PT, { viewport: WIDE, javascript: false });
     const labelled = (await page.evaluate(rows)).filter(([, label]) => label !== null);
     assertEquals(labelled, [
-      ['Film fixture post', 'English'],
-      ['Second fixture post', 'English'],
+      ['Film fixture post', 'en'],
+      ['Second fixture post', 'en'],
     ]);
   });
 });

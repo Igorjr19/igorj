@@ -102,6 +102,31 @@ helpEscape = "Fechar esta ajuda"
 helpIgnored = "Os atalhos não fazem nada com Ctrl, Alt ou Meta pressionado ou enquanto você digita num campo."
 helpClose = "Fechar"
 
+panes = "Painéis"
+paneHome = "Início"
+paneProjects = "Projetos"
+panePosts = "Escrita"
+paneResearch = "Pesquisa"
+paneCv = "Currículo"
+paneListening = "Ouvindo e assistindo"
+sectionListening = "ouvindo"
+recent = "Recentes"
+kindProject = "Projeto"
+systemContent = "Conteúdo"
+systemData = "Dados"
+sourceLastfm = "Reproduções no Last.fm."
+sourceLetterboxd = "Diário do Letterboxd."
+modeNormal = "NORMAL"
+modeReading = "LEITURA"
+keyView = "lista ou grade"
+keyZoom = "zoom"
+helpView = "Alternar entre lista com prévia e grade"
+helpZoom = "Esconder ou mostrar a coluna lateral"
+helpPosts = "Ir para o post anterior ou o próximo, lendo um post"
+
+preview = "Prévia"
+previewOpen = "enter para abrir"
+
 [readingTime]
 one = "{{ .Count }} min de leitura"
 other = "{{ .Count }} min de leitura"
@@ -113,3 +138,19 @@ other = "{{ .Count }} itens"
 [plays]
 one = "{{ .Count }} reprodução"
 other = "{{ .Count }} reproduções"
+
+[playsTotal]
+one = "{{ .Count }} reprodução na semana"
+other = "{{ .Count }} reproduções na semana"
+
+[countPosts]
+one = "{{ .Count }} texto"
+other = "{{ .Count }} textos"
+
+[countProjects]
+one = "{{ .Count }} projeto"
+other = "{{ .Count }} projetos"
+
+[countResearch]
+one = "{{ .Count }} pesquisa"
+other = "{{ .Count }} pesquisas"

@@ -17,15 +17,13 @@ const WIDE = { width: 1440, height: 900 };
 function readList() {
   return {
     heading: document.querySelector('h1')?.textContent,
-    titles: [...document.querySelectorAll('.zoom__body .entries > li > a:first-of-type')].map((link) =>
-      link.textContent?.trim(),
-    ),
+    titles: [...document.querySelectorAll('.zoom__body .item__title')].map((title) => title.textContent?.trim()),
     filter: [...document.querySelectorAll('.filter li')].map((item) => item.textContent?.replace(/\s+/g, ' ').trim()),
     current: document.querySelector('.filter [aria-current="page"]')?.textContent,
     feeds: [...document.querySelectorAll('.zoom__body > p a')].map(
       (link) => `${link.textContent} ${link.getAttribute('href')}`,
     ),
-    back: document.querySelector('.zoom__back')?.getAttribute('href'),
+    back: document.querySelector('.pane__back')?.getAttribute('href'),
   };
 }
 
@@ -47,12 +45,13 @@ Deno.test('the post list shows every published post, newest first, with a catego
   await t.step('a post written only in Portuguese is listed in English with a language label', async () => {
     const page = await session.open(POSTS_EN, { viewport: WIDE, javascript: false });
     const labels = await page.evaluate(() =>
-      [...document.querySelectorAll('.zoom__body .entries > li span[lang]')].map((label) => [
-        label.closest('li')?.querySelector('a')?.textContent?.trim(),
-        label.textContent?.trim(),
+      [...document.querySelectorAll('.zoom__body .item__link[lang]')].map((link) => [
+        link.querySelector('.item__title')?.textContent?.trim(),
+        link.getAttribute('lang'),
+        link.querySelector('.item__meta')?.textContent?.split(' · ').at(-1),
       ]),
     );
-    assertEquals(labels, [['Post só em português', 'Português']]);
+    assertEquals(labels, [['Post só em português', 'pt-BR', 'Português']]);
   });
 
   await t.step('the heading and the category names follow the interface language', async () => {
@@ -82,14 +81,18 @@ Deno.test('projects show their facts in the list and on their own page', async (
     assertEquals(
       await page.evaluate(() => [
         document.querySelector('h1')?.textContent,
-        ...[...document.querySelectorAll('.zoom__body .entries li')].map((row) =>
-          row.textContent?.replace(/\s+/g, ' ').trim(),
+        ...[...document.querySelectorAll('.zoom__body .item')].map((row) =>
+          [
+            row.querySelector('.item__title')?.textContent?.trim(),
+            [...row.querySelectorAll('.chip')].map((chip) => chip.textContent).join(' · '),
+            row.querySelector('.item__summary')?.textContent?.trim(),
+          ].join(' | '),
         ),
       ]),
       [
         'Projects',
-        'Second fixture project go A project the weight puts first, although its title sorts after the other.',
-        'Fixture project hugo · deno A project used by the end-to-end tests.',
+        'Second fixture project | go | A project the weight puts first, although its title sorts after the other.',
+        'Fixture project | hugo · deno | A project used by the end-to-end tests.',
       ],
     );
   });

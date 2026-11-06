@@ -27,38 +27,44 @@ Deno.test('isShortcutCandidate ignores typing: text fields, IME composition and 
   assertEquals(isShortcutCandidate({ ...PLAIN, defaultPrevented: true }, false), false);
 });
 
-Deno.test('actionForKey maps digits to existing panels only', () => {
-  assertEquals(actionForKey('1', 8), { kind: 'panel', index: 0 });
-  assertEquals(actionForKey('8', 8), { kind: 'panel', index: 7 });
-  assertEquals(actionForKey('9', 8), null);
-  assertEquals(actionForKey('0', 8), null);
+Deno.test('actionForKey maps digits to existing panes only', () => {
+  assertEquals(actionForKey('1', 6, false), { kind: 'pane', index: 0 });
+  assertEquals(actionForKey('6', 6, false), { kind: 'pane', index: 5 });
+  assertEquals(actionForKey('7', 6, false), null);
+  assertEquals(actionForKey('0', 6, false), null);
 });
 
-Deno.test('actionForKey moves with j, k and the arrows only where there are panels, so arrows still scroll elsewhere', () => {
-  assertEquals(actionForKey('j', 8), { kind: 'move', step: 1 });
-  assertEquals(actionForKey('ArrowDown', 8), { kind: 'move', step: 1 });
-  assertEquals(actionForKey('k', 8), { kind: 'move', step: -1 });
-  assertEquals(actionForKey('ArrowUp', 8), { kind: 'move', step: -1 });
-  assertEquals(actionForKey('ArrowDown', 0), null);
-  assertEquals(actionForKey('1', 0), null);
+Deno.test('actionForKey moves with j, k and the arrows only where there are items, so arrows still scroll elsewhere', () => {
+  assertEquals(actionForKey('j', 6, true), { kind: 'move', step: 1 });
+  assertEquals(actionForKey('ArrowDown', 6, true), { kind: 'move', step: 1 });
+  assertEquals(actionForKey('k', 6, true), { kind: 'move', step: -1 });
+  assertEquals(actionForKey('ArrowUp', 6, true), { kind: 'move', step: -1 });
+  assertEquals(actionForKey('ArrowDown', 6, false), null);
+  assertEquals(actionForKey('1', 0, false), null);
 });
 
-Deno.test('actionForKey navigates with q, n and p on any page, since pages without that link ignore the key', () => {
-  assertEquals(actionForKey('q', 0), { kind: 'navigate', target: 'back' });
-  assertEquals(actionForKey('n', 0), { kind: 'navigate', target: 'next' });
-  assertEquals(actionForKey('p', 0), { kind: 'navigate', target: 'previous' });
-  assertEquals(actionForKey('Q', 0), null);
+Deno.test('actionForKey goes back with q or h and moves between posts with n and p, since pages without that link ignore the key', () => {
+  assertEquals(actionForKey('q', 0, false), { kind: 'navigate', target: 'back' });
+  assertEquals(actionForKey('h', 0, false), { kind: 'navigate', target: 'back' });
+  assertEquals(actionForKey('n', 0, false), { kind: 'navigate', target: 'next' });
+  assertEquals(actionForKey('p', 0, false), { kind: 'navigate', target: 'previous' });
+  assertEquals(actionForKey('Q', 0, false), null);
+});
+
+Deno.test('actionForKey switches the list view with v and zooms the pane with z', () => {
+  assertEquals(actionForKey('v', 6, true), { kind: 'view' });
+  assertEquals(actionForKey('z', 6, false), { kind: 'zoom' });
 });
 
 Deno.test('actionForKey opens the theme picker with t on every page', () => {
-  assertEquals(actionForKey('t', 0), { kind: 'theme' });
-  assertEquals(actionForKey('t', 8), { kind: 'theme' });
+  assertEquals(actionForKey('t', 0, false), { kind: 'theme' });
+  assertEquals(actionForKey('t', 6, true), { kind: 'theme' });
 });
 
 Deno.test('actionForKey opens the help on every page and leaves / and quote alone', () => {
-  assertEquals(actionForKey('?', 0), { kind: 'help' });
-  assertEquals(actionForKey('/', 8), null);
-  assertEquals(actionForKey("'", 8), null);
+  assertEquals(actionForKey('?', 0, false), { kind: 'help' });
+  assertEquals(actionForKey('/', 6, true), null);
+  assertEquals(actionForKey("'", 6, true), null);
 });
 
 Deno.test('stepIndex stops at both ends instead of wrapping around', () => {

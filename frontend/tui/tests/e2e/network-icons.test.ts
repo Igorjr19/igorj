@@ -9,7 +9,7 @@ Deno.test('network links carry their brand icon in the link color, hidden from s
   await using session = await Session.start();
   const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
   const links = await page.evaluate(() =>
-    [...document.querySelectorAll('#system dd a[href^="http"]:not(:has(code))')].map((link) => {
+    [...document.querySelectorAll('.side__links a[href^="http"]')].map((link) => {
       const icon = link.querySelector('svg.icon');
       return {
         name: link.textContent?.trim(),

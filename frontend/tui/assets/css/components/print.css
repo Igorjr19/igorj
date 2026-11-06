@@ -10,14 +10,23 @@
       --color-link: CanvasText;
     }
 
-    .site-header,
-    .dock,
-    .zoom__bar {
+    .win__top,
+    .side,
+    .statusbar,
+    .pane__bar {
       display: none;
     }
 
-    .zoom {
-      inline-size: auto;
+    /* On paper the window is just the page: no frame, no inner scrolling, no fixed height. */
+    body,
+    .win,
+    .win__body,
+    .pane {
+      display: block;
+      block-size: auto;
+      padding: 0;
+      border: 0;
+      overflow: visible;
     }
   }
 }

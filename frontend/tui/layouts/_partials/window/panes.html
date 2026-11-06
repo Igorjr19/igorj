@@ -1,0 +1,15 @@
+{{- /* The panes of the window, in the order of their number keys. Each has the page it opens and, for lists, how many items it holds. */ -}}
+{{- $model := partial "model.html" . }}
+{{- $panes := slice }}
+{{- range slice
+  (dict "key" "home" "path" "/" "label" "paneHome")
+  (dict "key" "projects" "path" "/projects" "label" "paneProjects" "count" (len $model.projects))
+  (dict "key" "posts" "path" "/posts" "label" "panePosts" "count" (len $model.posts))
+  (dict "key" "research" "path" "/research" "label" "paneResearch" "count" (len $model.research))
+  (dict "key" "cv" "path" "/cv" "label" "paneCv")
+  (dict "key" "listening" "path" "/listening" "label" "paneListening")
+}}
+  {{- $pane := . }}
+  {{- with site.GetPage .path }}{{ $panes = $panes | append (merge $pane (dict "page" .)) }}{{ end }}
+{{- end }}
+{{- return $panes }}

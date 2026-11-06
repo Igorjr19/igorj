@@ -16,8 +16,15 @@
 {{- /* A category lists only the posts written in the page language; the blog lists every post the model gives it. */ -}}
 {{- $posts := (partial "model.html" .).posts }}
 {{- if eq .Kind "term" }}{{ $posts = where (where $posts "language" site.Language.Lang) "category.slug" .Data.Term }}{{ end }}
-<ul class="entries">
-  {{- range $posts }}
-  {{ partial "post-entry.html" (dict "item" . "summary" true) }}
-  {{- end }}
-</ul>
+<div class="items" data-items data-preview-label="{{ i18n "preview" }}" data-open-hint="{{ i18n "previewOpen" }}">
+  <ul class="items__list">
+    {{- range $posts }}
+    {{- $item := . }}
+    {{- with partial "item-page.html" (dict "section" "posts" "item" .) }}
+    {{- $meta := printf "%s · %s" $item.category.name $item.date }}
+    {{- if ne .Language.Lang site.Language.Lang }}{{ $meta = printf "%s · %s" $meta .Language.Label }}{{ end }}
+    {{ partial "item-row.html" (dict "page" . "item" $item "meta" $meta "summary" $item.summary "color" (printf "var(--color-category-%s)" $item.category.slug)) }}
+    {{- end }}
+    {{- end }}
+  </ul>
+</div>

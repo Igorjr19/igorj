@@ -1,0 +1,14 @@
+{{- /* The week's artists as bars scaled to the most played one. */ -}}
+{{- $model := partial "model.html" . }}
+{{- $href := "" }}{{ with site.GetPage "/listening" }}{{ $href = .RelPermalink }}{{ end }}
+<section class="panel widget" box-="square" id="listening" aria-labelledby="listening-title">
+  <h2 class="panel__title" id="listening-title">{{ with $href }}<a href="{{ . }}">{{ i18n "panelListening" | lower }}</a>{{ else }}{{ i18n "panelListening" | lower }}{{ end }}</h2>
+  {{- with $model.music }}{{ with .artists }}
+  {{- $total := 0 }}{{ $max := 1 }}
+  {{- range . }}{{ $total = add $total .plays }}{{ if gt .plays $max }}{{ $max = .plays }}{{ end }}{{ end }}
+  <p class="panel__meta">{{ i18n "playsTotal" (dict "Count" $total) }}</p>
+  {{ partial "external-age.html" $model.music.updated }}
+  {{ partial "bars.html" (dict "artists" (first 3 .) "max" $max) }}
+  {{- else }}{{ partial "panels/empty.html" $ }}{{ end }}
+  {{- else }}{{ partial "panels/empty.html" . }}{{ end }}
+</section>

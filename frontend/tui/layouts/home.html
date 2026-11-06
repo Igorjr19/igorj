@@ -1,25 +1,18 @@
 {{ define "main" }}
 {{- partial "checks/languages.html" . }}
-{{- $listeningSummary := i18n "noData" }}
-{{- $model := partial "model.html" . }}
-{{- with $model.music }}{{ with index .artists 0 }}{{ $listeningSummary = .name }}{{ end }}{{ end }}
-{{- $watchedSummary := i18n "noData" }}
-{{- with $model.films }}{{ with index .films 0 }}{{ $watchedSummary = .title }}{{ end }}{{ end }}
-{{- $projectsHref := "" }}
-{{- with site.GetPage "/projects" }}{{ $projectsHref = .RelPermalink }}{{ end }}
-{{- $postsHref := "" }}
-{{- with site.GetPage "/posts" }}{{ $postsHref = .RelPermalink }}{{ end }}
-<div class="grid">
-  {{ partial "panel.html" (dict "id" "about" "number" 1 "title" (i18n "panelAbout") "wide" true "body" (partial "panels/about.html" .)) }}
-  {{ partial "panel.html" (dict "id" "now" "number" 2 "title" (i18n "panelNow") "wide" true "body" (partial "panels/now.html" .)) }}
-  {{ partial "panel.html" (dict "id" "projects" "number" 3 "title" (i18n "panelProjects") "wide" true "href" $projectsHref "body" (partial "panels/projects.html" .)) }}
-  {{ partial "panel.html" (dict "id" "posts" "number" 4 "title" (i18n "panelPosts") "wide" true "href" $postsHref "body" (partial "panels/posts.html" .)) }}
-  {{ partial "panel.html" (dict "id" "reading" "number" 5 "title" (i18n "panelReading") "body" (partial "panels/reading.html" .)) }}
-  {{ partial "panel.html" (dict "id" "listening" "number" 6 "title" (i18n "panelListening") "summary" $listeningSummary "body" (partial "panels/listening.html" .)) }}
-  {{ partial "panel.html" (dict "id" "watched" "number" 7 "title" (i18n "panelWatched") "summary" $watchedSummary "body" (partial "panels/watched.html" .)) }}
-  {{ partial "panel.html" (dict "id" "system" "number" 8 "title" (i18n "panelSystem") "body" (partial "panels/system.html" .)) }}
+{{ partial "window/pane-bar.html" . }}
+<div class="home">
+  {{ partial "home/hero.html" . }}
+  {{ partial "home/recent.html" . }}
+  <div class="home__widgets">
+    {{ partial "home/system.html" . }}
+    {{ partial "home/listening.html" . }}
+    {{ partial "home/watched.html" . }}
+  </div>
 </div>
-{{- with resources.Get "ts/home/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+{{- range slice "ts/home/main.ts" "ts/name/main.ts" }}
+{{- with resources.Get . | js.Build (dict "minify" true) | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}
 {{- end }}
 {{ end }}

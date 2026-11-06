@@ -1,0 +1,19 @@
+{{- /* The photo, the name (drawn as animated characters when JavaScript runs), the role and the three lines. */ -}}
+{{- with (partial "model.html" .).profile }}
+{{- $profile := . }}
+<section class="hero" aria-labelledby="hero-name">
+  {{- with .photo }}{{ with resources.Get (printf "media/%s" .) }}
+  {{ partial "dither.html" (dict "image" . "alt" $profile.photoAlt "class" "hero__photo" "width" 480 "ink" "var(--color-accent)") }}
+  {{- end }}{{ end }}
+  <div class="hero__text">
+    <h1 class="hero__name" id="hero-name" data-ascii-name>{{ partial "author.html" $ }}</h1>
+    <p class="hero__role">{{ partial "role.html" $ }}<span class="cursor" aria-hidden="true"></span></p>
+    <ul class="hero__lines">
+      {{- range .lines }}
+      <li>{{ . }}</li>
+      {{- end }}
+    </ul>
+    <p class="hero__location">{{ .location }}</p>
+  </div>
+</section>
+{{- end }}

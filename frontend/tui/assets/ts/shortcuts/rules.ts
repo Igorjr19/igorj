@@ -10,9 +10,11 @@ export interface KeyEventLike {
 export type NavigationTarget = 'back' | 'next' | 'previous';
 
 export type ShortcutAction =
-  | { readonly kind: 'panel'; readonly index: number }
+  | { readonly kind: 'pane'; readonly index: number }
   | { readonly kind: 'move'; readonly step: 1 | -1 }
   | { readonly kind: 'navigate'; readonly target: NavigationTarget }
+  | { readonly kind: 'view' }
+  | { readonly kind: 'zoom' }
   | { readonly kind: 'theme' }
   | { readonly kind: 'help' };
 
@@ -34,20 +36,23 @@ const KEY_ACTIONS: ReadonlyMap<string, ShortcutAction> = new Map([
   ['k', { kind: 'move', step: -1 }],
   ['ArrowUp', { kind: 'move', step: -1 }],
   ['q', { kind: 'navigate', target: 'back' }],
+  ['h', { kind: 'navigate', target: 'back' }],
   ['n', { kind: 'navigate', target: 'next' }],
   ['p', { kind: 'navigate', target: 'previous' }],
+  ['v', { kind: 'view' }],
+  ['z', { kind: 'zoom' }],
   ['t', { kind: 'theme' }],
   ['?', { kind: 'help' }],
 ]);
 
-export function actionForKey(key: string, panelCount: number): ShortcutAction | null {
+/** What a key does on a page with `paneCount` panes; moving needs a list of items, so elsewhere the arrows keep scrolling. */
+export function actionForKey(key: string, paneCount: number, hasItems: boolean): ShortcutAction | null {
   if (/^[1-9]$/.test(key)) {
     const index = Number(key) - 1;
-    return index < panelCount ? { kind: 'panel', index } : null;
+    return index < paneCount ? { kind: 'pane', index } : null;
   }
   const action = KEY_ACTIONS.get(key) ?? null;
-  // Without panels the arrows keep scrolling the page.
-  return action?.kind === 'move' && panelCount === 0 ? null : action;
+  return action?.kind === 'move' && !hasItems ? null : action;
 }
 
 /** Moves within a list without wrapping; from no selection, either direction starts at the first item. */

@@ -1,4 +1,9 @@
 {{ define "main" }}
 {{- $body := partial "zoom-list.html" . }}
 {{ partial "zoom.html" (dict "page" . "body" $body) }}
+{{- if or (in (slice "projects" "posts" "research") .Section) (eq .Kind "term") }}
+{{- with resources.Get "ts/items/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}
+{{- end }}
 {{ end }}

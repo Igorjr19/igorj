@@ -5,11 +5,11 @@ import { Session } from './support/session.ts';
 
 const WIDE = { width: 1440, height: 900 };
 
-function readDither(selector: string) {
+function readDither(selector: string, inkRole: string) {
   const photo = document.querySelector(selector) as HTMLElement;
   const style = getComputedStyle(photo);
   const probe = document.createElement('span');
-  probe.style.color = getComputedStyle(document.documentElement).getPropertyValue('--color-text');
+  probe.style.color = getComputedStyle(document.documentElement).getPropertyValue(inkRole);
   document.body.append(probe);
   const text = getComputedStyle(probe).color;
   probe.remove();
@@ -61,21 +61,21 @@ function assertBlackAndWhiteNegatives(images: Awaited<ReturnType<typeof readColo
   assertEquals(normal.white + inverted.white, normal.total);
 }
 
-Deno.test('the photo is two-color dithering inked with the theme text color', async (t) => {
+Deno.test('the photo is two-color dithering inked with the theme accent', async (t) => {
   await using session = await Session.start();
 
-  await t.step('it has a real text alternative and sits on the cell grid', async () => {
+  await t.step('it has a real text alternative and is a whole number of cells wide', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await page.evaluate(() => document.fonts.ready);
-    const photo = await page.evaluate(readDither, { args: ['.about__photo'] });
+    const photo = await page.evaluate(readDither, { args: ['.hero__photo', '--color-accent'] });
     assertEquals([photo.role, photo.label], ['img', 'Fixture photo']);
-    assertEquals([Math.round(photo.width), Math.round(photo.height)], [16, 8]);
+    assertEquals(Math.round(photo.width * 100) / 100, 36);
   });
 
   await t.step('on a dark theme the ink is where the photo is bright, on a light one where it is dark', async () => {
     for (const scheme of ['dark', 'light'] as const) {
       const page = await session.open(HOME_EN, { viewport: WIDE, colorScheme: scheme });
-      const photo = await page.evaluate(readDither, { args: ['.about__photo'] });
+      const photo = await page.evaluate(readDither, { args: ['.hero__photo', '--color-accent'] });
       const transparent = 'rgba(0, 0, 0, 0)';
       assertEquals(
         [photo.onBright, photo.onDark],
@@ -86,7 +86,7 @@ Deno.test('the photo is two-color dithering inked with the theme text color', as
 
   await t.step('both images are pure black and white, one the negative of the other', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    assertBlackAndWhiteNegatives(await page.evaluate(readColors, { args: ['.about__photo'] }));
+    assertBlackAndWhiteNegatives(await page.evaluate(readColors, { args: ['.hero__photo'] }));
   });
 });
 
@@ -96,7 +96,7 @@ Deno.test('images in posts get the same dithering as the photo, at their own pro
   await t.step('the image keeps its text alternative and its 16:9 shape, inked with the theme text', async () => {
     for (const scheme of ['dark', 'light'] as const) {
       const page = await session.open(POST_EN, { viewport: WIDE, colorScheme: scheme });
-      const figure = await page.evaluate(readDither, { args: ['.prose .dither--figure'] });
+      const figure = await page.evaluate(readDither, { args: ['.prose .dither--figure', '--color-text'] });
       const transparent = 'rgba(0, 0, 0, 0)';
       assertEquals(
         [figure.role, figure.label, Math.round(figure.ratio * 9)],

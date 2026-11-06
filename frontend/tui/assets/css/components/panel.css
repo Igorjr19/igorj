@@ -20,15 +20,6 @@
     line-height: var(--cell-height);
   }
 
-  /* Home panel names read like btop boxes; page titles keep the author's capitalisation. */
-  .panel__name {
-    text-transform: lowercase;
-  }
-
-  .panel__shortcut {
-    color: var(--color-text-muted);
-  }
-
   .panel__meta {
     color: var(--color-text-muted);
   }
@@ -59,49 +50,5 @@
   .facts > dd {
     grid-column: 2;
     margin: 0;
-  }
-
-  /* Reverse video marks the row under the mouse or holding the focus; everything in it takes the inverted colors. */
-  .grid > .panel :is(li, dd, .panel__summary):is(:hover, :focus-visible, :has(:focus-visible)) {
-    background-color: var(--color-selection-background);
-    color: var(--color-selection-text);
-
-    & * {
-      color: inherit;
-    }
-
-    & :focus-visible,
-    &:focus-visible {
-      outline-color: var(--color-selection-text);
-    }
-  }
-
-  /* Two rows keep the toggle above the minimum touch target. */
-  .panel__summary {
-    display: flex;
-    align-items: center;
-    min-block-size: calc(2 * var(--cell-height));
-    cursor: pointer;
-  }
-
-  .panel__summary::before {
-    content: '[+] ' / '';
-    color: var(--color-text-muted);
-    white-space: pre;
-  }
-
-  .panel__collapse[open] > .panel__summary::before {
-    content: '[-] ' / '';
-  }
-
-  /* Personal panels collapse only on narrow screens; from 80 columns they show open, without a toggle. */
-  @container screen (width >= 80ch) {
-    .panel__summary {
-      display: none;
-    }
-
-    .panel__collapse::details-content {
-      content-visibility: visible;
-    }
   }
 }

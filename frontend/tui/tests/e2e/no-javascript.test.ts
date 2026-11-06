@@ -9,9 +9,9 @@ Deno.test('content is readable with JavaScript disabled', async (t) => {
   await t.step('the home lists the sections and their items', async () => {
     const page = await session.open(HOME_EN, { javascript: false });
     const links = await page.evaluate(() =>
-      [...document.querySelectorAll('.panel a')].map((link) => link.textContent?.trim()),
+      [...document.querySelectorAll('.recent__title')].map((title) => title.textContent?.trim()),
     );
-    assert(links.includes('Fixture post'), `missing post link in ${JSON.stringify(links)}`);
+    assert(links.includes('Film fixture post'), `missing post link in ${JSON.stringify(links)}`);
     assert(links.includes('Fixture project'), `missing project link in ${JSON.stringify(links)}`);
   });
 

@@ -3,7 +3,7 @@ import type { Page } from '@astral/astral';
 import { assert, assertEquals } from '@std/assert';
 import { findAccessibilityViolations } from './support/axe.ts';
 import { waitToLeave } from './support/navigation.ts';
-import { HOME_EN, POST_EN } from './support/paths.ts';
+import { HOME_EN, POST_EN, POSTS_EN, PROJECTS_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
 
 type Key = Parameters<Page['keyboard']['press']>[0];
@@ -11,14 +11,15 @@ type Key = Parameters<Page['keyboard']['press']>[0];
 const WIDE = { width: 1440, height: 900 };
 const NARROW = { width: 360, height: 800 };
 
-function describeFocus() {
+function describeSelection() {
   const active = document.activeElement as HTMLElement;
-  const row = active.closest('li, dd');
+  const item = active.closest<HTMLElement>('.item');
   return {
-    text: active.textContent?.trim() ?? '',
-    panel: active.closest('.grid > .panel')?.id ?? null,
-    rowBackground: row ? getComputedStyle(row).backgroundColor : null,
+    title: active.querySelector('.item__title')?.textContent?.trim() ?? null,
+    selected: item?.dataset['selected'] ?? null,
+    background: getComputedStyle(active).backgroundColor,
     selection: getComputedStyle(document.documentElement).getPropertyValue('--color-selection-background').trim(),
+    preview: document.querySelector('.items__preview-title')?.textContent?.trim() ?? null,
   };
 }
 
@@ -31,33 +32,78 @@ function toRgb(color: string): string {
   return rgb;
 }
 
-Deno.test('single-key shortcuts move focus between panels and items', async (t) => {
+Deno.test('single-key shortcuts open panes and move through their items', async (t) => {
   await using session = await Session.start();
 
-  await t.step('a digit focuses the first item of that panel, shown in reverse video', async () => {
+  await t.step('a digit opens that pane from any page', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await page.keyboard.press('3');
-    const focus = await page.evaluate(describeFocus);
-    assertEquals(focus.panel, 'projects');
-    assertEquals(focus.text, 'Fixture project');
-    assertEquals(focus.rowBackground, await page.evaluate(toRgb, { args: [focus.selection] }));
+    await waitToLeave(page, HOME_EN);
+    assertEquals(new URL(page.url).pathname, POSTS_EN);
   });
 
-  await t.step('j and k move within the panel and stop at its ends', async () => {
-    const page = await session.open(HOME_EN, { viewport: WIDE });
-    await page.keyboard.press('8');
-    const visited = [(await page.evaluate(describeFocus)).text];
-    for (const key of ['j', 'ArrowDown', 'j', 'j', 'k'] as Key[]) {
+  await t.step(
+    'the digit of the open pane selects its first item, in reverse video, and shows it in the preview',
+    async () => {
+      const page = await session.open(POSTS_EN, { viewport: WIDE });
+      await page.keyboard.press('3');
+      const selection = await page.evaluate(describeSelection);
+      assertEquals(selection.title, 'Film fixture post');
+      assertEquals(selection.selected, 'true');
+      assertEquals(selection.preview, 'Film fixture post');
+      assertEquals(selection.background, await page.evaluate(toRgb, { args: [selection.selection] }));
+    },
+  );
+
+  await t.step('j and k move through the list, the preview follows, and both ends stop', async () => {
+    const page = await session.open(POSTS_EN, { viewport: WIDE });
+    const visited: (string | null)[] = [];
+    for (const key of ['j', 'ArrowDown', 'k', 'k'] as Key[]) {
       await page.keyboard.press(key);
-      visited.push((await page.evaluate(describeFocus)).text);
+      visited.push((await page.evaluate(describeSelection)).preview);
     }
-    assertEquals(visited.slice(1), ['contact@example.com', 'GitHub', 'Last.fm', 'Credits', 'Last.fm']);
+    assertEquals(visited, ['Film fixture post', 'Post só em português', 'Film fixture post', 'Film fixture post']);
   });
 
-  await t.step('a panel without links takes the focus itself', async () => {
+  await t.step('enter opens the selected item and q goes back up to the list', async () => {
+    const page = await session.open(POSTS_EN, { viewport: WIDE });
+    await page.keyboard.press('j');
+    await page.keyboard.press('Enter');
+    await waitToLeave(page, POSTS_EN);
+    assertEquals(new URL(page.url).pathname, '/en/posts/film-post/');
+    await page.keyboard.press('q');
+    await waitToLeave(page, '/en/posts/film-post/');
+    assertEquals(new URL(page.url).pathname, POSTS_EN);
+  });
+});
+
+Deno.test('single-key shortcuts change the view, zoom the pane and stay out of the way', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('v switches the list to a grid and the choice survives a reload', async () => {
+    const page = await session.open(PROJECTS_EN, { viewport: WIDE });
+    const view = () => document.querySelector<HTMLElement>('[data-items]')?.dataset['view'];
+    assertEquals(await page.evaluate(view), 'list');
+    await page.keyboard.press('v');
+    assertEquals(await page.evaluate(view), 'grid');
+    await page.reload();
+    assertEquals(await page.evaluate(view), 'grid');
+    await page.evaluate(() => localStorage.clear());
+  });
+
+  await t.step('z hides the side column and brings it back', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    await page.keyboard.press('2');
-    assertEquals(await page.evaluate(() => document.activeElement?.id), 'now');
+    const side = () => document.querySelector('.side')?.checkVisibility();
+    assertEquals(await page.evaluate(side), true);
+    await page.keyboard.press('z');
+    assertEquals(await page.evaluate(side), false);
+    await page.keyboard.press('z');
+    assertEquals(await page.evaluate(side), true);
+  });
+
+  await t.step('reading a post starts zoomed, without the side column', async () => {
+    const page = await session.open(POST_EN, { viewport: WIDE });
+    assertEquals(await page.evaluate(() => document.querySelector('.side')?.checkVisibility()), false);
   });
 
   await t.step('shortcuts ignore modifier combinations and typing in a field', async () => {
@@ -65,7 +111,7 @@ Deno.test('single-key shortcuts move focus between panels and items', async (t) 
     await page.keyboard.down('Control');
     await page.keyboard.press('3');
     await page.keyboard.up('Control');
-    assertEquals((await page.evaluate(describeFocus)).panel, null);
+    assertEquals(new URL(page.url).pathname, HOME_EN);
     await page.evaluate(() => {
       const field = document.createElement('input');
       document.body.append(field);
@@ -73,11 +119,12 @@ Deno.test('single-key shortcuts move focus between panels and items', async (t) 
     });
     await page.keyboard.press('3');
     assertEquals(await page.evaluate(() => document.activeElement?.tagName), 'INPUT');
+    assertEquals(new URL(page.url).pathname, HOME_EN);
   });
 
-  await t.step('digits do nothing on pages without panels', async () => {
+  await t.step('on a page without items the arrows keep scrolling instead of moving a selection', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
-    await page.keyboard.press('1');
+    await page.keyboard.press('ArrowDown');
     assertEquals(await page.evaluate(() => document.activeElement?.tagName), 'BODY');
   });
 });
@@ -101,98 +148,79 @@ Deno.test('help and the shortcut switch', async (t) => {
     }
   });
 
-  await t.step('turning shortcuts off stops them and survives a reload', async () => {
+  await t.step('turning shortcuts off in the help stops them and survives a reload', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    await page.locator('.keybar__hints [data-action="toggle-shortcuts"]').click();
+    await page.keyboard.press('?');
+    await page.locator('.help [data-action="toggle-shortcuts"]').click();
     await page.reload();
     await page.keyboard.press('3');
     const state = await page.evaluate(() => ({
-      focusedPanel: document.activeElement?.closest('.panel')?.id ?? null,
-      pressed: document.querySelector('.keybar [data-shortcuts-toggle]')?.getAttribute('aria-pressed'),
+      path: location.pathname,
+      pressed: document.querySelector('.help [data-shortcuts-toggle]')?.getAttribute('aria-pressed'),
     }));
-    assertEquals(state, { focusedPanel: null, pressed: 'false' });
+    assertEquals(state, { path: HOME_EN, pressed: 'false' });
     await page.evaluate(() => localStorage.clear());
   });
 });
 
-Deno.test('the key bar follows the screen and the page', async (t) => {
+Deno.test('the status line shows the keys that work on each page', async (t) => {
   await using session = await Session.start();
 
-  const visibleControls = () =>
-    [...document.querySelectorAll<HTMLElement>('.keybar span, .keybar button')]
+  const visibleKeys = () =>
+    [...document.querySelectorAll<HTMLElement>('.statusbar__keys > *, .statusbar__touch > *')]
       .filter((element) => element.checkVisibility())
       .map((element) => element.textContent?.replace(/\s+/g, ' ').trim());
 
-  await t.step('without JavaScript there is no key bar, since there are no shortcuts', async () => {
+  await t.step('without JavaScript there are no keys to show', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
-    assertEquals(await page.evaluate(visibleControls), []);
+    assertEquals(await page.evaluate(visibleKeys), []);
   });
 
-  await t.step('wide home: the keys valid on the page, help and the switch', async () => {
+  await t.step('wide home: panes, theme and help', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleControls), [
-      '1–8 panels',
-      'j k move',
-      'enter open',
-      't theme',
-      '? help',
-      'Single-key shortcuts',
-    ]);
+    assertEquals(await page.evaluate(visibleKeys), ['1–6 panels', 't theme', '? help']);
   });
 
-  await t.step('wide inner page: back, help and the switch', async () => {
+  await t.step('wide list: moving, opening and the view', async () => {
+    const page = await session.open(POSTS_EN, { viewport: WIDE });
+    assertEquals(await page.evaluate(visibleKeys), ['j k move', 'enter open', 'v list or grid', 't theme', '? help']);
+  });
+
+  await t.step('wide post: back, zoom and the neighbouring posts', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleControls), [
+    assertEquals(await page.evaluate(visibleKeys), [
       'q back',
+      'z zoom',
       'p n previous / next post',
       't theme',
       '? help',
-      'Single-key shortcuts',
     ]);
   });
 
-  await t.step('narrow home: four buttons tall enough to tap, stuck to the bottom', async () => {
+  await t.step('narrow: four buttons tall enough to tap, stuck to the bottom of the screen', async () => {
     const page = await session.open(HOME_EN, { viewport: NARROW });
     const bar = await page.evaluate(() => {
-      const buttons = [...document.querySelectorAll<HTMLElement>('.keybar__buttons button')];
+      const buttons = [...document.querySelectorAll<HTMLElement>('.statusbar__touch button')];
       return {
         labels: buttons.map((button) => button.textContent?.trim()),
         heights: buttons.map((button) => button.getBoundingClientRect().height),
-        bottom: document.querySelector('.keybar')?.getBoundingClientRect().bottom,
+        bottom: document.querySelector('.statusbar')?.getBoundingClientRect().bottom,
       };
     });
-    assertEquals(bar.labels, ['‹ previous', 'next ›', 't theme', '? help']);
+    assertEquals(bar.labels, ['‹', '›', 't', '?']);
     for (const height of bar.heights) {
       assert(height >= 44, `${height}px is below the 44px touch target`);
     }
     assertEquals(bar.bottom, NARROW.height);
   });
 
-  await t.step('narrow home: next and previous move between panels', async () => {
+  await t.step('narrow: the arrows open the next and the previous pane', async () => {
     const page = await session.open(HOME_EN, { viewport: NARROW });
-    const visited: (string | undefined)[] = [];
-    for (const button of ['next', 'next', 'previous']) {
-      // A pointer click would first scroll the page to the sticky bar, which changes which panel counts as current.
-      await page.evaluate(
-        (action) => {
-          document.querySelector<HTMLElement>(`.keybar__buttons [data-action="${action}-panel"]`)?.click();
-        },
-        { args: [button] },
-      );
-      visited.push(await page.evaluate(() => document.activeElement?.id));
-    }
-    assertEquals(visited, ['now', 'projects', 'now']);
+    await page.evaluate(() => document.querySelector<HTMLElement>('[data-action="next-pane"]')?.click());
+    await waitToLeave(page, HOME_EN);
+    assertEquals(new URL(page.url).pathname, PROJECTS_EN);
+    await page.evaluate(() => document.querySelector<HTMLElement>('[data-action="previous-pane"]')?.click());
+    await waitToLeave(page, PROJECTS_EN);
+    assertEquals(new URL(page.url).pathname, HOME_EN);
   });
-});
-
-Deno.test('the narrow bar of an inner page has a back button beside theme and help', async () => {
-  await using session = await Session.start();
-  const page = await session.open(POST_EN, { viewport: NARROW });
-  const labels = await page.evaluate(() =>
-    [...document.querySelectorAll('.keybar__buttons button')].map((button) => button.textContent?.trim()),
-  );
-  assertEquals(labels, ['‹ back', 't theme', '? help']);
-  await page.locator('.keybar__buttons [data-action="back"]').click();
-  await waitToLeave(page, POST_EN);
-  assertEquals(new URL(page.url).pathname, '/en/posts/');
 });

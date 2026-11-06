@@ -1,9 +1,0 @@
-{{- with first 5 (partial "model.html" .).posts }}
-<ul class="entries">
-  {{- range . }}
-  {{ partial "post-entry.html" (dict "item" . "summary" false) }}
-  {{- end }}
-</ul>
-{{- else }}
-{{ partial "panels/empty.html" . }}
-{{- end }}

@@ -1,16 +1,18 @@
 {{- /* Status line of the inner pages. The read percentage needs scroll events, so it appears only with JavaScript. */ -}}
 <p class="status-line">
   {{- /* Model pages name their source file; the frontend's own pages, such as the CV, name theirs. */ -}}
+  {{- if or .IsPage (eq .Section "cv" "credits") }}
   {{- with .Params.source }}
   <span>{{ . }}</span>
   {{- else }}{{ with .File }}
   <span>{{ .Path }}</span>
   {{- end }}{{ end }}
+  {{- end }}
   <span>{{ .Language.Locale }}</span>
   {{- if .IsPage }}
   <span>{{ i18n "readingTime" .ReadingTime }}</span>
   <span data-script-only hidden><span data-progress>0</span>% {{ i18n "statusRead" }}</span>
-  {{- else if eq .Section "credits" }}
+  {{- else if eq .Section "credits" "listening" }}
   {{- else if eq .Section "cv" }}
   <span data-script-only hidden><button type="button" data-action="print">{{ i18n "print" }}</button></span>
   {{- else }}

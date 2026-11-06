@@ -1,0 +1,17 @@
+{{- /* The top line of the window, like a tmux status bar: the site name, then the panes as numbered windows. */ -}}
+{{- $current := partial "window/current-pane.html" . }}
+<header class="win__top">
+  <p class="tabs" aria-hidden="true">
+    <span class="tabs__site">{{ (urls.Parse site.BaseURL).Host }}</span>
+    {{- range $i, $pane := partial "window/panes.html" . }}
+    <span class="tabs__tab"{{ if eq $pane.key $current }} data-current{{ end }}>{{ add $i 1 }}:{{ i18n $pane.label | lower }}{{ if eq $pane.key $current }}*{{ end }}</span>
+    {{- end }}
+  </p>
+  {{- if ne .Kind "404" }}{{ with .Translations }}
+  <nav class="win__languages" aria-label="{{ i18n "languages" }}">
+    {{- range . }}
+    <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Locale }}" lang="{{ .Language.Locale }}">{{ .Language.Label }}</a>
+    {{- end }}
+  </nav>
+  {{- end }}{{ end }}
+</header>

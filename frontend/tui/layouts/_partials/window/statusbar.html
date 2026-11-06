@@ -1,0 +1,30 @@
+{{- /* The bottom line of the window: the mode, the keys that work here (only with JavaScript) and the facts of the page. */ -}}
+{{- $current := partial "window/current-pane.html" . }}
+{{- $isList := and (not .IsPage) (in (slice "projects" "posts" "research") $current) }}
+<footer class="statusbar">
+  <span class="statusbar__mode">{{ if .IsPage }}{{ i18n "modeReading" }}{{ else }}{{ i18n "modeNormal" }}{{ end }}</span>
+  <span class="statusbar__keys" data-script-only hidden>
+    {{- if .IsPage }}
+    <span><kbd>q</kbd> {{ i18n "keyBack" }}</span>
+    <span><kbd>z</kbd> {{ i18n "keyZoom" }}</span>
+    {{- if eq .Section "posts" }}<span><kbd>p</kbd> <kbd>n</kbd> {{ i18n "keyPosts" }}</span>{{ end }}
+    {{- else if $isList }}
+    <span><kbd>j</kbd> <kbd>k</kbd> {{ i18n "keyMove" }}</span>
+    <span><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
+    <span><kbd>v</kbd> {{ i18n "keyView" }}</span>
+    {{- else }}
+    <span><kbd>1</kbd>–<kbd>6</kbd> {{ i18n "keyPanels" }}</span>
+    {{- end }}
+    <button type="button" data-action="theme"><kbd>t</kbd> {{ i18n "keyTheme" }}</button>
+    <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
+  </span>
+  {{- if not (or .IsHome (eq .Kind "404")) }}
+  {{ partial "status.html" . }}
+  {{- end }}
+  <span class="statusbar__touch" data-script-only hidden>
+    <button type="button" data-action="previous-pane" aria-label="{{ i18n "previousPanel" }}">‹</button>
+    <button type="button" data-action="next-pane" aria-label="{{ i18n "nextPanel" }}">›</button>
+    <button type="button" data-action="theme">t</button>
+    <button type="button" data-action="help" aria-label="{{ i18n "keyHelp" }}">?</button>
+  </span>
+</footer>
