@@ -54,6 +54,7 @@ export type Command =
   | 'terminal'
   | 'help'
   | 'shortcuts'
+  | 'motion'
   | 'copy-link'
   | 'filter';
 
@@ -184,6 +185,7 @@ export function commandEntries(index: PickIndex, context: CommandContext): Entry
     command('terminal', s['cmdTerminal']),
     command('help', s['cmdHelp']),
     command('shortcuts', s['cmdShortcuts']),
+    command('motion', s['cmdMotion']),
     command('copy-link', s['cmdCopyLink']),
   ];
 }

@@ -214,6 +214,7 @@ class Pick {
       terminal: () => click('[data-action="terminal"]'),
       help: () => click('[data-action="help"]'),
       shortcuts: () => click('[data-action="toggle-shortcuts"]'),
+      motion: () => click('[data-action="toggle-motion"]'),
       'copy-link': () => {
         navigator.clipboard?.writeText(location.href).catch(() => {
           // Clipboard refused: nothing to undo.

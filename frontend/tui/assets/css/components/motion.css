@@ -1,0 +1,115 @@
+/* Moving between pages: the frame stays, the highlight of the open pane slides along the side column,
+   and the pane enters from the side its number lies on. Browsers without view transitions just load the page. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+@layer app.components {
+  .win__top {
+    view-transition-name: win-top;
+  }
+
+  .statusbar {
+    view-transition-name: win-status;
+  }
+
+  .side__panes a[aria-current] {
+    view-transition-name: pane-current;
+  }
+
+  .pane {
+    view-transition-name: pane;
+  }
+
+  ::view-transition-group(pane-current) {
+    animation-duration: 220ms;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
+  ::view-transition-old(pane) {
+    animation: 140ms ease-in both pane-out;
+  }
+
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
+  ::view-transition-new(pane) {
+    animation: 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both pane-in;
+  }
+
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
+  :active-view-transition-type(forward)::view-transition-new(pane) {
+    animation-name: pane-in-forward;
+  }
+
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
+  :active-view-transition-type(backward)::view-transition-new(pane) {
+    animation-name: pane-in-backward;
+  }
+
+  @keyframes pane-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pane-in {
+    from {
+      opacity: 0;
+      transform: translateY(calc(var(--cell-height) / 2));
+    }
+  }
+
+  @keyframes pane-in-forward {
+    from {
+      opacity: 0;
+      transform: translateX(calc(3 * var(--cell-width)));
+    }
+  }
+
+  @keyframes pane-in-backward {
+    from {
+      opacity: 0;
+      transform: translateX(calc(-3 * var(--cell-width)));
+    }
+  }
+
+  /* The boxes rise into place as they open. */
+  .pick[open],
+  .help[open] {
+    transition:
+      opacity 140ms ease-out,
+      transform 140ms ease-out,
+      display 140ms allow-discrete,
+      overlay 140ms allow-discrete;
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--cell-height) / 2));
+    }
+  }
+
+  /* The visitor's choice turns every movement of the site off, as the system setting does. */
+  :root[data-motion='reduced'] :is(.pick, .help, .win__body, .cursor) {
+    transition: none;
+    animation: none;
+  }
+}
+
+@layer app.components {
+  /* Switching between list and grid crossfades in place instead of sliding. */
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
+  :active-view-transition-type(view)::view-transition-old(pane) {
+    animation: 160ms ease-in both pane-out;
+  }
+
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
+  :active-view-transition-type(view)::view-transition-new(pane) {
+    animation: 200ms ease-out both pane-in;
+  }
+}

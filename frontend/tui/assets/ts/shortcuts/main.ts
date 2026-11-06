@@ -102,6 +102,33 @@ function perform(action: ShortcutAction): boolean {
 
 let enabled = readShortcutsEnabled(browserStorage('localStorage') ?? { getItem: () => null });
 
+/** Reduced motion is the visitor's choice here; the system setting is honored by the styles on its own. */
+function renderMotion(): void {
+  const reduced = document.documentElement.dataset['motion'] === 'reduced';
+  for (const toggle of document.querySelectorAll('[data-motion-toggle]')) {
+    toggle.setAttribute('aria-pressed', String(reduced));
+  }
+}
+
+function toggleMotion(): void {
+  const reduced = document.documentElement.dataset['motion'] !== 'reduced';
+  if (reduced) {
+    document.documentElement.dataset['motion'] = 'reduced';
+  } else {
+    document.documentElement.removeAttribute('data-motion');
+  }
+  try {
+    if (reduced) {
+      localStorage.setItem('motion', 'reduced');
+    } else {
+      localStorage.removeItem('motion');
+    }
+  } catch {
+    // Storage blocked: the choice lasts until the page closes.
+  }
+  renderMotion();
+}
+
 function renderEnabled(): void {
   document.documentElement.dataset['shortcuts'] = enabled ? 'on' : 'off';
   for (const toggle of document.querySelectorAll('[data-shortcuts-toggle]')) {
@@ -180,6 +207,9 @@ function onClick(event: MouseEvent): void {
     case 'view':
       document.dispatchEvent(new Event('items:toggle-view'));
       break;
+    case 'toggle-motion':
+      toggleMotion();
+      break;
     case 'toggle-shortcuts':
       enabled = !enabled;
       try {
@@ -193,6 +223,7 @@ function onClick(event: MouseEvent): void {
 }
 
 renderEnabled();
+renderMotion();
 renderThemeStatus();
 toggleSide(document.body.classList.contains('is-zoomed'));
 for (const element of document.querySelectorAll('[data-script-only]')) {
