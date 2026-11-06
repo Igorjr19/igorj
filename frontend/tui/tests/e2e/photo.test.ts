@@ -69,7 +69,7 @@ Deno.test('the photo is two-color dithering inked with the theme accent', async 
     await page.evaluate(() => document.fonts.ready);
     const photo = await page.evaluate(readDither, { args: ['.hero__photo', '--color-accent'] });
     assertEquals([photo.role, photo.label], ['img', 'Fixture photo']);
-    assertEquals(Math.round(photo.width * 100) / 100, 36);
+    assertEquals(Math.round(photo.width * 100) / 100, 38);
   });
 
   await t.step('on a dark theme the ink is where the photo is bright, on a light one where it is dark', async () => {

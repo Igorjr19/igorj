@@ -1,4 +1,4 @@
-{{- /* The bottom line of the window: the mode, the keys that work here (only with JavaScript) and the facts of the page. */ -}}
+{{- /* The bottom line of the window: the mode, the keys that work here (only with JavaScript) and the facts of the page and the theme. */ -}}
 {{- $current := partial "window/current-pane.html" . }}
 {{- $isList := and (not .IsPage) (in (slice "projects" "posts" "research") $current) }}
 <footer class="statusbar">
@@ -18,9 +18,13 @@
     <button type="button" data-action="theme"><kbd>t</kbd> {{ i18n "keyTheme" }}</button>
     <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
   </span>
-  {{- if not (or .IsHome (eq .Kind "404")) }}
-  {{ partial "status.html" . }}
-  {{- end }}
+  <div class="statusbar__facts">
+    {{- if not (or .IsHome (eq .Kind "404")) }}
+    {{ partial "status.html" . }}
+    {{- end }}
+    {{- if $isList }}<span data-script-only hidden data-status-position></span>{{ end }}
+    <span data-script-only hidden data-status-theme></span>
+  </div>
   <span class="statusbar__touch" data-script-only hidden>
     <button type="button" data-action="previous-pane" aria-label="{{ i18n "previousPanel" }}">‹</button>
     <button type="button" data-action="next-pane" aria-label="{{ i18n "nextPanel" }}">›</button>

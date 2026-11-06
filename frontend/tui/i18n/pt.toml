@@ -124,8 +124,6 @@ helpView = "Alternar entre lista com prévia e grade"
 helpZoom = "Esconder ou mostrar a coluna lateral"
 helpPosts = "Ir para o post anterior ou o próximo, lendo um post"
 
-preview = "Prévia"
-previewOpen = "enter para abrir"
 
 [readingTime]
 one = "{{ .Count }} min de leitura"

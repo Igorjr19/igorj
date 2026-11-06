@@ -3,6 +3,8 @@
   .prose {
     --font-family: var(--font-text);
     font-family: var(--font-text);
+    font-size: 1.22em;
+    line-height: 1.7;
   }
 
   .prose > * + * {

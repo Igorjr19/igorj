@@ -5,7 +5,7 @@
     gap: 0 calc(2 * var(--cell-width));
     margin: 0;
     padding: 0 var(--cell-width);
-    border-block-start: 1px solid var(--color-text-muted);
+    border-block-start: var(--line);
     line-height: var(--cell-height);
     overflow-wrap: anywhere;
   }

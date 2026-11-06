@@ -1,17 +1,21 @@
-{{- /* The top line of the window, like a tmux status bar: the site name, then the panes as numbered windows. */ -}}
+{{- /* The top line of the window, like a tmux status bar: the site name, the panes as numbered windows, then the language and the build. */ -}}
 {{- $current := partial "window/current-pane.html" . }}
 <header class="win__top">
   <p class="tabs" aria-hidden="true">
     <span class="tabs__site">{{ (urls.Parse site.BaseURL).Host }}</span>
     {{- range $i, $pane := partial "window/panes.html" . }}
-    <span class="tabs__tab"{{ if eq $pane.key $current }} data-current{{ end }}>{{ add $i 1 }}:{{ i18n $pane.label | lower }}{{ if eq $pane.key $current }}*{{ end }}</span>
+    <span class="tabs__tab"{{ if eq $pane.key $current }} data-current{{ end }}>{{ add $i 1 }}:{{ index (split (i18n $pane.label | lower) " ") 0 }}{{ if eq $pane.key $current }}*{{ end }}</span>
     {{- end }}
   </p>
-  {{- if ne .Kind "404" }}{{ with .Translations }}
-  <nav class="win__languages" aria-label="{{ i18n "languages" }}">
-    {{- range . }}
-    <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Locale }}" lang="{{ .Language.Locale }}">{{ .Language.Label }}</a>
-    {{- end }}
-  </nav>
-  {{- end }}{{ end }}
+  <div class="win__meta">
+    {{- if ne .Kind "404" }}{{ with .Translations }}
+    <nav class="win__languages" aria-label="{{ i18n "languages" }}">
+      {{- range . }}
+      <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Locale }}" lang="{{ .Language.Locale }}">{{ .Language.Label }}</a>
+      {{- end }}
+    </nav>
+    <span aria-hidden="true">·</span>
+    {{- end }}{{ end }}
+    <span>build <time datetime="{{ now.Format "2006-01-02" }}">{{ now.Format "2006-01-02" }}</time></span>
+  </div>
 </header>

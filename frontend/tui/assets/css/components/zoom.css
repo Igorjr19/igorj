@@ -1,10 +1,12 @@
 @layer app.components {
   .zoom__title {
     margin: 0 0 var(--cell-height);
-    font-size: inherit;
-    line-height: var(--cell-height);
     color: var(--color-text-muted);
-    text-transform: lowercase;
+    font-size: var(--font-size-label);
+    font-weight: normal;
+    letter-spacing: 0.14em;
+    line-height: var(--cell-height);
+    text-transform: uppercase;
   }
 
   /* A page being read gets a real title and a column narrow enough to read comfortably. */
@@ -16,7 +18,9 @@
   .zoom--page .zoom__title {
     margin-block-end: calc(2 * var(--cell-height));
     color: var(--color-text);
-    font-size: 2em;
+    font-size: 2.4em;
+    font-weight: bold;
+    letter-spacing: -0.01em;
     line-height: 1.15;
     text-transform: none;
     text-wrap: balance;
@@ -53,6 +57,6 @@
     gap: 0 calc(2 * var(--cell-width));
     margin-block-start: calc(2 * var(--cell-height));
     padding-block-start: var(--cell-height);
-    border-block-start: 1px solid var(--color-surface-3);
+    border-block-start: var(--line);
   }
 }

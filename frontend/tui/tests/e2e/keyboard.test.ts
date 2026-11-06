@@ -17,9 +17,9 @@ function describeSelection() {
   return {
     title: active.querySelector('.item__title')?.textContent?.trim() ?? null,
     selected: item?.dataset['selected'] ?? null,
-    background: getComputedStyle(active).backgroundColor,
-    selection: getComputedStyle(document.documentElement).getPropertyValue('--color-selection-background').trim(),
-    preview: document.querySelector('.items__preview-title')?.textContent?.trim() ?? null,
+    background: item ? getComputedStyle(item).backgroundColor : null,
+    surface: getComputedStyle(document.documentElement).getPropertyValue('--color-surface-1').trim(),
+    position: document.querySelector('[data-status-position]')?.textContent ?? null,
   };
 }
 
@@ -43,26 +43,30 @@ Deno.test('single-key shortcuts open panes and move through their items', async 
   });
 
   await t.step(
-    'the digit of the open pane selects its first item, in reverse video, and shows it in the preview',
+    'the digit of the open pane selects its first item, highlights it and counts it in the status line',
     async () => {
       const page = await session.open(POSTS_EN, { viewport: WIDE });
       await page.keyboard.press('3');
       const selection = await page.evaluate(describeSelection);
-      assertEquals(selection.title, 'Film fixture post');
-      assertEquals(selection.selected, 'true');
-      assertEquals(selection.preview, 'Film fixture post');
-      assertEquals(selection.background, await page.evaluate(toRgb, { args: [selection.selection] }));
+      assertEquals([selection.title, selection.selected, selection.position], ['Film fixture post', 'true', '1/4']);
+      assertEquals(selection.background, await page.evaluate(toRgb, { args: [selection.surface] }));
     },
   );
 
-  await t.step('j and k move through the list, the preview follows, and both ends stop', async () => {
+  await t.step('j and k move through the list, the status line follows, and both ends stop', async () => {
     const page = await session.open(POSTS_EN, { viewport: WIDE });
     const visited: (string | null)[] = [];
     for (const key of ['j', 'ArrowDown', 'k', 'k'] as Key[]) {
       await page.keyboard.press(key);
-      visited.push((await page.evaluate(describeSelection)).preview);
+      const selection = await page.evaluate(describeSelection);
+      visited.push(`${selection.title} ${selection.position}`);
     }
-    assertEquals(visited, ['Film fixture post', 'Post só em português', 'Film fixture post', 'Film fixture post']);
+    assertEquals(visited, [
+      'Film fixture post 1/4',
+      'Post só em português 2/4',
+      'Film fixture post 1/4',
+      'Film fixture post 1/4',
+    ]);
   });
 
   await t.step('enter opens the selected item and q goes back up to the list', async () => {
@@ -222,5 +226,24 @@ Deno.test('the status line shows the keys that work on each page', async (t) => 
     await page.evaluate(() => document.querySelector<HTMLElement>('[data-action="previous-pane"]')?.click());
     await waitToLeave(page, PROJECTS_EN);
     assertEquals(new URL(page.url).pathname, HOME_EN);
+  });
+});
+
+Deno.test('the status line names the theme in effect, and lists say no more than their rows', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('the theme of the system scheme, by name', async () => {
+    for (const [colorScheme, name] of [
+      ['light', 'Catppuccin Latte'],
+      ['dark', 'Catppuccin Mocha'],
+    ] as const) {
+      const page = await session.open(HOME_EN, { viewport: WIDE, colorScheme });
+      assertEquals(await page.evaluate(() => document.querySelector('[data-status-theme]')?.textContent), name);
+    }
+  });
+
+  await t.step('a list has no preview beside its rows; an item shows in full only once opened', async () => {
+    const page = await session.open(POSTS_EN, { viewport: WIDE });
+    assertEquals(await page.evaluate(() => document.querySelector('.items__preview')), null);
   });
 });
