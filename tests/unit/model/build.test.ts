@@ -63,10 +63,10 @@ const RAW: RawContent = {
     item('draft', 'en', post('Draft', '2026-04-01', { draft: true })),
   ],
   projects: [
-    item('zeta', 'en', { title: 'Zeta', summary: 'Z.', stack: ['go'] }),
-    item('alpha', 'en', { title: 'Alpha', summary: 'A.', stack: ['go'] }),
+    item('zeta', 'en', { title: 'Zeta', summary: 'Z.', tags: ['go'] }),
+    item('alpha', 'en', { title: 'Alpha', summary: 'A.', tags: ['go'] }),
     item('heavy', 'en', { title: 'Heavy', summary: 'H.', tags: ['Go', 'machine learning'], weight: 1, featured: true }),
-    item('portuguese', 'pt', { title: 'Português', summary: 'P.', stack: ['go'] }),
+    item('portuguese', 'pt', { title: 'Português', summary: 'P.', tags: ['go'] }),
   ],
   research: [
     item('old', 'en', { title: 'Old', kind: 'article', year: 2020, authors: ['A'], venue: 'V' }),
@@ -170,7 +170,7 @@ Deno.test('a tag gets its address from the text, and the name the tags file give
   assertEquals(tagFor(RAW, 'Go', 'pt'), { slug: 'go', name: 'Go', names: ['Go'] });
 });
 
-Deno.test('projects read their tags, or their former stack until the content moves over', () => {
+Deno.test('projects carry their tags, named in their language', () => {
   const projects = buildModel(RAW, 'en').projects;
   const tags = (id: string) => projects.find((project) => project.id === id)?.tags.map((tag) => tag.name);
   assertEquals([tags('heavy'), tags('alpha')], [['Go', 'machine learning'], ['go']]);

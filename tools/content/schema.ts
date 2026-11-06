@@ -29,8 +29,6 @@ const ProjectSchema = v.strictObject({
   title: Text,
   summary: Text,
   tags: Tags,
-  /** The former name of the tags; read as tags until the content moves over. */
-  stack: v.optional(v.array(Text)),
   links: v.optional(v.strictObject({ repository: v.optional(Url), demo: v.optional(Url) })),
   featured: v.optional(v.boolean()),
   // Projects carry no dates, so Hugo's weight is the only way to put one before another.

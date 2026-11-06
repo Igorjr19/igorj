@@ -1,7 +1,7 @@
 ---
 title: Fixture project
 summary: A project used by the end-to-end tests.
-stack: [hugo, deno]
+tags: [hugo, deno]
 featured: true
 ---
 

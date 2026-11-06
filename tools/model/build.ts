@@ -116,7 +116,7 @@ export function projectsFor(raw: RawContent, language: string): ProjectModel[] {
     .sort((a, b) => weight(a) - weight(b) || a.data.title.localeCompare(b.data.title))
     .map(
       (project): ProjectModel => ({
-        ...itemBase(raw, project, translations, project.data.tags ?? project.data.stack ?? []),
+        ...itemBase(raw, project, translations),
         summary: project.data.summary,
         links: { ...project.data.links },
         featured: project.data.featured ?? false,
