@@ -60,3 +60,67 @@ export function nameLines(name: string): string[] {
   const words = name.trim().split(/\s+/);
   return words.length > 2 ? [words.slice(0, 2).join(' '), words.slice(2).join(' ')] : [words.join(' ')];
 }
+
+/** The name as a grid of cells; aspect is how many times taller than wide a character is. */
+export interface Grid {
+  readonly cols: number;
+  readonly rows: number;
+  readonly cells: Float32Array;
+  readonly aspect: number;
+}
+
+/** Where the pointer is on the grid, in columns and rows. */
+export interface Lens {
+  readonly col: number;
+  readonly row: number;
+}
+
+/** How far the lens reaches, in columns: an eighth of the name's width, and never less than eight. */
+export function lensRadius(grid: Grid): number {
+  return Math.max(8, grid.cols * 0.12);
+}
+
+/** From 1 at the pointer to 0 at the edge of the lens, measuring rows by the height of a character. */
+function closeness(grid: Grid, lens: Lens, col: number, row: number): number {
+  const distance = Math.hypot(col - lens.col, (row - lens.row) * grid.aspect) / lensRadius(grid);
+  return Math.max(0, 1 - distance);
+}
+
+/** How much bigger the name looks at the very centre of the lens. */
+const MAGNIFY = 1.8;
+
+/**
+ * The name as seen through a magnifying lens at the pointer: each cell near it shows the cell closer to the
+ * centre, so the letters bulge, and reads a little denser. Cells beyond the lens stay as they are.
+ */
+export function lensed(grid: Grid, lens: Lens): Float32Array {
+  const { cols, rows, cells } = grid;
+  return cells.map((covered, index) => {
+    const col = index % cols;
+    const row = Math.floor(index / cols);
+    const near = closeness(grid, lens, col, row);
+    if (near === 0) {
+      return covered;
+    }
+    const pull = 1 - (1 - 1 / MAGNIFY) * near * near;
+    const from = Math.round(lens.row + (row - lens.row) * pull);
+    const source = cells[Math.min(rows - 1, Math.max(0, from)) * cols + Math.round(lens.col + (col - lens.col) * pull)];
+    const seen = source ?? covered;
+    return seen > 0 ? Math.min(1, seen * (1 + near)) : 0;
+  });
+}
+
+/** Close to the pointer, some characters are swapped for noise while it moves. */
+export function scrambled(text: string, grid: Grid, lens: Lens, random: () => number): string {
+  return text
+    .split('\n')
+    .map((line, row) =>
+      [...line]
+        .map((char, col) => {
+          const near = closeness(grid, lens, col, row);
+          return char !== ' ' && random() < 0.4 * near * near ? (RAMP[4 + Math.floor(random() * 7)] ?? char) : char;
+        })
+        .join(''),
+    )
+    .join('\n');
+}

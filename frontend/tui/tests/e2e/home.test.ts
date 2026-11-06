@@ -155,12 +155,43 @@ Deno.test('with JavaScript the name is drawn in characters, and stays a heading 
     assert((name.drawn?.split('\n').length ?? 0) > 4, 'the drawing has several rows');
   });
 
-  await t.step('the drawing stays still: it is drawn once and does not change', async () => {
+  await t.step('left alone, the drawing stays still: it is drawn once and does not change', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
     const first = (await page.evaluate(read)).drawn;
     await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
     assertEquals((await page.evaluate(read)).drawn, first);
+  });
+
+  /** Puts the mouse over the middle of the drawing, then waits for the scramble to settle. */
+  async function hover(page: Awaited<ReturnType<Session['open']>>) {
+    const box = await page.evaluate(() => {
+      const { left, top, width, height } = (document.querySelector('.hero__ascii') as Element).getBoundingClientRect();
+      return { x: left + width / 4, y: top + height / 4 };
+    });
+    await page.mouse.move(box.x, box.y);
+    await page.mouse.move(box.x + 8, box.y + 4);
+    await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 300)));
+  }
+
+  await t.step('under the mouse the letters swell, and they go back once it leaves', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    await page.evaluate(() => document.fonts.ready);
+    const still = (await page.evaluate(read)).drawn;
+    await hover(page);
+    const swollen = (await page.evaluate(read)).drawn;
+    await page.mouse.move(5, 5);
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert(swollen !== still, 'the drawing changes under the mouse');
+    assertEquals((await page.evaluate(read)).drawn, still);
+  });
+
+  await t.step('with motion reduced the drawing ignores the mouse', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE, reducedMotion: true });
+    await page.evaluate(() => document.fonts.ready);
+    const still = (await page.evaluate(read)).drawn;
+    await hover(page);
+    assertEquals((await page.evaluate(read)).drawn, still);
   });
 });
 

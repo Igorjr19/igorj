@@ -1,11 +1,8 @@
 /// <reference lib="dom" />
-import { coverage } from './ascii.ts';
+import { coverage, type Grid } from './ascii.ts';
 
 /** Draws the name with the page's mono font into a canvas sized to the character grid of the element. */
-export function measure(
-  pre: HTMLElement,
-  lines: readonly string[],
-): { cols: number; rows: number; cells: Float32Array } {
+export function measure(pre: HTMLElement, lines: readonly string[]): Grid {
   const probe = document.createElement('span');
   probe.textContent = 'M'.repeat(20);
   probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
@@ -21,7 +18,7 @@ export function measure(
   const font = getComputedStyle(pre).fontFamily;
   const width = cols * cellWidth;
   if (!context) {
-    return { cols, rows: 0, cells: new Float32Array() };
+    return { cols, rows: 0, cells: new Float32Array(), aspect: 2 };
   }
   context.font = `700 40px ${font}`;
   const widest = Math.max(...lines.map((line) => context.measureText(line).width));
@@ -40,5 +37,6 @@ export function measure(
   for (let i = 0; i < alpha.length; i++) {
     alpha[i] = pixels[i * 4 + 3] ?? 0;
   }
-  return { cols, rows, cells: coverage(alpha, canvas.width, cols, rows, cellWidth, cellHeight) };
+  const cells = coverage(alpha, canvas.width, cols, rows, cellWidth, cellHeight);
+  return { cols, rows, cells, aspect: box.height / charWidth };
 }

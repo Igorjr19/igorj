@@ -2,6 +2,16 @@
 import { nameLines, render } from './ascii.ts';
 import { measure } from './measure.ts';
 
+/** Loads the lens the first time a mouse comes over the name; touch never needs it. */
+function loadLens(this: HTMLElement, event: PointerEvent): void {
+  const { script: src = '', integrity = '' } =
+    document.querySelector<HTMLTemplateElement>('template[data-lazy="lens"]')?.dataset ?? {};
+  if (event.pointerType !== 'touch' && src) {
+    this.removeEventListener('pointerover', loadLens);
+    document.body.append(Object.assign(document.createElement('script'), { src, integrity }));
+  }
+}
+
 /** Replaces the visible heading with the name drawn in characters; the heading stays for screen readers. */
 function start(heading: HTMLElement): void {
   const pre = document.createElement('pre');
@@ -16,6 +26,7 @@ function start(heading: HTMLElement): void {
   };
   draw();
   new ResizeObserver(draw).observe(pre);
+  pre.parentElement?.addEventListener('pointerover', loadLens);
 }
 
 const heading = document.querySelector<HTMLElement>('[data-ascii-name]');
