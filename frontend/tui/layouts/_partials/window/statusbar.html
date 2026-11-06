@@ -1,30 +1,36 @@
-{{- /* The bottom line of the window: the mode, the keys that work here (only with JavaScript) and the facts of the page and the theme. */ -}}
+{{- /* The bottom line of the window: the mode, the keys of this page as things to click (only with JavaScript; theme,
+   terminal and help sit in the top line), then the facts of the page, the theme and the credits. */ -}}
 {{- $current := partial "window/current-pane.html" . }}
 {{- $isList := and (not .IsPage) (in (slice "projects" "posts" "research") $current) }}
+{{- $parent := .Parent }}
+{{- if eq .Kind "term" }}{{ with site.GetPage "/posts" }}{{ $parent = . }}{{ end }}{{ end }}
 <footer class="statusbar">
   <span class="statusbar__mode">{{ if .IsPage }}{{ i18n "modeReading" }}{{ else }}{{ i18n "modeNormal" }}{{ end }}</span>
   <span class="statusbar__keys" data-script-only hidden>
-    {{- if .IsPage }}
-    <span><kbd>q</kbd> {{ i18n "keyBack" }}</span>
-    <span><kbd>z</kbd> {{ i18n "keyZoom" }}</span>
-    {{- if eq .Section "posts" }}<span><kbd>p</kbd> <kbd>n</kbd> {{ i18n "keyPosts" }}</span>{{ end }}
-    {{- else if $isList }}
-    <span><kbd>j</kbd> <kbd>k</kbd> {{ i18n "keyMove" }}</span>
-    <span><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
-    <span><kbd>v</kbd> {{ i18n "keyView" }}</span>
-    {{- else }}
-    <span><kbd>1</kbd>–<kbd>6</kbd> {{ i18n "keyPanels" }}</span>
+    {{- if and $parent (not .IsHome) (ne .Kind "404") }}
+    <a class="statusbar__key" href="{{ $parent.RelPermalink }}" data-nav="back"><kbd>q</kbd> {{ i18n "keyBack" }}</a>
     {{- end }}
-    <button type="button" data-action="theme"><kbd>t</kbd> {{ i18n "keyTheme" }}</button>
-    <button type="button" data-action="terminal"><kbd>:</kbd> {{ i18n "keyTerminal" }}</button>
-    <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
+    {{- if and .IsPage (eq .Section "posts") }}
+    {{- with .PrevInSection }}<a class="statusbar__key" href="{{ .RelPermalink }}" data-nav="previous"><kbd>p</kbd> {{ i18n "keyPrevious" }}</a>{{ end }}
+    {{- with .NextInSection }}<a class="statusbar__key" href="{{ .RelPermalink }}" data-nav="next"><kbd>n</kbd> {{ i18n "keyNext" }}</a>{{ end }}
+    {{- end }}
+    {{- if $isList }}
+    <span class="statusbar__key"><kbd>j</kbd> <kbd>k</kbd> {{ i18n "keyMove" }}</span>
+    <span class="statusbar__key"><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
+    <button type="button" class="statusbar__key" data-action="view"><kbd>v</kbd> {{ i18n "keyView" }}</button>
+    {{- else if not .IsPage }}
+    <span class="statusbar__key"><kbd>1</kbd>–<kbd>6</kbd> {{ i18n "keyPanels" }}</span>
+    {{- end }}
+    <button type="button" class="statusbar__key" data-action="zoom"><kbd>z</kbd> {{ i18n "keySide" }}</button>
   </span>
+  <span class="statusbar__off" data-shortcuts-notice hidden>{{ i18n "shortcutsOff" }} · <button type="button" data-action="toggle-shortcuts">{{ i18n "shortcutsTurnOn" }}</button></span>
   <div class="statusbar__facts">
     {{- if not (or .IsHome (eq .Kind "404")) }}
     {{ partial "status.html" . }}
     {{- end }}
     {{- if $isList }}<span data-script-only hidden data-status-position></span>{{ end }}
     <span data-script-only hidden data-status-theme></span>
+    {{- with site.GetPage "/credits" }}<a class="statusbar__credits" href="{{ .RelPermalink }}">{{ partial "page-title.html" . | lower }}</a>{{ end }}
   </div>
   <span class="statusbar__touch" data-script-only hidden>
     <button type="button" data-action="previous-pane" aria-label="{{ i18n "previousPanel" }}">‹</button>

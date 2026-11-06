@@ -80,7 +80,7 @@ function perform(action: ShortcutAction): boolean {
       document.dispatchEvent(new Event('items:toggle-view'));
       return document.querySelector('[data-items]') !== null;
     case 'zoom':
-      document.body.classList.toggle('is-zoomed');
+      toggleSide();
       return true;
     case 'theme':
       openThemePicker();
@@ -100,6 +100,17 @@ function renderEnabled(): void {
   document.documentElement.dataset['shortcuts'] = enabled ? 'on' : 'off';
   for (const toggle of document.querySelectorAll('[data-shortcuts-toggle]')) {
     toggle.setAttribute('aria-pressed', String(enabled));
+  }
+  for (const notice of document.querySelectorAll<HTMLElement>('[data-shortcuts-notice]')) {
+    notice.hidden = enabled;
+  }
+}
+
+/** Hides or shows the side column; the buttons that do it say whether it is shown. */
+function toggleSide(force?: boolean): void {
+  const zoomed = document.body.classList.toggle('is-zoomed', force);
+  for (const button of document.querySelectorAll('[data-action="zoom"]')) {
+    button.setAttribute('aria-pressed', String(!zoomed));
   }
 }
 
@@ -155,6 +166,12 @@ function onClick(event: MouseEvent): void {
     case 'terminal':
       toggleTerminal();
       break;
+    case 'zoom':
+      toggleSide();
+      break;
+    case 'view':
+      document.dispatchEvent(new Event('items:toggle-view'));
+      break;
     case 'toggle-shortcuts':
       enabled = !enabled;
       try {
@@ -169,6 +186,7 @@ function onClick(event: MouseEvent): void {
 
 renderEnabled();
 renderThemeStatus();
+toggleSide(document.body.classList.contains('is-zoomed'));
 for (const element of document.querySelectorAll('[data-script-only]')) {
   element.removeAttribute('hidden');
 }

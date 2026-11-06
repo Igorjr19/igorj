@@ -63,14 +63,14 @@ Deno.test('the credits page names every third-party item with its license and li
     }
   });
 
-  await t.step('the contact list of the side column links to it in each language', async () => {
+  await t.step('the status line links to it in each language', async () => {
     for (const [path, label, target] of [
-      [HOME_EN, 'Credits', '/en/credits/'],
-      [HOME_PT, 'Créditos', '/pt/credits/'],
+      [HOME_EN, 'credits', '/en/credits/'],
+      [HOME_PT, 'créditos', '/pt/credits/'],
     ] as const) {
       const page = await session.open(path, { viewport: WIDE, javascript: false });
       const link = await page.evaluate(() => {
-        const anchor = [...document.querySelectorAll('.side__links a')].at(-1);
+        const anchor = document.querySelector('.statusbar__credits');
         return [anchor?.textContent?.trim(), anchor?.getAttribute('href')];
       });
       assertEquals(link, [label, target]);

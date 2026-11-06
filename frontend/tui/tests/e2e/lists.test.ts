@@ -23,7 +23,7 @@ function readList() {
     feeds: [...document.querySelectorAll('.zoom__body > p a')].map(
       (link) => `${link.textContent} ${link.getAttribute('href')}`,
     ),
-    back: document.querySelector('.pane__back')?.getAttribute('href'),
+    back: document.querySelector('.statusbar [data-nav="back"]')?.getAttribute('href'),
   };
 }
 

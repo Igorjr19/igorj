@@ -1,55 +1,112 @@
 @layer app.components {
+  /* The top line: the site, the side switch, where the page sits, and the controls on the right. */
   .win__top {
     display: flex;
-    justify-content: space-between;
     align-items: stretch;
-    gap: 0 calc(2 * var(--cell-width));
+    gap: 0 calc(1.5 * var(--cell-width));
     border-block-end: var(--line);
     font-size: var(--font-size-small);
     color: var(--color-text-muted);
   }
 
-  .tabs {
-    display: flex;
-    min-inline-size: 0;
-    margin: 0;
-    font-size: inherit;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-
-  .tabs > span {
-    padding: calc(var(--cell-height) / 4) calc(1.2 * var(--cell-width));
-  }
-
   /* Filled labels use the link color, which every theme checks at 4.5:1 against the background. */
-  .tabs > .tabs__site {
+  .win__site {
+    display: flex;
+    align-items: center;
+    padding: calc(var(--cell-height) / 3) calc(1.2 * var(--cell-width));
     background-color: var(--color-link);
     color: var(--color-background);
     font-weight: bold;
+    text-decoration: none;
   }
 
-  .tabs__tab[data-current] {
-    background-color: var(--color-surface-1);
+  .win__button,
+  .statusbar button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .win__button {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--cell-width) / 2);
+    white-space: nowrap;
+  }
+
+  .win__button:is(:hover, :focus-visible),
+  .statusbar__key:is(:hover, :focus-visible) {
+    color: var(--color-link);
+  }
+
+  .win__side-toggle[aria-pressed='true'] {
     color: var(--color-text);
   }
 
-  .win__meta {
+  .icon--ui {
+    inline-size: 1em;
+    block-size: 1em;
+    fill: currentcolor;
+  }
+
+  .win__path {
     display: flex;
     align-items: center;
-    gap: var(--cell-width);
+    min-inline-size: 0;
+  }
+
+  .win__path ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--cell-width);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .win__path li::before {
+    content: none;
+  }
+
+  .win__path li + li::before {
+    content: '› ' / '';
+  }
+
+  .win__path a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .win__path a:is(:hover, :focus-visible) {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .win__path a[aria-current='page'] {
+    color: var(--color-text);
+  }
+
+  .win__controls {
+    display: flex;
+    align-items: center;
+    gap: calc(2 * var(--cell-width));
+    margin-inline-start: auto;
     padding-inline-end: calc(1.5 * var(--cell-width));
     white-space: nowrap;
   }
 
-  .win__meta a {
+  .win__languages a {
     color: inherit;
   }
 
-  .win__meta a:hover {
+  .win__languages a:hover {
     color: var(--color-link);
   }
 
+  /* The side column: who and the panes at the top, the contacts at the foot. */
   .side {
     display: flex;
     flex-direction: column;
@@ -118,6 +175,10 @@
     font-size: var(--font-size-small);
   }
 
+  .side__block {
+    margin-block-start: auto;
+  }
+
   .side__links {
     display: grid;
     gap: 2px;
@@ -141,59 +202,9 @@
     text-decoration: underline;
   }
 
-  .pane__bar {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0 calc(2 * var(--cell-width));
-    margin: 0 calc(-3 * var(--cell-width)) calc(1.5 * var(--cell-height));
-    padding: calc(var(--cell-height) / 4) calc(3 * var(--cell-width));
-    border-block-end: var(--line);
-    background-color: var(--color-background);
-    font-size: var(--font-size-small);
-    color: var(--color-text-muted);
-  }
-
-  .pane__path {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 var(--cell-width);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .pane__path > li::before {
-    content: none;
-  }
-
-  .pane__path > li + li:not(:nth-child(2))::before {
-    content: '› ' / '';
-  }
-
-  .pane__path a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .pane__path a:hover {
-    color: var(--color-link);
-  }
-
-  .pane__path a[aria-current='page'] {
-    color: var(--color-text);
-  }
-
-  .pane__number {
-    color: var(--color-link);
-    font-weight: bold;
-  }
-
-  .pane__back {
-    color: inherit;
+  .side__links .icon--ui {
+    inline-size: calc(3 * var(--cell-width));
+    vertical-align: -0.125em;
   }
 
   .statusbar {
@@ -230,21 +241,23 @@
   .statusbar__keys > * + *::before {
     content: '·' / '';
     padding-inline: var(--cell-width);
+    color: var(--color-text-muted);
   }
 
-  .statusbar button {
-    padding: 0;
-    border: 0;
-    background: none;
+  .statusbar__key {
     color: inherit;
-    font: inherit;
-    cursor: pointer;
+    text-decoration: none;
   }
 
   .statusbar kbd,
   .help kbd {
     font: inherit;
     color: var(--color-text);
+  }
+
+  .statusbar__off button {
+    color: var(--color-text);
+    text-decoration: underline;
   }
 
   .statusbar__facts {
@@ -261,18 +274,24 @@
     font-size: inherit;
   }
 
+  .statusbar__credits {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .statusbar__credits:is(:hover, :focus-visible) {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
   .statusbar__touch {
     display: none;
   }
 
-  :root[data-shortcuts='off'] .statusbar__keys > span,
-  :root[data-shortcuts='off'] .pane__back [data-script-only] {
-    display: none;
-  }
-
   @container screen (width < 100ch) {
-    .tabs__tab:not([data-current]),
-    .win__meta > :not(.win__languages) {
+    .win__path,
+    .win__side-toggle,
+    .win__controls > .win__button {
       display: none;
     }
 
@@ -309,11 +328,6 @@
       display: none;
     }
 
-    .pane__bar {
-      margin-inline: calc(-2 * var(--cell-width));
-      padding-inline: calc(2 * var(--cell-width));
-    }
-
     .statusbar {
       position: sticky;
       inset-block-end: 0;
@@ -323,7 +337,8 @@
 
     .statusbar__keys,
     .statusbar__facts,
-    .statusbar__mode {
+    .statusbar__mode,
+    .statusbar__off {
       display: none;
     }
 

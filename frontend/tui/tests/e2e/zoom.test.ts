@@ -8,11 +8,11 @@ const SHORT = { width: 600, height: 200 };
 
 function readFrame() {
   return {
-    path: [...document.querySelectorAll('.pane__path a')].map((link) => ({
+    path: [...document.querySelectorAll('.win__path a')].map((link) => ({
       text: link.textContent,
       href: link.getAttribute('href'),
     })),
-    back: document.querySelector('.pane__back')?.getAttribute('href'),
+    back: document.querySelector('.statusbar [data-nav="back"]')?.getAttribute('href'),
     status: [...document.querySelectorAll('.status-line > span')]
       .filter((item) => item.checkVisibility())
       .map((item) => item.textContent?.replace(/\s+/g, ' ').trim()),

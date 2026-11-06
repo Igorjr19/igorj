@@ -127,14 +127,14 @@ Deno.test('the CV prints on white paper without the screen furniture', async (t)
         .unsafelyGetCelestialBindings()
         .Emulation.setEmulatedMedia({ media: 'print', features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
       const printed = await page.evaluate(() => ({
-        hidden: ['.win__top', '.side', '.statusbar', '.pane__bar'].map(
+        hidden: ['.win__top', '.side', '.statusbar'].map(
           (selector) => getComputedStyle(document.querySelector(selector) as Element).display,
         ),
         text: getComputedStyle(document.querySelector('.zoom__body p') as Element).color,
         background: getComputedStyle(document.body).backgroundColor,
       }));
       assertEquals(printed, {
-        hidden: ['none', 'none', 'none', 'none'],
+        hidden: ['none', 'none', 'none'],
         text: 'rgb(0, 0, 0)',
         background: 'rgb(255, 255, 255)',
       });
