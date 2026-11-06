@@ -1,6 +1,6 @@
 <p>{{ i18n "creditsRights" (dict "Author" (partial "author.html" .) "Repository" site.Params.repository) | safeHTML }}</p>
 <p>{{ i18n "creditsIntro" }}</p>
-<dl class="facts">
+<dl class="facts credits">
   {{- range index hugo.Data "third-party" "entries" }}
   <dt>{{ .name }}</dt>
   <dd><a href="{{ .homepage }}">{{ .homepage }}</a> <span class="panel__meta">{{ .license }}</span></dd>

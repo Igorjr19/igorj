@@ -1,21 +1,31 @@
-{{- /* The top line of the window, like a tmux status bar: the site name, the panes as numbered windows, then the language and the build. */ -}}
-{{- $current := partial "window/current-pane.html" . }}
+{{- /* The top line of the window: the site, a switch for the side column, where the page sits, and the controls. */ -}}
+{{- $page := . }}
 <header class="win__top">
-  <p class="tabs" aria-hidden="true">
-    <span class="tabs__site">{{ (urls.Parse site.BaseURL).Host }}</span>
-    {{- range $i, $pane := partial "window/panes.html" . }}
-    <span class="tabs__tab"{{ if eq $pane.key $current }} data-current{{ end }}>{{ add $i 1 }}:{{ index (split (i18n $pane.label | lower) " ") 0 }}{{ if eq $pane.key $current }}*{{ end }}</span>
-    {{- end }}
-  </p>
-  <div class="win__meta">
+  <a class="win__site" href="{{ site.Home.RelPermalink }}">{{ (urls.Parse site.BaseURL).Host }}</a>
+  <button type="button" class="win__button win__side-toggle" data-action="zoom" data-script-only hidden aria-label="{{ i18n "keySide" }}">{{ partial "icon.html" "table-columns" }}</button>
+  {{- if ne .Kind "404" }}
+  <nav class="win__path" aria-label="{{ i18n "path" }}">
+    <ol>
+      <li><a href="{{ site.Home.RelPermalink }}"{{ if $page.IsHome }} aria-current="page"{{ end }}>~</a></li>
+      {{- if not $page.IsHome }}
+      {{- range $page.Ancestors.Reverse }}{{ if not .IsHome }}
+      <li><a href="{{ .RelPermalink }}">{{ partial "section-label.html" . }}</a></li>
+      {{- end }}{{ end }}
+      <li><a href="{{ $page.RelPermalink }}" aria-current="page">{{ cond $page.IsPage (path.Base $page.RelPermalink) (partial "section-label.html" $page) }}</a></li>
+      {{- end }}
+    </ol>
+  </nav>
+  {{- end }}
+  <div class="win__controls">
     {{- if ne .Kind "404" }}{{ with .Translations }}
     <nav class="win__languages" aria-label="{{ i18n "languages" }}">
       {{- range . }}
       <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Locale }}" lang="{{ .Language.Locale }}">{{ .Language.Label }}</a>
       {{- end }}
     </nav>
-    <span aria-hidden="true">·</span>
     {{- end }}{{ end }}
-    <span>build <time datetime="{{ now.Format "2006-01-02" }}">{{ now.Format "2006-01-02" }}</time></span>
+    <button type="button" class="win__button" data-action="theme" data-script-only hidden>{{ partial "icon.html" "circle-half-stroke" }}{{ i18n "keyTheme" }}</button>
+    <button type="button" class="win__button" data-action="terminal" data-script-only hidden>{{ partial "icon.html" "terminal" }}{{ i18n "keyTerminal" }}</button>
+    <button type="button" class="win__button" data-action="help" data-script-only hidden>{{ partial "icon.html" "circle-question" }}{{ i18n "keyHelp" }}</button>
   </div>
 </header>

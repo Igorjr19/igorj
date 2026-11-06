@@ -161,9 +161,48 @@ Deno.test('help and the shortcut switch', async (t) => {
     const state = await page.evaluate(() => ({
       path: location.pathname,
       pressed: document.querySelector('.help [data-shortcuts-toggle]')?.getAttribute('aria-pressed'),
+      notice: document.querySelector('[data-shortcuts-notice]')?.checkVisibility(),
+      keys: document.querySelector('.statusbar__keys')?.checkVisibility(),
     }));
-    assertEquals(state, { path: HOME_EN, pressed: 'false' });
+    assertEquals(state, { path: HOME_EN, pressed: 'false', notice: true, keys: true });
+  });
+
+  await t.step('with shortcuts off, the status line says so and turns them back on with a click', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    await page.locator('.statusbar__off [data-action="toggle-shortcuts"]').click();
+    const notice = await page.evaluate(() => document.querySelector('[data-shortcuts-notice]')?.checkVisibility());
+    await page.keyboard.press('3');
+    await waitToLeave(page, HOME_EN);
+    assertEquals([notice, new URL(page.url).pathname], [false, POSTS_EN]);
     await page.evaluate(() => localStorage.clear());
+  });
+});
+
+Deno.test('every key has something to click', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('the top line opens the theme, the terminal and the help', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    await page.locator('.win__controls [data-action="help"]').click();
+    assertEquals(await page.evaluate(() => document.querySelector<HTMLDialogElement>('.help')?.open), true);
+  });
+
+  await t.step('the side switch hides and brings back the side column, and says which', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    const read = () => ({
+      side: document.querySelector('.side')?.checkVisibility(),
+      pressed: document.querySelector('.win__side-toggle')?.getAttribute('aria-pressed'),
+    });
+    await page.locator('.win__side-toggle').click();
+    const hidden = await page.evaluate(read);
+    await page.locator('.statusbar [data-action="zoom"]').click();
+    assertEquals(
+      [hidden, await page.evaluate(read)],
+      [
+        { side: false, pressed: 'false' },
+        { side: true, pressed: 'true' },
+      ],
+    );
   });
 });
 
@@ -180,33 +219,25 @@ Deno.test('the status line shows the keys that work on each page', async (t) => 
     assertEquals(await page.evaluate(visibleKeys), []);
   });
 
-  await t.step('wide home: panes, theme and help', async () => {
+  await t.step('wide home: the panes and the side column', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleKeys), ['1–6 panels', 't theme', ': terminal', '? help']);
+    assertEquals(await page.evaluate(visibleKeys), ['1–6 panels', 'z side column']);
   });
 
-  await t.step('wide list: moving, opening and the view', async () => {
+  await t.step('wide list: moving, opening, the view and the side column', async () => {
     const page = await session.open(POSTS_EN, { viewport: WIDE });
     assertEquals(await page.evaluate(visibleKeys), [
+      'q back',
       'j k move',
       'enter open',
       'v list or grid',
-      't theme',
-      ': terminal',
-      '? help',
+      'z side column',
     ]);
   });
 
-  await t.step('wide post: back, zoom and the neighbouring posts', async () => {
+  await t.step('wide post: back, the next post and the side column, each one clickable', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleKeys), [
-      'q back',
-      'z zoom',
-      'p n previous / next post',
-      't theme',
-      ': terminal',
-      '? help',
-    ]);
+    assertEquals(await page.evaluate(visibleKeys), ['q back', 'n next', 'z side column']);
   });
 });
 

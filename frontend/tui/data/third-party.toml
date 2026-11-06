@@ -45,7 +45,7 @@ homepage = "https://github.com/morhetz/gruvbox"
 text = { url = "https://raw.githubusercontent.com/morhetz/gruvbox/ef8864bb42bf244f0295d1c5a403b27e3d139695/package.json", sha256 = "394c454f753fd4d1dbfe20248bdc56aeb1e9edd9866f6f5e7b786de4b1b2b958" }
 
 [[entries]]
-name = "Font Awesome Free (brand icons)"
+name = "Font Awesome Free (icons)"
 license = "CC-BY-4.0"
 homepage = "https://fontawesome.com"
 text = { package = "@fortawesome/fontawesome-free", file = "LICENSE.txt" }

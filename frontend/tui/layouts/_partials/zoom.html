@@ -1,9 +1,8 @@
-{{- /* An inner page: the pane bar, then the page as one article. Expects page and body. */ -}}
+{{- /* An inner page as one article. Expects page and body. */ -}}
 {{- $page := .page }}
-{{ partial "window/pane-bar.html" $page }}
 <article class="zoom{{ if $page.IsPage }} zoom--page{{ end }}" aria-labelledby="page-title">
   <h1 class="zoom__title" id="page-title">{{ partial "page-title.html" $page }}</h1>
-  <div class="zoom__body{{ if or $page.IsPage (eq $page.Section "credits") }} prose{{ end }}">
+  <div class="zoom__body{{ if $page.IsPage }} prose{{ end }}">
     {{ .body }}
   </div>
 </article>

@@ -65,11 +65,27 @@ target = "content"
 [[module.mounts]]
 source = "frontend/tui/assets"
 target = "assets"
-# Only the brand icons the site links to; Font Awesome itself is never loaded.
+# Only the icons the site shows; Font Awesome itself is never loaded.
 [[module.mounts]]
 source = "node_modules/@fortawesome/fontawesome-free/svgs/brands"
 target = "assets/icons"
 files = ["github.svg", "linkedin.svg", "instagram.svg", "lastfm.svg", "letterboxd.svg"]
+# The interface icons the bars use.
+[[module.mounts]]
+source = "node_modules/@fortawesome/fontawesome-free/svgs/solid"
+target = "assets/icons/solid"
+files = [
+  "envelope.svg",
+  "table-columns.svg",
+  "terminal.svg",
+  "circle-half-stroke.svg",
+  "circle-question.svg",
+  "rss.svg",
+  "list.svg",
+  "table-cells-large.svg",
+  "filter.svg",
+  "magnifying-glass.svg",
+]
 [[module.mounts]]
 source = "generated/css"
 target = "assets/css/generated"

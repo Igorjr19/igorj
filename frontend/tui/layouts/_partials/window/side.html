@@ -15,11 +15,10 @@
   <section class="side__block" aria-label="{{ i18n "systemContact" }}">
     <p class="side__heading" aria-hidden="true">{{ i18n "systemContact" }}</p>
     <ul class="side__links">
-      {{- with .email }}<li><a href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
+      {{- with .email }}<li><a href="mailto:{{ . }}">{{ partial "icon.html" "envelope" }}{{ . }}</a></li>{{ end }}
       {{- range append .personal .professional }}
       <li><a href="{{ .url }}">{{ partial "network-icon.html" .network }}{{ .network }}</a></li>
       {{- end }}
-      {{- with site.GetPage "/credits" }}<li><a href="{{ .RelPermalink }}">{{ partial "page-title.html" . }}</a></li>{{ end }}
     </ul>
   </section>
   {{- end }}

@@ -37,13 +37,18 @@ Deno.test('the home opens the window on its first pane', async (t) => {
     });
   }
 
-  await t.step('the top line names the site and marks the current pane, like a tmux status bar', async () => {
-    const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
-    const tabs = await page.evaluate(() =>
-      [...document.querySelectorAll('.tabs > span')].map((tab) => tab.textContent?.trim()),
-    );
-    assertEquals(tabs.slice(0, 3), ['igorj.dev', '1:home*', '2:projects']);
-  });
+  await t.step(
+    'the top line names the site and where the page sits, with no tabs repeating the side column',
+    async () => {
+      const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
+      const top = await page.evaluate(() => ({
+        site: document.querySelector('.win__site')?.getAttribute('href'),
+        path: [...document.querySelectorAll('.win__path a')].map((link) => link.textContent),
+        tabs: document.querySelectorAll('.win__top [data-pane]').length,
+      }));
+      assertEquals(top, { site: '/en/', path: ['~'], tabs: 0 });
+    },
+  );
 });
 
 Deno.test('the home presents the author and the latest work', async (t) => {
