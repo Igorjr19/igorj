@@ -20,8 +20,8 @@ function readList() {
     titles: [...document.querySelectorAll('.zoom__body .item__title')].map((title) => title.textContent?.trim()),
     filter: [...document.querySelectorAll('.filter li')].map((item) => item.textContent?.replace(/\s+/g, ' ').trim()),
     current: document.querySelector('.filter [aria-current="page"]')?.textContent,
-    feeds: [...document.querySelectorAll('.zoom__body > p a')].map(
-      (link) => `${link.textContent} ${link.getAttribute('href')}`,
+    feeds: [...document.querySelectorAll('.items__feed')].map(
+      (link) => `${link.textContent?.trim()} ${link.getAttribute('href')}`,
     ),
     back: document.querySelector('.statusbar [data-nav="back"]')?.getAttribute('href'),
   };
@@ -67,7 +67,7 @@ Deno.test('the post list shows every published post, newest first, with a catego
       titles: ['Second fixture post'],
       filter: ['all', 'Entertainment 1', 'Notes 1', 'Professional 1'],
       current: 'Professional',
-      feeds: ['RSS: all posts /en/index.xml', 'RSS: Professional /en/categories/professional/index.xml'],
+      feeds: ['RSS: Professional /en/categories/professional/index.xml'],
       back: '/en/posts/',
     });
   });
@@ -133,5 +133,29 @@ Deno.test('posts link to the previous and the next post, also by key', async (t)
     assertEquals(await page.evaluate(pager), ['next: Second fixture post ›']);
     await page.keyboard.press('p');
     assertEquals(new URL(page.url).pathname, FIRST_POST_EN);
+  });
+});
+
+Deno.test('the view switch says which view is on and changes it with a click', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('list is pressed first; clicking grid shows the grid and presses it', async () => {
+    const page = await session.open(POSTS_EN, { viewport: WIDE });
+    const read = () => ({
+      view: document.querySelector<HTMLElement>('[data-items]')?.dataset['view'],
+      pressed: [...document.querySelectorAll('.view-switch button')].map((button) =>
+        button.getAttribute('aria-pressed'),
+      ),
+    });
+    const before = await page.evaluate(read);
+    await page.locator('.view-switch [data-view="grid"]').click();
+    assertEquals(
+      [before, await page.evaluate(read)],
+      [
+        { view: 'list', pressed: ['true', 'false'] },
+        { view: 'grid', pressed: ['false', 'true'] },
+      ],
+    );
+    await page.evaluate(() => localStorage.clear());
   });
 });

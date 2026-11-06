@@ -41,6 +41,7 @@ files = [
   "table-cells-large.svg",
   "filter.svg",
   "magnifying-glass.svg",
+  "star.svg",
 ]
 [[module.mounts]]
 source = "generated/css"

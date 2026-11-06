@@ -32,12 +32,12 @@ Deno.test('going back to the home lands on the panel and row the visitor left fr
     assertEquals(await page.evaluate(focused), { panel: 'recent', text: row });
   });
 
-  await t.step('the listening box title leads to its page and back to that title', async () => {
+  await t.step('the see-all link of the listening box leads to the shelf and back to that link', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    await page.evaluate(() => document.querySelector<HTMLAnchorElement>('#listening .panel__title a')?.click());
+    await page.evaluate(() => document.querySelector<HTMLAnchorElement>('#listening .widget__more a')?.click());
     await page.waitForNavigation();
     await goBack(page, 1);
-    assertEquals(await page.evaluate(focused), { panel: 'listening', text: 'listening' });
+    assertEquals(await page.evaluate(focused), { panel: 'listening', text: 'see all →' });
   });
 
   await t.step('a reload starts from the top even when a place is saved', async () => {

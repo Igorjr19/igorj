@@ -1,0 +1,29 @@
+{{- /* The head of a list: the category filter of the blog on the left; the view and the feed on the right. Expects page. */ -}}
+{{- $blog := or (eq .page.Section "posts") (eq .page.Kind "term") }}
+<div class="items__bar">
+  {{- if $blog }}
+{{- with site.Taxonomies.categories.Alphabetical }}
+<nav class="filter" aria-label="{{ i18n "filterLabel" }}">
+  <ul>
+    <li><a href="{{ (site.GetPage "/posts").RelPermalink }}"{{ if eq $.page.Kind "section" }} aria-current="page"{{ end }}>{{ i18n "filterAll" }}</a></li>
+    {{- range . }}
+    <li><a href="{{ .Page.RelPermalink }}"{{ if eq $.page.RelPermalink .Page.RelPermalink }} aria-current="page"{{ end }}>{{ partial "category-label.html" .Page }}</a> <span class="panel__meta">{{ .Count }}</span></li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end }}
+  {{- end }}
+  <div class="items__tools">
+    <span class="view-switch" role="group" aria-label="{{ i18n "viewLabel" }}" data-script-only hidden>
+      <button type="button" data-view="list" aria-pressed="true">{{ partial "icon.html" "list" }}{{ i18n "viewList" }}</button>
+      <button type="button" data-view="grid" aria-pressed="false">{{ partial "icon.html" "table-cells-large" }}{{ i18n "viewGrid" }}</button>
+    </span>
+    {{- if $blog }}
+    {{- $feed := site.Home.OutputFormats.Get "rss" }}
+    {{- if eq .page.Kind "term" }}{{ $feed = .page.OutputFormats.Get "rss" }}{{ end }}
+    {{- with $feed }}
+    <a class="items__feed" href="{{ .RelPermalink }}" title="RSS">{{ partial "icon.html" "rss" }}<span class="sr-only">{{ if eq $.page.Kind "term" }}{{ i18n "feedCategory" (partial "category-label.html" $.page) }}{{ else }}{{ i18n "feedAll" }}{{ end }}</span></a>
+    {{- end }}
+    {{- end }}
+  </div>
+</div>

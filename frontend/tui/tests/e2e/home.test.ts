@@ -10,8 +10,8 @@ Deno.test('the home opens the window on its first pane', async (t) => {
   await using session = await Session.start();
 
   for (const [path, labels] of [
-    [HOME_EN, ['Home', 'Projects', 'Writing', 'Research', 'CV', 'Listening and watching']],
-    [HOME_PT, ['Início', 'Projetos', 'Escrita', 'Pesquisa', 'Currículo', 'Ouvindo e assistindo']],
+    [HOME_EN, ['Home', 'Projects', 'Writing', 'Research', 'CV', 'Shelf']],
+    [HOME_PT, ['Início', 'Projetos', 'Escrita', 'Pesquisa', 'Currículo', 'Estante']],
   ] as const) {
     await t.step(`${path}: six panes, numbered for their keys, the first one current`, async () => {
       const page = await session.open(path, { viewport: WIDE, javascript: false });
@@ -191,5 +191,34 @@ Deno.test('the role ends in a block cursor one cell wide that blinks unless moti
   await t.step('still when the visitor asks for reduced motion', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE, reducedMotion: true });
     assertEquals((await page.evaluate(read)).animation, 'none');
+  });
+});
+
+Deno.test('the shelf boxes lead to where their data comes from', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('the listening title links to the Last.fm profile, and see all to the shelf', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
+    const links = await page.evaluate(() => [
+      document.querySelector('#listening .panel__title a')?.getAttribute('href'),
+      document.querySelector('#listening .widget__more a')?.getAttribute('href'),
+    ]);
+    assertEquals(links, ['https://www.last.fm/user/example', '/en/shelf/']);
+  });
+
+  await t.step('a rating fills its stars to the exact half and says the number to screen readers', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
+    const rating = await page.evaluate(() => {
+      const stars = document.querySelector<HTMLElement>('#watched .stars');
+      return [stars?.style.getPropertyValue('--rating'), stars?.nextElementSibling?.textContent];
+    });
+    assertEquals(rating, ['4.5', '4.5 out of 5']);
+  });
+
+  // The old page redirects as soon as it loads, so it is read from the built site instead of a browser.
+  await t.step('the old address of the shelf leads to the new one', async () => {
+    const html = await Deno.readTextFile('generated/fixture-site/en/listening/index.html');
+    assert(html.includes('<link rel=canonical href=https://igorj.dev/en/shelf/>'), 'canonical is the shelf');
+    assert(html.includes('url=/en/shelf/'), 'refreshes to the shelf');
   });
 });

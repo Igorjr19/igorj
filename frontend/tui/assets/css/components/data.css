@@ -45,7 +45,7 @@
 
   .films__row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content calc(6 * var(--cell-width));
+    grid-template-columns: minmax(0, 1fr) max-content 5.5em;
     gap: calc(2 * var(--cell-width));
   }
 
@@ -59,10 +59,20 @@
   }
 
   .films__rating {
-    color: var(--color-warning);
+    display: flex;
+    align-items: center;
   }
 
-  .listening {
+  /* Five stars cut from one shape, filled up to the rating, so a half is exactly half a star. */
+  .stars {
+    display: inline-block;
+    inline-size: 5.5em;
+    block-size: 1em;
+    background: linear-gradient(90deg, var(--color-warning) calc(var(--rating) / 5 * 100%), var(--color-surface-3) 0);
+    mask: var(--star) 0 50% / 1.1em 0.9em repeat-x;
+  }
+
+  .shelf {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(40 * var(--cell-width))), 1fr));
     gap: calc(2 * var(--cell-height)) calc(4 * var(--cell-width));
