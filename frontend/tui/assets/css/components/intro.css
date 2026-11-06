@@ -1,0 +1,77 @@
+/* The opening. The head script sets data-intro: "full" on the first visit, "short" after a long absence.
+   The short one, and the end of the full one, draw the window from its middle and bring the content in. */
+@layer app.components {
+  :root[data-intro='full'] .win {
+    opacity: 0;
+    /* If the opening's script never runs, the page shows up anyway. */
+    animation: intro-fallback 0s 4s forwards;
+  }
+
+  :root[data-intro='short'] .win {
+    animation: intro-frame 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  :root[data-intro='short'] .win__body {
+    animation: intro-content 0.3s 0.2s ease-out both;
+  }
+
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cell-height);
+    padding: calc(var(--cell-width) * 2);
+    background-color: var(--color-background);
+    transition: opacity 0.4s ease-in;
+  }
+
+  .intro--leaving {
+    opacity: 0;
+  }
+
+  .intro__name {
+    margin: 0;
+    inline-size: min(100%, 64rem);
+    min-block-size: 8lh;
+    overflow: hidden;
+    font-size: 0.5em;
+    font-weight: bold;
+    line-height: 1;
+    white-space: pre;
+    color: var(--color-link);
+  }
+
+  .intro__text {
+    margin: 0;
+    inline-size: min(100%, 64rem);
+    min-block-size: 1lh;
+    color: var(--color-text-muted);
+  }
+
+  @keyframes intro-fallback {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes intro-frame {
+    from {
+      clip-path: inset(50% 50%);
+    }
+
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes intro-content {
+    from {
+      opacity: 0;
+      translate: 0 0.5rem;
+    }
+  }
+}

@@ -3,6 +3,7 @@ lines:
   - "Linha de teste um."
   - "Linha de teste dois."
   - "Linha de teste três."
+intro: "Frase de abertura de teste."
 photoAlt: "Foto de teste"
 location: "Cidade de teste"
 now:

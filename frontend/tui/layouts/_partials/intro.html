@@ -1,0 +1,5 @@
+{{- /* The full opening loads only on the first visit, when the head script asks for it. */ -}}
+{{- with resources.Get "ts/intro/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+{{- $profile := (partial "model.html" $).profile }}
+<template data-lazy="intro" data-script="{{ .RelPermalink }}" data-integrity="{{ .Data.Integrity }}" data-name="{{ partial "author.html" $ }}" data-text="{{ with $profile }}{{ .intro }}{{ end }}"></template>
+{{- end }}

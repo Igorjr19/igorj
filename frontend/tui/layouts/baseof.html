@@ -28,6 +28,7 @@
     {{ partial "window/statusbar.html" . }}
   </div>
   {{ partial "keybar.html" . }}
+  {{ partial "intro.html" . }}
   {{- if eq .Kind "404" }}
   {{- with resources.Get "ts/not-found/main.ts" | js.Build (dict "minify" true) | fingerprint }}
   <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>

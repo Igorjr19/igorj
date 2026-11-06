@@ -3,6 +3,7 @@ lines:
   - "Fixture line one."
   - "Fixture line two."
   - "Fixture line three."
+intro: "Fixture opening sentence."
 photoAlt: "Fixture photo"
 location: "Fixture city"
 now:

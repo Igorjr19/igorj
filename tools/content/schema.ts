@@ -74,6 +74,8 @@ const AboutSchema = v.strictObject({
   role: Text,
   lines: v.pipe(v.array(Text), v.length(3, 'The about text has exactly three lines')),
   photoAlt: Text,
+  /** The sentence the opening types under the name; without it, the opening shows only the name. */
+  intro: v.optional(Text),
   location: Text,
   now: v.strictObject({ work: Text, masters: Text, studying: Text }),
   lastmod: Day,
