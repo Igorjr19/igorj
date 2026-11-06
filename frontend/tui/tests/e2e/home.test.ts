@@ -215,9 +215,10 @@ Deno.test('the shelf boxes lead to where their data comes from', async (t) => {
     assertEquals(rating, ['4.5', '4.5 out of 5']);
   });
 
+  // The old page redirects as soon as it loads, so it is read from the built site instead of a browser.
   await t.step('the old address of the shelf leads to the new one', async () => {
-    const page = await session.open('/en/listening/', { viewport: WIDE, javascript: false });
-    const canonical = await page.evaluate(() => document.querySelector('link[rel=canonical]')?.getAttribute('href'));
-    assertEquals(canonical, 'https://igorj.dev/en/shelf/');
+    const html = await Deno.readTextFile('generated/fixture-site/en/listening/index.html');
+    assert(html.includes('<link rel=canonical href=https://igorj.dev/en/shelf/>'), 'canonical is the shelf');
+    assert(html.includes('url=/en/shelf/'), 'refreshes to the shelf');
   });
 });
