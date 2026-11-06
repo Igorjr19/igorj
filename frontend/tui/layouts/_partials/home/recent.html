@@ -1,0 +1,36 @@
+{{- /* The latest posts and the featured projects, as one list of rows. */ -}}
+{{- $model := partial "model.html" . }}
+<section class="recent" aria-labelledby="recent-title" id="recent">
+  <h2 class="label" id="recent-title">{{ i18n "recent" }}</h2>
+  {{- $rows := 0 }}
+  <ul class="recent__list">
+    {{- range first 3 $model.posts }}
+    {{- $item := . }}
+    {{- with partial "item-page.html" (dict "section" "posts" "item" .) }}
+    {{- $foreign := ne .Language.Lang site.Language.Lang }}
+    {{- $rows = add $rows 1 }}
+    <li style="--item-color: var(--color-category-{{ $item.category.slug }})">
+      <a class="recent__row" href="{{ .RelPermalink }}"{{ if $foreign }} lang="{{ .Language.Locale }}"{{ end }}>
+        <span class="recent__kind">{{ $item.category.name }}</span>
+        <span class="recent__title">{{ $item.title }}</span>
+        <span class="recent__sub"><time datetime="{{ $item.date }}">{{ $item.date }}</time> · {{ $item.summary }}</span>
+      </a>
+    </li>
+    {{- end }}
+    {{- end }}
+    {{- range first 2 (where $model.projects "featured" true) }}
+    {{- $item := . }}
+    {{- with partial "item-page.html" (dict "section" "projects" "item" .) }}
+    {{- $rows = add $rows 1 }}
+    <li style="--item-color: var(--color-link)">
+      <a class="recent__row" href="{{ .RelPermalink }}">
+        <span class="recent__kind">{{ i18n "kindProject" }}</span>
+        <span class="recent__title">{{ $item.title }}</span>
+        <span class="recent__sub">{{ delimit $item.stack " · " }}</span>
+      </a>
+    </li>
+    {{- end }}
+    {{- end }}
+  </ul>
+  {{- if not $rows }}{{ partial "panels/empty.html" . }}{{ end }}
+</section>

@@ -1,44 +1,62 @@
 /// <reference lib="dom" />
 import { assert, assertAlmostEquals, assertEquals } from '@std/assert';
-import { HOME_EN, POST_EN } from './support/paths.ts';
+import { HOME_EN, POST_EN, POSTS_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
 
-const MONO_COLUMNS_FOR_TWO_PANELS = 80;
-const MONO_COLUMNS_FOR_FOUR_PANELS = 120;
+const WIDE = { width: 1440, height: 900 };
+const NARROW = { width: 360, height: 800 };
 
-function expectedColumns(cells: number): number {
-  if (cells >= MONO_COLUMNS_FOR_FOUR_PANELS) {
-    return 4;
-  }
-  return cells >= MONO_COLUMNS_FOR_TWO_PANELS ? 2 : 1;
-}
-
-Deno.test('layout snaps to a grid of monospace cells', async (t) => {
+Deno.test('the window keeps the side column beside the pane on wide screens and folds on narrow ones', async (t) => {
   await using session = await Session.start();
 
-  for (const width of [360, 700, 800, 1280, 1440]) {
-    await t.step(
-      `${width}px: one column below 80 cells, two from there, four from 120, widths on the cell grid`,
-      async () => {
-        const page = await session.open(HOME_EN, { viewport: { width, height: 800 } });
-        const layout = await page.evaluate(async () => {
-          await document.fonts.load(`${getComputedStyle(document.body).fontSize} 'Fira Code'`);
-          const grid = document.querySelector('.grid') as Element;
-          return {
-            cell: Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-width')),
-            body: document.body.getBoundingClientRect().width,
-            columns: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
-            panelWidths: [...grid.children].map((panel) => panel.getBoundingClientRect().width),
-          };
-        });
-        assertEquals(layout.columns, expectedColumns(layout.body / layout.cell));
-        for (const panelWidth of layout.panelWidths) {
-          const cells = panelWidth / layout.cell;
-          assert(Math.abs(cells - Math.round(cells)) < 0.01, `${panelWidth}px is not a whole number of cells`);
-        }
-      },
+  await t.step('wide: the side column on the left, the pane beside it, both inside the window', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    const boxes = await page.evaluate(() => {
+      const box = (selector: string) => {
+        const { left, right, top } = (document.querySelector(selector) as HTMLElement).getBoundingClientRect();
+        return { left, right, top };
+      };
+      return { side: box('.side'), pane: box('.pane'), win: box('.win') };
+    });
+    assert(
+      boxes.side.right <= boxes.pane.left + 1,
+      `side ends at ${boxes.side.right}, pane starts at ${boxes.pane.left}`,
     );
-  }
+    assertAlmostEquals(boxes.side.top, boxes.pane.top, 1);
+    assert(boxes.pane.right <= boxes.win.right, 'the pane stays inside the window');
+  });
+
+  await t.step('wide: the pane scrolls inside the window while the side and status lines stay put', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    const state = await page.evaluate(() => {
+      const pane = document.querySelector('.pane') as HTMLElement;
+      pane.scrollTop = pane.scrollHeight;
+      return {
+        pageScroll: document.documentElement.scrollHeight - innerHeight,
+        statusVisible:
+          (document.querySelector('.statusbar')?.getBoundingClientRect().bottom ?? Number.POSITIVE_INFINITY) <=
+          innerHeight,
+      };
+    });
+    assertEquals(state, { pageScroll: 0, statusVisible: true });
+  });
+
+  await t.step('narrow: who and the side blocks fold away, the panes wrap into rows above the pane', async () => {
+    const page = await session.open(POSTS_EN, { viewport: NARROW });
+    const state = await page.evaluate(() => ({
+      who: document.querySelector('.side__who')?.checkVisibility(),
+      blocks: [...document.querySelectorAll('.side__block')].some((block) => block.checkVisibility()),
+      panes: document.querySelector('.side__panes')?.checkVisibility(),
+      panesAbovePane:
+        (document.querySelector('.side__panes')?.getBoundingClientRect().bottom ?? 0) <=
+        (document.querySelector('.pane')?.getBoundingClientRect().top ?? 0) + 1,
+    }));
+    assertEquals(state, { who: false, blocks: false, panes: true, panesAbovePane: true });
+  });
+});
+
+Deno.test('prose keeps the character grid of the frame', async (t) => {
+  await using session = await Session.start();
 
   await t.step('prose in Fira Sans keeps the cell size measured with Fira Code', async () => {
     const page = await session.open(POST_EN);
@@ -65,5 +83,28 @@ Deno.test('layout snaps to a grid of monospace cells', async (t) => {
     assert(sizes.proseFont.includes('Fira Sans'));
     assertEquals(sizes.proseCell, sizes.rootCell);
     assertAlmostEquals(sizes.rootCell, sizes.glyphWidth, 0.01);
+  });
+});
+
+Deno.test('panel boxes are readable by assistive technology', async (t) => {
+  await using session = await Session.start();
+
+  for (const path of [HOME_EN, POST_EN]) {
+    await t.step(`${path}: borders are CSS, not box-drawing characters in the text`, async () => {
+      const page = await session.open(path);
+      const hasBoxDrawing = await page.evaluate(() => /[─-▟]/.test(document.body.textContent ?? ''));
+      assertEquals(hasBoxDrawing, false);
+    });
+  }
+
+  await t.step('every box of the home is titled by a heading on its border', async () => {
+    const page = await session.open(HOME_EN);
+    const untitled = await page.evaluate(
+      () =>
+        [...document.querySelectorAll('.panel')].filter(
+          (panel) => !panel.querySelector(':scope > .panel__title:is(h1, h2, h3, h4, h5, h6)'),
+        ).length,
+    );
+    assertEquals(untitled, 0);
   });
 });

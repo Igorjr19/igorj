@@ -1,0 +1,70 @@
+@layer app.components {
+  .bars,
+  .films {
+    display: grid;
+    gap: calc(var(--cell-height) / 4);
+    margin: var(--cell-height) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :is(.bars, .films) > li::before {
+    content: none;
+  }
+
+  .bars__row {
+    display: grid;
+    grid-template-columns: minmax(0, calc(16 * var(--cell-width))) minmax(0, 1fr) max-content;
+    gap: calc(2 * var(--cell-width));
+    align-items: center;
+  }
+
+  .bars__name,
+  .films__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bars__track {
+    block-size: calc(var(--cell-height) / 2);
+    background-color: var(--color-surface-1);
+  }
+
+  .bars__fill {
+    display: block;
+    block-size: 100%;
+    background-color: var(--color-category-entertainment);
+  }
+
+  .bars__count,
+  .films__year {
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .films__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content calc(6 * var(--cell-width));
+    gap: calc(2 * var(--cell-width));
+  }
+
+  .films__row--reading {
+    grid-template-columns: minmax(0, 1fr) max-content;
+  }
+
+  .films__authors {
+    grid-column: 1 / -1;
+    color: var(--color-text-muted);
+  }
+
+  .films__rating {
+    color: var(--color-warning);
+  }
+
+  .listening {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(40 * var(--cell-width))), 1fr));
+    gap: calc(2 * var(--cell-height)) calc(4 * var(--cell-width));
+  }
+}

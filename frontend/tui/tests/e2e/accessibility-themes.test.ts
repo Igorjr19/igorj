@@ -39,9 +39,9 @@ Deno.test('every theme keeps the selected row and the open help readable', async
   await using session = await Session.start();
 
   for (const theme of THEMES) {
-    await t.step(`${theme}: reverse video on the focused row`, async () => {
-      const page = await openWithTheme(session, HOME_EN, theme);
-      await page.keyboard.press('4');
+    await t.step(`${theme}: reverse video on the selected row`, async () => {
+      const page = await openWithTheme(session, POSTS_EN, theme);
+      await page.keyboard.press('j');
       assertEquals(await findAccessibilityViolations(page), [], theme);
     });
     await t.step(`${theme}: help dialog`, async () => {

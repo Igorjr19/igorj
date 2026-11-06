@@ -6,8 +6,9 @@ import { Session } from './support/session.ts';
 const WIDE = { width: 1440, height: 900 };
 
 const focused = () => ({
-  panel: document.activeElement?.closest('.panel')?.id ?? null,
-  text: document.activeElement?.textContent?.trim() ?? null,
+  panel: document.activeElement?.closest('.home section[id]')?.id ?? null,
+  text:
+    (document.activeElement?.querySelector('.recent__title') ?? document.activeElement)?.textContent?.trim() ?? null,
 });
 
 Deno.test('going back to the home lands on the panel and row the visitor left from', async (t) => {
@@ -20,29 +21,29 @@ Deno.test('going back to the home lands on the panel and row the visitor left fr
     }
   };
 
-  await t.step('a post opened from the posts panel: two steps back return to that row', async () => {
+  await t.step('a post opened from the recent list: two steps back return to that row', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    await page.keyboard.press('4');
+    await page.keyboard.press('j');
     const row = (await page.evaluate(focused)).text;
     await page.keyboard.press('Enter');
     await page.waitForNavigation();
     await goBack(page, 2);
     assertEquals(new URL(page.url).pathname, HOME_EN);
-    assertEquals(await page.evaluate(focused), { panel: 'posts', text: row });
+    assertEquals(await page.evaluate(focused), { panel: 'recent', text: row });
   });
 
-  await t.step('the panel title link leads to the list and back to that title', async () => {
+  await t.step('the listening box title leads to its page and back to that title', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    await page.evaluate(() => document.querySelector<HTMLAnchorElement>('#projects .panel__name')?.click());
+    await page.evaluate(() => document.querySelector<HTMLAnchorElement>('#listening .panel__title a')?.click());
     await page.waitForNavigation();
     await goBack(page, 1);
-    assertEquals(await page.evaluate(focused), { panel: 'projects', text: 'Projects' });
+    assertEquals(await page.evaluate(focused), { panel: 'listening', text: 'listening' });
   });
 
   await t.step('a reload starts from the top even when a place is saved', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await page.evaluate(() =>
-      sessionStorage.setItem('home-origin', JSON.stringify({ panel: 'posts', href: '/en/posts/' })),
+      sessionStorage.setItem('home-origin', JSON.stringify({ panel: 'recent', href: '/en/posts/' })),
     );
     await page.reload();
     assertEquals(await page.evaluate(() => document.activeElement?.tagName), 'BODY');

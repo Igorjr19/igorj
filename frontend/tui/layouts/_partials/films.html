@@ -1,0 +1,12 @@
+{{- /* Films with year and rating; the stars are a picture of the rating, which is also written out. */ -}}
+<ul class="films">
+  {{- range $film := . }}
+  <li class="films__row">
+    <span class="films__title">{{ with .url }}<a href="{{ . }}">{{ $film.title }}</a>{{ else }}<cite>{{ $film.title }}</cite>{{ end }}</span>
+    <span class="films__year">{{ .year }}</span>
+    {{- with .rating }}
+    <span class="films__rating"><span aria-hidden="true">{{ strings.Repeat (int (math.Floor .)) "★" }}{{ if ne (math.Floor .) . }}½{{ end }}</span><span class="sr-only">{{ i18n "rating" (lang.FormatNumber 1 .) }}</span></span>
+    {{- end }}
+  </li>
+  {{- end }}
+</ul>

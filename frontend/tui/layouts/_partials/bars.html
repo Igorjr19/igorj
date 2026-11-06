@@ -1,0 +1,11 @@
+{{- /* Artists with their plays as a bar; the number stays as text, the bar is only a picture of it. */ -}}
+{{- $max := .max }}
+<ol class="bars">
+  {{- range $artist := .artists }}
+  <li class="bars__row">
+    <span class="bars__name">{{ with .url }}<a href="{{ . }}">{{ $artist.name }}</a>{{ else }}{{ $artist.name }}{{ end }}</span>
+    <span class="bars__track" aria-hidden="true"><span class="bars__fill" style="inline-size: {{ div (mul .plays 100) $max }}%"></span></span>
+    <span class="bars__count">{{ i18n "plays" (dict "Count" (int .plays)) }}</span>
+  </li>
+  {{- end }}
+</ol>

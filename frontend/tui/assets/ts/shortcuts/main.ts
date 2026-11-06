@@ -6,50 +6,40 @@ import { readShortcutsEnabled, saveShortcutsEnabled } from './preference.ts';
 import { actionForKey, isShortcutCandidate, type NavigationTarget, type ShortcutAction, stepIndex } from './rules.ts';
 
 const EDITABLE = 'input, textarea, select, [contenteditable]:not([contenteditable="false"])';
+/** The rows j and k move through: list items on list pages, the recent rows on the home. */
+const ITEMS = '.item__link, .recent__row';
 
-function panels(): HTMLElement[] {
-  return [...document.querySelectorAll<HTMLElement>('.grid > .panel')];
+function panes(): HTMLAnchorElement[] {
+  return [...document.querySelectorAll<HTMLAnchorElement>('.side__panes a[data-pane]')];
 }
 
-/** One focus target per row; rows without a link cannot be opened, so they are skipped. */
-function itemsOf(panel: Element): HTMLElement[] {
-  return [...panel.querySelectorAll(':scope .panel__summary, :scope li, :scope dd, :scope > p')].flatMap((row) => {
-    const target = row.matches('summary') ? row : row.querySelector('a');
-    return target instanceof HTMLElement && target.checkVisibility() ? [target] : [];
-  });
+function items(): HTMLElement[] {
+  return [...document.querySelectorAll<HTMLElement>(ITEMS)].filter((item) => item.checkVisibility());
 }
 
-function currentPanelIndex(): number {
-  const all = panels();
-  const focused = document.activeElement?.closest('.grid > .panel');
-  if (focused) {
-    return all.indexOf(focused as HTMLElement);
+function currentPaneIndex(): number {
+  return panes().findIndex((link) => link.hasAttribute('aria-current'));
+}
+
+/** The pane already open gets the focus on its first item; any other pane is opened. */
+function openPane(index: number): void {
+  const link = panes()[index];
+  if (!link) {
+    return;
   }
-  return all.findIndex((panel) => panel.getBoundingClientRect().bottom > 1);
-}
-
-function focusPanel(index: number): void {
-  const panel = panels()[index];
-  if (panel) {
-    (itemsOf(panel)[0] ?? panel).focus();
+  if (link.getAttribute('aria-current') === 'page') {
+    (items()[0] ?? document.getElementById('pane'))?.focus();
+  } else {
+    link.click();
   }
 }
 
-function moveWithinPanel(step: 1 | -1): boolean {
-  const panel = document.activeElement?.closest('.grid > .panel');
-  if (!panel) {
-    return false;
-  }
-  const items = itemsOf(panel);
-  items[stepIndex(items.indexOf(document.activeElement as HTMLElement), step, items.length)]?.focus();
-  return true;
-}
-
-function showNeighbourPanel(step: 1 | -1): void {
-  const all = panels();
-  const panel = all[stepIndex(currentPanelIndex(), step, all.length)];
-  panel?.focus({ preventScroll: true });
-  panel?.scrollIntoView({ block: 'start' });
+function move(step: 1 | -1): boolean {
+  const all = items();
+  const target = all[stepIndex(all.indexOf(document.activeElement as HTMLElement), step, all.length)];
+  target?.focus();
+  target?.scrollIntoView({ block: 'nearest' });
+  return target !== undefined;
 }
 
 function openHelp(): void {
@@ -65,13 +55,19 @@ function navigate(target: NavigationTarget): boolean {
 
 function perform(action: ShortcutAction): boolean {
   switch (action.kind) {
-    case 'panel':
-      focusPanel(action.index);
+    case 'pane':
+      openPane(action.index);
       return true;
     case 'move':
-      return moveWithinPanel(action.step);
+      return move(action.step);
     case 'navigate':
       return navigate(action.target);
+    case 'view':
+      document.dispatchEvent(new Event('items:toggle-view'));
+      return document.querySelector('[data-items]') !== null;
+    case 'zoom':
+      document.body.classList.toggle('is-zoomed');
+      return true;
     case 'theme':
       openThemePicker();
       return true;
@@ -95,7 +91,7 @@ function onKeydown(event: KeyboardEvent): void {
   if (!enabled || document.querySelector('dialog[open]') || !isShortcutCandidate(event, editable)) {
     return;
   }
-  const action = actionForKey(event.key, panels().length);
+  const action = actionForKey(event.key, panes().length, items().length > 0);
   if (action && perform(action)) {
     event.preventDefault();
   }
@@ -103,8 +99,7 @@ function onKeydown(event: KeyboardEvent): void {
 
 /** Choosing a language with the switcher is remembered, so the root address honors it next time. */
 function rememberLanguage(event: MouseEvent): void {
-  const link =
-    event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('.site-header__languages a') : null;
+  const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('.win__languages a') : null;
   const language = siteLanguageOf(link?.hreflang ?? null);
   if (language) {
     try {
@@ -115,18 +110,21 @@ function rememberLanguage(event: MouseEvent): void {
   }
 }
 
+function neighbourPane(step: 1 | -1): void {
+  const all = panes();
+  const current = currentPaneIndex();
+  all[(current + step + all.length) % all.length]?.click();
+}
+
 function onClick(event: MouseEvent): void {
   rememberLanguage(event);
   const control = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-action]') : null;
   switch (control?.dataset['action']) {
-    case 'previous-panel':
-      showNeighbourPanel(-1);
+    case 'previous-pane':
+      neighbourPane(-1);
       break;
-    case 'next-panel':
-      showNeighbourPanel(1);
-      break;
-    case 'back':
-      navigate('back');
+    case 'next-pane':
+      neighbourPane(1);
       break;
     case 'help':
       openHelp();
@@ -149,18 +147,9 @@ function onClick(event: MouseEvent): void {
   }
 }
 
-// Pressing a bar button keeps the focus in the panel, so previous and next count from where the visitor was.
-function onPointerDown(event: PointerEvent): void {
-  if (event.target instanceof Element && event.target.closest('.keybar__buttons button')) {
-    event.preventDefault();
-  }
-}
-
 renderEnabled();
 for (const element of document.querySelectorAll('[data-script-only]')) {
   element.removeAttribute('hidden');
 }
-document.querySelector('.keybar')?.removeAttribute('hidden');
-document.addEventListener('pointerdown', onPointerDown);
 document.addEventListener('keydown', onKeydown);
 document.addEventListener('click', onClick);

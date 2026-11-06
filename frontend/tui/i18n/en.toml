@@ -102,6 +102,31 @@ helpEscape = "Close this help"
 helpIgnored = "Shortcuts do nothing while Ctrl, Alt or Meta is held or while typing in a field."
 helpClose = "Close"
 
+panes = "Panes"
+paneHome = "Home"
+paneProjects = "Projects"
+panePosts = "Writing"
+paneResearch = "Research"
+paneCv = "CV"
+paneListening = "Listening and watching"
+sectionListening = "listening"
+recent = "Recent"
+kindProject = "Project"
+systemContent = "Content"
+systemData = "Data"
+sourceLastfm = "Plays on Last.fm."
+sourceLetterboxd = "Letterboxd diary."
+modeNormal = "NORMAL"
+modeReading = "READING"
+keyView = "list or grid"
+keyZoom = "zoom"
+helpView = "Switch between the list with a preview and the grid"
+helpZoom = "Hide or show the side column"
+helpPosts = "Go to the previous or the next post, while reading one"
+
+preview = "Preview"
+previewOpen = "enter to open"
+
 [readingTime]
 one = "{{ .Count }} min read"
 other = "{{ .Count }} min read"
@@ -113,3 +138,19 @@ other = "{{ .Count }} items"
 [plays]
 one = "{{ .Count }} play"
 other = "{{ .Count }} plays"
+
+[playsTotal]
+one = "{{ .Count }} play this week"
+other = "{{ .Count }} plays this week"
+
+[countPosts]
+one = "{{ .Count }} post"
+other = "{{ .Count }} posts"
+
+[countProjects]
+one = "{{ .Count }} project"
+other = "{{ .Count }} projects"
+
+[countResearch]
+one = "{{ .Count }} paper"
+other = "{{ .Count }} papers"

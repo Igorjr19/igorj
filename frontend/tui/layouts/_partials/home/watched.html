@@ -1,0 +1,9 @@
+{{- $model := partial "model.html" . }}
+<section class="panel widget" box-="square" id="watched" aria-labelledby="watched-title">
+  <h2 class="panel__title" id="watched-title">{{ i18n "panelWatched" | lower }}</h2>
+  {{- with $model.films }}{{ with .films }}
+  {{ partial "external-age.html" $model.films.updated }}
+  {{ partial "films.html" (first 4 .) }}
+  {{- else }}{{ partial "panels/empty.html" $ }}{{ end }}
+  {{- else }}{{ partial "panels/empty.html" . }}{{ end }}
+</section>

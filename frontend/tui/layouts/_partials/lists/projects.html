@@ -1,12 +1,10 @@
-<ul class="entries">
-  {{- range (partial "model.html" .).projects }}
-  {{- $item := . }}
-  {{- with partial "item-page.html" (dict "section" "projects" "item" .) }}
-  <li>
-    <a href="{{ .RelPermalink }}">{{ $item.title }}</a>
-    <span class="panel__meta">{{ delimit $item.stack " · " }}</span>
-    <span class="entries__summary panel__meta">{{ $item.summary }}</span>
-  </li>
-  {{- end }}
-  {{- end }}
-</ul>
+<div class="items" data-items data-preview-label="{{ i18n "preview" }}" data-open-hint="{{ i18n "previewOpen" }}">
+  <ul class="items__list">
+    {{- range (partial "model.html" .).projects }}
+    {{- $item := . }}
+    {{- with partial "item-page.html" (dict "section" "projects" "item" .) }}
+    {{ partial "item-row.html" (dict "page" . "item" $item "meta" (index $item.stack 0 | default "") "summary" $item.summary "chips" $item.stack "color" "var(--color-link)") }}
+    {{- end }}
+    {{- end }}
+  </ul>
+</div>

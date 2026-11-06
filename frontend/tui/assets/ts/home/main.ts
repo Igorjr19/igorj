@@ -6,7 +6,7 @@ import { type HomeOrigin, saveOrigin, shouldRestoreFocus, takeOrigin } from './o
 function followedLink(event: MouseEvent): HomeOrigin | null {
   const plain = event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey;
   const link = event.target instanceof Element ? event.target.closest('a') : null;
-  const panel = link?.closest('.grid > .panel');
+  const panel = link?.closest('.home section[id]');
   const href = link?.getAttribute('href');
   return plain && panel && href ? { panel: panel.id, href } : null;
 }

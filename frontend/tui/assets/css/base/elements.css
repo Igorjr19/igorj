@@ -13,4 +13,27 @@
     color: var(--color-link);
     text-decoration: underline;
   }
+
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .label {
+    margin: 0 0 var(--cell-height);
+    font-size: inherit;
+    font-weight: normal;
+    color: var(--color-text-muted);
+    text-transform: lowercase;
+  }
+
+  .chip {
+    padding-inline: var(--cell-width);
+    border: 1px solid var(--color-surface-3);
+    color: var(--color-text-muted);
+  }
 }

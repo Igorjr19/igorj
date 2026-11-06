@@ -1,51 +1,21 @@
-{{- /* Hidden until the shortcuts script runs: without JavaScript there are no shortcuts to show. */ -}}
-<div class="keybar" hidden>
-  <p class="keybar__hints">
-    {{- if .IsHome }}
-    <span><kbd>1</kbd>–<kbd>8</kbd> {{ i18n "keyPanels" }}</span>
-    <span><kbd>j</kbd> <kbd>k</kbd> {{ i18n "keyMove" }}</span>
-    <span><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
-    {{- else if ne .Kind "404" }}
-    <span><kbd>q</kbd> {{ i18n "keyBack" }}</span>
-    {{- if and .IsPage (eq .Section "posts") }}
-    <span><kbd>p</kbd> <kbd>n</kbd> {{ i18n "keyPosts" }}</span>
-    {{- end }}
-    {{- end }}
-    <button type="button" data-action="theme"><kbd>t</kbd> {{ i18n "keyTheme" }}</button>
-    <button type="button" data-action="help"><kbd>?</kbd> {{ i18n "keyHelp" }}</button>
-    <button type="button" data-action="toggle-shortcuts" data-shortcuts-toggle aria-pressed="true">{{ i18n "shortcutsToggle" }}</button>
-  </p>
-  <p class="keybar__buttons">
-    {{- if .IsHome }}
-    <button type="button" data-action="previous-panel">‹ {{ i18n "previousPanel" }}</button>
-    <button type="button" data-action="next-panel">{{ i18n "nextPanel" }} ›</button>
-    {{- else if ne .Kind "404" }}
-    <button type="button" data-action="back">‹ {{ i18n "keyBack" }}</button>
-    {{- end }}
-    <button type="button" data-action="theme">t {{ i18n "keyTheme" }}</button>
-    <button type="button" data-action="help">? {{ i18n "keyHelp" }}</button>
-  </p>
-</div>
+{{- /* The help dialog, the theme picker and the shortcuts script, shared by every page. */ -}}
 <dialog class="panel help" box-="square" aria-labelledby="help-title">
   <h2 class="panel__title" id="help-title">{{ i18n "helpTitle" }}</h2>
   <dl class="facts">
-    {{- if .IsHome }}
-    <dt><kbd>1</kbd>–<kbd>8</kbd></dt>
+    <dt><kbd>1</kbd>–<kbd>6</kbd></dt>
     <dd>{{ i18n "helpPanels" }}</dd>
     <dt><kbd>j</kbd> <kbd>k</kbd> <kbd>↓</kbd> <kbd>↑</kbd></dt>
     <dd>{{ i18n "helpMove" }}</dd>
     <dt><kbd>enter</kbd></dt>
     <dd>{{ i18n "helpOpen" }}</dd>
-    {{- else if ne .Kind "404" }}
-    <dt><kbd>q</kbd></dt>
+    <dt><kbd>q</kbd> <kbd>h</kbd></dt>
     <dd>{{ i18n "helpBack" }}</dd>
-    {{- if and .IsPage (eq .Section "posts") }}
-    <dt><kbd>p</kbd></dt>
-    <dd>{{ i18n "helpPrevious" }}</dd>
-    <dt><kbd>n</kbd></dt>
-    <dd>{{ i18n "helpNext" }}</dd>
-    {{- end }}
-    {{- end }}
+    <dt><kbd>v</kbd></dt>
+    <dd>{{ i18n "helpView" }}</dd>
+    <dt><kbd>z</kbd></dt>
+    <dd>{{ i18n "helpZoom" }}</dd>
+    <dt><kbd>p</kbd> <kbd>n</kbd></dt>
+    <dd>{{ i18n "helpPosts" }}</dd>
     <dt><kbd>t</kbd></dt>
     <dd>{{ i18n "helpTheme" }}</dd>
     <dt><kbd>tab</kbd></dt>

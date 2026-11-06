@@ -58,12 +58,12 @@ Deno.test('the CV is a page of its own, built from the CV data', async (t) => {
     assert(body.includes('Fixture summary of the career.'));
   });
 
-  await t.step('the home links to the CV and to the research list', async () => {
+  await t.step('every page links to the CV and to the research list from the side column', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
     const links = await page.evaluate(() =>
-      [...document.querySelectorAll('#about a')].map((link) => link.getAttribute('href')),
+      [...document.querySelectorAll('.side__panes a')].map((link) => link.getAttribute('href')),
     );
-    assertEquals(links, [RESEARCH_EN, CV_EN]);
+    assert(links.includes(RESEARCH_EN) && links.includes(CV_EN), links.join(' '));
   });
 });
 
@@ -72,9 +72,11 @@ Deno.test('research has a list and a page with the facts of each work', async (t
 
   await t.step('the list shows kind, year, authors and venue', async () => {
     const page = await session.open(RESEARCH_EN, { viewport: WIDE, javascript: false });
-    assertEquals(await textOf(page, 'h1, .entries li'), [
+    assertEquals(await textOf(page, 'h1, .item__title, .item__meta, .item__summary'), [
       'Research',
-      'Fixture research article · 2025 First Author, Second Author · Fixture Journal',
+      'Fixture research',
+      'article · 2025',
+      'First Author, Second Author · Fixture Journal',
     ]);
   });
 
@@ -125,14 +127,14 @@ Deno.test('the CV prints on white paper without the screen furniture', async (t)
         .unsafelyGetCelestialBindings()
         .Emulation.setEmulatedMedia({ media: 'print', features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
       const printed = await page.evaluate(() => ({
-        hidden: ['.site-header', '.dock', '.zoom__bar'].map(
+        hidden: ['.win__top', '.side', '.statusbar', '.pane__bar'].map(
           (selector) => getComputedStyle(document.querySelector(selector) as Element).display,
         ),
         text: getComputedStyle(document.querySelector('.zoom__body p') as Element).color,
         background: getComputedStyle(document.body).backgroundColor,
       }));
       assertEquals(printed, {
-        hidden: ['none', 'none', 'none'],
+        hidden: ['none', 'none', 'none', 'none'],
         text: 'rgb(0, 0, 0)',
         background: 'rgb(255, 255, 255)',
       });

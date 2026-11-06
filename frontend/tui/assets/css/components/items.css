@@ -1,0 +1,174 @@
+@layer app.components {
+  .items__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(32 * var(--cell-width))), 1fr));
+    gap: calc(2 * var(--cell-height)) calc(3 * var(--cell-width));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .items__list > li::before {
+    content: none;
+  }
+
+  /* Without JavaScript, and in the grid view, every item is a card with its picture first. */
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--cell-height) / 2);
+  }
+
+  /* In a card the picture comes first, then the facts and the title, then the summary. */
+  .item__detail {
+    display: contents;
+  }
+
+  .item__image {
+    order: -1;
+  }
+
+  .item__link {
+    display: grid;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .item__title {
+    font-family: var(--font-text);
+    font-size: 1.15em;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--color-surface-3);
+  }
+
+  .item__link:hover .item__title {
+    text-decoration-color: var(--item-color);
+  }
+
+  .item__meta {
+    order: -1;
+    color: var(--item-color);
+  }
+
+  .item__summary {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-text);
+  }
+
+  .item__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--cell-height) / 4) var(--cell-width);
+    margin: 0;
+  }
+
+  .item__image {
+    inline-size: 100%;
+    background-color: var(--color-surface-1);
+  }
+
+  /* The list view, set by the script: rows on the left, the selected one in full on the right. */
+  .items[data-view='list'] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    border: 1px solid var(--color-surface-3);
+  }
+
+  .items[data-view='list'] .items__list {
+    display: block;
+    padding-block: calc(var(--cell-height) / 2);
+    border-inline-end: 1px solid var(--color-surface-3);
+  }
+
+  .items[data-view='list'] .item {
+    display: block;
+  }
+
+  .items[data-view='list'] .item__detail {
+    display: none;
+  }
+
+  .items[data-view='list'] .item__link {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: calc(2 * var(--cell-width));
+    padding-inline: var(--cell-width);
+  }
+
+  .items[data-view='list'] .item__title {
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: inherit;
+    font-weight: normal;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .items[data-view='list'] .item__meta {
+    order: 0;
+  }
+
+  .items[data-view='list'] .item[data-selected='true'] .item__link {
+    background-color: var(--color-selection-background);
+    color: var(--color-selection-text);
+  }
+
+  .items[data-view='list'] .item[data-selected='true'] .item__meta {
+    color: inherit;
+  }
+
+  .items__preview-detail {
+    display: grid;
+    gap: calc(var(--cell-height) / 2);
+  }
+
+  .items__preview {
+    display: grid;
+    align-content: start;
+    gap: var(--cell-height);
+    padding: var(--cell-height) calc(2 * var(--cell-width));
+  }
+
+  .items__preview[hidden] {
+    display: none;
+  }
+
+  .items__preview-title {
+    margin: 0;
+    font-size: 1.3em;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .items__preview-meta {
+    margin: 0;
+    color: var(--item-color);
+  }
+
+  .items__preview-hint {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  @container screen (width < 100ch) {
+    .items[data-view='list'] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .items[data-view='list'] .items__list {
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--color-surface-3);
+    }
+
+    .items[data-view='list'] .item__link {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: calc(var(--cell-height) / 4);
+    }
+
+    .items[data-view='list'] .item__meta {
+      order: 1;
+    }
+  }
+}

@@ -60,8 +60,8 @@ Deno.test('titles of posts written in another language say so, for screen reader
   await using session = await Session.start();
   const page = await session.open(HOME_EN, { viewport: WIDE });
   const languages = await page.evaluate(() =>
-    [...document.querySelectorAll('#posts li > a:first-of-type')].map((link) => [
-      link.textContent?.trim(),
+    [...document.querySelectorAll('#recent .recent__row')].map((link) => [
+      link.querySelector('.recent__title')?.textContent?.trim(),
       link.getAttribute('lang'),
     ]),
   );

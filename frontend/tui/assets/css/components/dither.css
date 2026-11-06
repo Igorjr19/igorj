@@ -12,12 +12,12 @@
   }
 
   .dither__ink--on-bright {
-    background-color: light-dark(transparent, var(--color-text));
+    background-color: light-dark(transparent, var(--dither-ink, var(--color-text)));
     mask-image: var(--dither);
   }
 
   .dither__ink--on-dark {
-    background-color: light-dark(var(--color-text), transparent);
+    background-color: light-dark(var(--dither-ink, var(--color-text)), transparent);
     mask-image: var(--dither-inverted);
   }
 

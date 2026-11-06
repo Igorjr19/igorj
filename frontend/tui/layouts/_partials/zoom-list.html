@@ -6,6 +6,8 @@
 {{ partial "lists/research.html" . }}
 {{- else if eq .Section "credits" }}
 {{ partial "lists/credits.html" . }}
+{{- else if eq .Section "listening" }}
+{{ partial "lists/listening.html" . }}
 {{- else if eq .Section "cv" }}
 {{ partial "lists/cv.html" . }}
 {{- else }}
