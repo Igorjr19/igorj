@@ -2,4 +2,5 @@
 {{- if eq .Kind "section" "taxonomy" }}
   {{- return i18n (printf "section%s" (title .Section)) }}
 {{- end }}
+{{- if eq .Kind "term" }}{{ return partial "term-label.html" . }}{{ end }}
 {{- return .Title }}

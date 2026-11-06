@@ -29,6 +29,7 @@ term = ["html", "rss"]
 
 [taxonomies]
 category = "categories"
+tag = "tags"
 
 [languages.pt]
 locale = "pt-BR"

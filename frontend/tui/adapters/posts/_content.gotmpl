@@ -10,7 +10,7 @@
       "dates" (dict "date" (time.AsTime .date) "lastmod" (time.AsTime (.lastmod | default .date)))
       "content" (dict "mediaType" "text/markdown" "value" .body)
       "sitemap" (dict "priority" -1)
-      "params" (dict "id" .id "source" .source "summary" .summary "categories" (slice .category.slug))
+      "params" (dict "id" .id "source" .source "summary" .summary "categories" (slice .category.slug) "tags" (apply .tags "index" "." "slug"))
     }}
     {{- if ne .slug .id }}{{ $page = merge $page (dict "slug" .slug) }}{{ end }}
     {{- $.AddPage $page }}

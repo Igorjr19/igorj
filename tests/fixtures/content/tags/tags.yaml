@@ -1,0 +1,4 @@
+# Names for the tags worth translating; any other tag reads as written.
+tags:
+  - slug: machine-learning
+    name: { pt: "aprendizado de máquina", en: "machine learning" }

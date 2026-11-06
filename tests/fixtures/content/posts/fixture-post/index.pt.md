@@ -3,6 +3,7 @@ title: Post de teste
 summary: Um post usado pelos testes de ponta a ponta.
 date: 2026-01-01
 categories: [notes]
+tags: [Hugo, machine learning]
 ---
 
 Parágrafo com **bold**, *italic*, `inline code` and a [link](https://example.com).

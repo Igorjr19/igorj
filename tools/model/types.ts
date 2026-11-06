@@ -8,6 +8,8 @@ export interface SiteModel {
   readonly profile: ProfileModel | null;
   readonly contact: ContactModel | null;
   readonly categories: readonly CategoryModel[];
+  /** Every tag the items of this language use, by name, with how many items carry it. */
+  readonly tags: readonly TagSummaryModel[];
   readonly posts: readonly PostModel[];
   readonly projects: readonly ProjectModel[];
   readonly research: readonly ResearchModel[];
@@ -49,6 +51,17 @@ export interface CategoryModel {
   readonly name: string;
 }
 
+/** A tag: its address, the name in this language, and its names in every language, for search. */
+export interface TagModel {
+  readonly slug: string;
+  readonly name: string;
+  readonly names: readonly string[];
+}
+
+export interface TagSummaryModel extends TagModel {
+  readonly count: number;
+}
+
 /** Shared by posts, projects and research: where the item lives and what it shows. */
 export interface ItemModel {
   /** Folder name in the content repository, the same in every language. */
@@ -65,6 +78,7 @@ export interface ItemModel {
   readonly body: string;
   /** Paths under the generated media folder, for the images and files the body or the item refers to. */
   readonly media: readonly string[];
+  readonly tags: readonly TagModel[];
 }
 
 export interface PostModel extends ItemModel {
@@ -76,7 +90,6 @@ export interface PostModel extends ItemModel {
 
 export interface ProjectModel extends ItemModel {
   readonly summary: string;
-  readonly stack: readonly string[];
   readonly links: { readonly repository?: string | undefined; readonly demo?: string | undefined };
   readonly featured: boolean;
 }

@@ -87,12 +87,16 @@ Deno.test('# opens the filter of the blog, one category at a time', async (t) =>
         option.getAttribute('data-current'),
       ]),
     );
-    assertEquals(rows, [
+    assertEquals(rows.slice(0, 4), [
       ['all posts', null, 'true'],
       ['Entertainment', '1', null],
       ['Notes', '1', null],
       ['Professional', '1', null],
     ]);
+    assert(
+      rows.some(([label]) => label === 'machine learning'),
+      'the tags follow the categories',
+    );
   });
 
   await t.step('choosing one opens its page, and the button there names it', async () => {

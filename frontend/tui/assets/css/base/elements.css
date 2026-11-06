@@ -39,5 +39,28 @@
     border: var(--line);
     color: var(--color-text-muted);
     font-size: var(--font-size-small);
+    text-decoration: none;
+  }
+
+  a.chip:is(:hover, :focus-visible) {
+    border-color: var(--color-accent);
+    color: var(--color-link);
+  }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--cell-height) / 3) var(--cell-width);
+  }
+
+  .zoom__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--cell-width);
+  }
+
+  .zoom__tags .label {
+    margin: 0;
   }
 }

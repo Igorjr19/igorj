@@ -19,6 +19,7 @@ export const CONTENT_SECTIONS = [
   'reading',
   'research',
   'site',
+  'tags',
 ];
 
 /** Takes a path relative to the content root. */

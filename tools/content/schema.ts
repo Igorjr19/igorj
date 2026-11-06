@@ -9,6 +9,8 @@ const Month = v.pipe(v.string(), v.regex(/^\d{4}-(?:0[1-9]|1[0-2])$/, 'Expected 
 const DAY_FORMAT = 'Expected a date as YYYY-MM-DD';
 const Day = v.union([v.date(), v.pipe(v.string(), v.isoDate(DAY_FORMAT))], DAY_FORMAT);
 const Example = v.optional(v.boolean());
+// Tags are written as they should read ("Go", "machine learning"); the address comes from the text.
+const Tags = v.optional(v.array(Text));
 
 const PostSchema = v.strictObject({
   example: Example,
@@ -17,6 +19,7 @@ const PostSchema = v.strictObject({
   date: Day,
   lastmod: v.optional(Day),
   categories: v.pipe(v.array(Slug), v.length(1, 'A post has exactly one category')),
+  tags: Tags,
   draft: v.optional(v.boolean()),
   slug: v.optional(Slug),
 });
@@ -25,7 +28,9 @@ const ProjectSchema = v.strictObject({
   example: Example,
   title: Text,
   summary: Text,
-  stack: v.array(Text),
+  tags: Tags,
+  /** The former name of the tags; read as tags until the content moves over. */
+  stack: v.optional(v.array(Text)),
   links: v.optional(v.strictObject({ repository: v.optional(Url), demo: v.optional(Url) })),
   featured: v.optional(v.boolean()),
   // Projects carry no dates, so Hugo's weight is the only way to put one before another.
@@ -42,6 +47,7 @@ const ResearchSchema = v.strictObject({
   venue: Text,
   file: v.optional(Text),
   doi: v.optional(v.pipe(v.string(), v.regex(/^10\.\d{4,9}\/\S+$/, 'Expected a DOI such as 10.1000/xyz'))),
+  tags: Tags,
   draft: v.optional(v.boolean()),
   slug: v.optional(Slug),
 });
@@ -57,6 +63,12 @@ const SiteSchema = v.strictObject({
 const CategoriesSchema = v.strictObject({
   example: Example,
   categories: v.pipe(v.array(v.strictObject({ slug: Slug, name: v.record(LanguageCode, Text) })), v.nonEmpty()),
+});
+
+/** Names for tags in each language, for the ones worth translating; any other tag reads as written. */
+const TagsSchema = v.strictObject({
+  example: Example,
+  tags: v.array(v.strictObject({ slug: Slug, name: v.record(LanguageCode, Text) })),
 });
 
 const AboutSchema = v.strictObject({
@@ -165,6 +177,7 @@ const SCHEMAS_BY_PATH: readonly (readonly [RegExp, ContentSchema])[] = [
   [/^contact\/contact\.yaml$/, ContactSchema],
   [/^site\/site\.yaml$/, SiteSchema],
   [/^categories\/categories\.yaml$/, CategoriesSchema],
+  [/^tags\/tags\.yaml$/, TagsSchema],
   [/^reading\/reading\.yaml$/, ReadingSchema],
   [/^external\/music\.json$/, MusicSchema],
   [/^external\/films\.json$/, FilmsSchema],
@@ -186,6 +199,7 @@ export type Project = v.InferOutput<typeof ProjectSchema>;
 export type Research = v.InferOutput<typeof ResearchSchema>;
 export type Site = v.InferOutput<typeof SiteSchema>;
 export type Categories = v.InferOutput<typeof CategoriesSchema>;
+export type TagNames = v.InferOutput<typeof TagsSchema>;
 export type About = v.InferOutput<typeof AboutSchema>;
 export type Cv = v.InferOutput<typeof CvSchema>;
 export type Contact = v.InferOutput<typeof ContactSchema>;

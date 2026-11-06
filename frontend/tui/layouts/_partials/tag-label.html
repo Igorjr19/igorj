@@ -1,0 +1,4 @@
+{{- /* The name of a tag page in the page language, as the model gives it; the slug when the model has none. */ -}}
+{{- $label := .Data.Term }}
+{{- range (partial "model.html" .).tags }}{{ if eq .slug $.Data.Term }}{{ $label = .name }}{{ end }}{{ end }}
+{{- return $label }}

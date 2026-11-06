@@ -9,11 +9,40 @@ import type {
   ProjectModel,
   ResearchModel,
   SiteModel,
+  TagModel,
+  TagSummaryModel,
 } from './types.ts';
 
 /** YAML reads unquoted dates as Date objects; the model always carries them as YYYY-MM-DD. */
 export function day(value: Date | string): string {
   return value instanceof Date ? value.toISOString().slice(0, 10) : value;
+}
+
+/** The address of a tag written as text: lowercase, without accents, words joined by hyphens. */
+export function tagSlug(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/** A tag in one language: the name the tags file gives it there, or the text as written. */
+export function tagFor(raw: RawContent, text: string, language: string): TagModel {
+  const slug = tagSlug(text);
+  const names = raw.tags?.tags.find((entry) => entry.slug === slug)?.name ?? {};
+  return { slug, name: names[language] ?? text, names: [...new Set([text, ...Object.values(names)])] };
+}
+
+/** Tags of the language with their counts, most used first, then by name. */
+export function tagSummary(items: readonly { readonly tags: readonly TagModel[] }[]): TagSummaryModel[] {
+  const counts = new Map<string, TagSummaryModel>();
+  for (const tag of items.flatMap((item) => item.tags)) {
+    const seen = counts.get(tag.slug);
+    counts.set(tag.slug, { ...tag, count: (seen?.count ?? 0) + 1 });
+  }
+  return [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
 const byTitle = (a: { title: string }, b: { title: string }) => a.title.localeCompare(b.title);
@@ -26,9 +55,11 @@ function translationsOf<T>(items: readonly ContentItem<T>[]): Map<string, string
   return languages;
 }
 
-function itemBase<T extends { title: string; slug?: string | undefined }>(
+function itemBase<T extends { title: string; slug?: string | undefined; tags?: string[] | undefined }>(
+  raw: RawContent,
   item: ContentItem<T>,
   translations: ReadonlyMap<string, readonly string[]>,
+  tags: readonly string[] = item.data.tags ?? [],
 ): ItemModel {
   return {
     id: item.folder,
@@ -39,6 +70,7 @@ function itemBase<T extends { title: string; slug?: string | undefined }>(
     title: item.data.title,
     body: item.body,
     media: item.media,
+    tags: tags.map((text) => tagFor(raw, text, item.language)),
   };
 }
 
@@ -65,7 +97,9 @@ function postModel(
 ): PostModel {
   const { summary, date, lastmod, categories } = post.data;
   return {
-    ...itemBase(post, translations),
+    ...itemBase(raw, post, translations),
+    // A post listed in a language it is not written in still names its tags in the language of the list.
+    tags: (post.data.tags ?? []).map((text) => tagFor(raw, text, language)),
     summary,
     date: day(date),
     ...(lastmod && { lastmod: day(lastmod) }),
@@ -82,9 +116,8 @@ export function projectsFor(raw: RawContent, language: string): ProjectModel[] {
     .sort((a, b) => weight(a) - weight(b) || a.data.title.localeCompare(b.data.title))
     .map(
       (project): ProjectModel => ({
-        ...itemBase(project, translations),
+        ...itemBase(raw, project, translations, project.data.tags ?? project.data.stack ?? []),
         summary: project.data.summary,
-        stack: project.data.stack,
         links: { ...project.data.links },
         featured: project.data.featured ?? false,
       }),
@@ -97,18 +130,19 @@ export function researchFor(raw: RawContent, language: string): ResearchModel[] 
   const translations = translationsOf(published);
   return published
     .filter((item) => item.language === language)
-    .map((item): ResearchModel => researchModel(item, translations))
+    .map((item): ResearchModel => researchModel(raw, item, translations))
     .sort((a, b) => b.year - a.year || byTitle(a, b));
 }
 
 function researchModel(
+  raw: RawContent,
   item: ContentItem<Research>,
   translations: ReadonlyMap<string, readonly string[]>,
 ): ResearchModel {
   const { kind, year, authors, venue, doi, file } = item.data;
   const filePath = file && item.media.find((path) => path.endsWith(`/${file}`));
   return {
-    ...itemBase(item, translations),
+    ...itemBase(raw, item, translations),
     kind,
     year,
     authors,
@@ -163,6 +197,8 @@ export function profileFor(raw: RawContent, language: string): ProfileModel | nu
 /** Applies every content rule for one language. */
 export function buildModel(raw: RawContent, language: string): SiteModel {
   const research = researchFor(raw, language);
+  const posts = postsFor(raw, language);
+  const projects = projectsFor(raw, language);
   const email = raw.contact?.email[language as keyof typeof raw.contact.email];
   return {
     language,
@@ -171,8 +207,9 @@ export function buildModel(raw: RawContent, language: string): SiteModel {
     contact:
       raw.contact && email ? { email, professional: raw.contact.professional, personal: raw.contact.personal } : null,
     categories: raw.categories.categories.map(({ slug }) => categoryName(raw, slug, language)),
-    posts: postsFor(raw, language),
-    projects: projectsFor(raw, language),
+    tags: tagSummary([...posts, ...projects, ...research]),
+    posts,
+    projects,
     research,
     cv: cvFor(raw, language, research),
     reading: raw.reading?.items ?? [],

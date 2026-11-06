@@ -2,10 +2,7 @@
 <div class="items" data-items>
   <ul class="items__list">
     {{- range (partial "model.html" .).projects }}
-    {{- $item := . }}
-    {{- with partial "item-page.html" (dict "section" "projects" "item" .) }}
-    {{ partial "item-row.html" (dict "page" . "item" $item "kind" (index $item.stack 0 | default "") "meta" (index $item.stack 0 | default "") "summary" $item.summary "chips" $item.stack "color" "var(--color-link)") }}
-    {{- end }}
+    {{ partial "item-entry.html" (dict "section" "projects" "item" .) }}
     {{- end }}
   </ul>
 </div>

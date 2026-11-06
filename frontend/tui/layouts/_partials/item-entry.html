@@ -1,0 +1,15 @@
+{{- /* One model item as a list row or card, as its section shows it. Expects section and item. */ -}}
+{{- $item := .item }}
+{{- with partial "item-page.html" (dict "section" .section "item" .item) }}
+{{- if eq $.section "posts" }}
+{{- $meta := printf "%s · %s" $item.category.name $item.date }}
+{{- if ne .Language.Lang site.Language.Lang }}{{ $meta = printf "%s · %s" $meta .Language.Label }}{{ end }}
+{{ partial "item-row.html" (dict "page" . "item" $item "kind" $item.category.name "meta" $meta "summary" $item.summary "tags" $item.tags "color" (printf "var(--color-category-%s)" $item.category.slug)) }}
+{{- else if eq $.section "projects" }}
+{{- $first := "" }}{{ with index $item.tags 0 }}{{ $first = .name }}{{ end }}
+{{ partial "item-row.html" (dict "page" . "item" $item "kind" (i18n "kindProject") "meta" $first "summary" $item.summary "tags" $item.tags "color" "var(--color-link)") }}
+{{- else }}
+{{- $kind := i18n (printf "research%s" (title $item.kind)) }}
+{{ partial "item-row.html" (dict "page" . "item" $item "kind" $kind "meta" (printf "%s · %d" $kind (int $item.year)) "summary" (printf "%s · %s" (delimit $item.authors ", ") $item.venue) "tags" $item.tags "color" "var(--color-text-muted)") }}
+{{- end }}
+{{- end }}

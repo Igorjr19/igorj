@@ -1,7 +1,7 @@
 ---
 title: Second fixture project
 summary: A project the weight puts first, although its title sorts after the other.
-stack: [go]
+tags: [Go]
 weight: 1
 ---
 

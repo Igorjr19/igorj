@@ -1,4 +1,17 @@
-import type { About, Categories, Contact, Cv, Films, Music, Post, Project, Reading, Research, Site } from './schema.ts';
+import type {
+  About,
+  Categories,
+  Contact,
+  Cv,
+  Films,
+  Music,
+  Post,
+  Project,
+  Reading,
+  Research,
+  Site,
+  TagNames,
+} from './schema.ts';
 
 /** A Markdown, YAML or JSON file of a content folder, with its path relative to the content root. */
 export interface ContentFile {
@@ -21,6 +34,8 @@ export interface ContentItem<T> {
 export interface RawContent {
   readonly site: Site;
   readonly categories: Categories;
+  /** Translated tag names; null when the content translates none. */
+  readonly tags: TagNames | null;
   readonly about: Readonly<Record<string, About>>;
   readonly cv: Readonly<Record<string, Cv>>;
   readonly contact: Contact | null;
