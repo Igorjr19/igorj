@@ -48,7 +48,7 @@ const loaded = new Set<string>();
  * The terminal and the quick-pick box load on first use and open themselves in the mode asked for,
  * which waits on their template; later they are asked to open with an event.
  */
-function openLazy(name: 'terminal' | 'pick', mode = ''): void {
+function openLazy(name: 'terminal' | 'pick' | 'intro', mode = ''): void {
   const source = document.querySelector<HTMLTemplateElement>(`template[data-lazy="${name}"]`);
   const { script: src = '', integrity = '' } = source?.dataset ?? {};
   if (loaded.has(name)) {
@@ -234,3 +234,7 @@ for (const element of document.querySelectorAll<HTMLElement>('[data-no-script]')
 }
 document.addEventListener('keydown', onKeydown);
 document.addEventListener('click', onClick);
+// The head script asked for the full opening: its script comes only now.
+if (document.documentElement.dataset['intro'] === 'full') {
+  openLazy('intro');
+}

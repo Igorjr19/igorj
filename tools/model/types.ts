@@ -31,6 +31,8 @@ export interface ProfileModel {
   /** Path under the generated media folder. */
   readonly photo: string | null;
   readonly photoAlt: string;
+  /** The sentence of the opening, if written. */
+  readonly intro: string | null;
   readonly now: { readonly work: string; readonly masters: string; readonly studying: string };
 }
 

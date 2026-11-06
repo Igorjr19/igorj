@@ -180,7 +180,7 @@ export function profileFor(raw: RawContent, language: string): ProfileModel | nu
   if (!about) {
     return null;
   }
-  const { role, lines, location, photoAlt, now } = about;
+  const { role, lines, location, photoAlt, now, intro } = about;
   return {
     author: raw.site.author,
     role,
@@ -190,6 +190,7 @@ export function profileFor(raw: RawContent, language: string): ProfileModel | nu
     location,
     photo: raw.photo,
     photoAlt,
+    intro: intro ?? null,
     now,
   };
 }

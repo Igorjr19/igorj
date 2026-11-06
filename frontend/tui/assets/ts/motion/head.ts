@@ -1,4 +1,5 @@
 /// <reference lib="dom" />
+import { INTRO_STORAGE_KEY, introStage } from '../intro/stage.ts';
 import { direction, MOTION_STORAGE_KEY, motionReduced } from './direction.ts';
 
 // Runs inline in <head>: the motion choice applies before the first paint, and the page that arrives
@@ -11,6 +12,23 @@ try {
 }
 if (saved === 'reduced') {
   document.documentElement.dataset['motion'] = 'reduced';
+}
+
+// The opening: full on the first visit, short after a long absence. Without storage it would play on every
+// page, so it does not play at all.
+const root = document.documentElement;
+try {
+  const stage = introStage(
+    localStorage.getItem(INTRO_STORAGE_KEY),
+    Date.now(),
+    motionReduced(saved, matchMedia('(prefers-reduced-motion: reduce)').matches),
+  );
+  localStorage.setItem(INTRO_STORAGE_KEY, String(Date.now()));
+  if (stage) {
+    root.dataset['intro'] = stage;
+  }
+} catch {
+  // Storage blocked: no opening.
 }
 
 interface RevealEvent extends Event {

@@ -26,6 +26,7 @@
 @import './components/terminal.css';
 @import './components/pick.css';
 @import './components/motion.css';
+@import './components/intro.css';
 @import './components/prose.css';
 @import './components/code.css';
 @import './components/print.css';

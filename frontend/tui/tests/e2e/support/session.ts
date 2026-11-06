@@ -14,6 +14,8 @@ export interface PageOptions {
   readonly acceptLanguage?: string;
   /** Values already saved in the site's local storage by an earlier visit. */
   readonly savedStorage?: Readonly<Record<string, string>>;
+  /** Set to true to let the opening play, as for a visitor; otherwise every page counts as a visit just made. */
+  readonly intro?: boolean;
 }
 
 /** One browser, one page and one static server shared by the steps of a test. */
@@ -36,7 +38,7 @@ export class Session implements AsyncDisposable {
   /** Opens a fresh page, closing the previous one so emulated settings never leak between steps. */
   async open(
     path: string,
-    { viewport, colorScheme, reducedMotion, javascript = true, acceptLanguage, savedStorage }: PageOptions = {},
+    { viewport, colorScheme, reducedMotion, javascript = true, acceptLanguage, savedStorage, intro }: PageOptions = {},
   ): Promise<Page> {
     await this.page?.close();
     const page = await this.browser.newPage();
@@ -57,6 +59,11 @@ export class Session implements AsyncDisposable {
     if (acceptLanguage) {
       const userAgent = await page.evaluate(() => navigator.userAgent);
       await page.unsafelyGetCelestialBindings().Emulation.setUserAgentOverride({ userAgent, acceptLanguage });
+    }
+    if (!intro) {
+      await page.unsafelyGetCelestialBindings().Page.addScriptToEvaluateOnNewDocument({
+        source: "try { localStorage.setItem('intro', String(Date.now())) } catch {}",
+      });
     }
     if (savedStorage) {
       await page.goto(`${this.server.url}/robots.txt`, { waitUntil: 'load' });
