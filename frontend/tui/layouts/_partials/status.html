@@ -25,7 +25,7 @@
   {{- end }}
 </p>
 {{- if .IsPage }}
-{{- with resources.Get "ts/progress/main.ts" | js.Build (dict "minify" true) | fingerprint }}
+{{- with resources.Get "ts/reading/main.ts" | js.Build (dict "minify" true) | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
 {{- end }}
 {{- end }}
