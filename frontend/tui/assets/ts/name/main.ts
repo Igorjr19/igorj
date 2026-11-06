@@ -1,7 +1,5 @@
 /// <reference lib="dom" />
-import { coverage, frame, nameLines } from './ascii.ts';
-
-const FRAME_MS = 60;
+import { coverage, nameLines, render } from './ascii.ts';
 
 /** Draws the name with the page's mono font into a canvas sized to the character grid of the element. */
 function measure(pre: HTMLElement, lines: readonly string[]): { cols: number; rows: number; cells: Float32Array } {
@@ -42,6 +40,7 @@ function measure(pre: HTMLElement, lines: readonly string[]): { cols: number; ro
   return { cols, rows, cells: coverage(alpha, canvas.width, cols, rows, cellWidth, cellHeight) };
 }
 
+/** Replaces the visible heading with the name drawn in characters; the heading stays for screen readers. */
 function start(heading: HTMLElement): void {
   const pre = document.createElement('pre');
   pre.className = 'hero__ascii';
@@ -49,32 +48,12 @@ function start(heading: HTMLElement): void {
   heading.before(pre);
   heading.classList.add('sr-only');
   const lines = nameLines(heading.textContent ?? '');
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let grid = measure(pre, lines);
-  let visible = true;
-  let last = 0;
-  const draw = (t: number): void => {
-    pre.textContent = frame(grid.cells, grid.cols, grid.rows, t);
+  const draw = (): void => {
+    const grid = measure(pre, lines);
+    pre.textContent = render(grid.cells, grid.cols, grid.rows);
   };
-  draw(0);
-  new ResizeObserver(() => {
-    grid = measure(pre, lines);
-    draw(last / 1000);
-  }).observe(pre);
-  if (still) {
-    return;
-  }
-  new IntersectionObserver(([entry]) => {
-    visible = entry?.isIntersecting ?? true;
-  }).observe(pre);
-  const loop = (now: number): void => {
-    requestAnimationFrame(loop);
-    if (visible && now - last >= FRAME_MS) {
-      last = now;
-      draw(now / 1000);
-    }
-  };
-  requestAnimationFrame(loop);
+  draw();
+  new ResizeObserver(draw).observe(pre);
 }
 
 const heading = document.querySelector<HTMLElement>('[data-ascii-name]');

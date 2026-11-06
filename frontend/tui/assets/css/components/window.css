@@ -2,22 +2,24 @@
   .win__top {
     display: flex;
     justify-content: space-between;
+    align-items: stretch;
     gap: 0 calc(2 * var(--cell-width));
-    border-block-end: 1px solid var(--color-surface-3);
-    line-height: var(--cell-height);
+    border-block-end: var(--line);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
   }
 
   .tabs {
     display: flex;
     min-inline-size: 0;
     margin: 0;
+    font-size: inherit;
     overflow: hidden;
     white-space: nowrap;
   }
 
   .tabs > span {
-    padding-inline: var(--cell-width);
-    color: var(--color-text-muted);
+    padding: calc(var(--cell-height) / 4) calc(1.2 * var(--cell-width));
   }
 
   /* Filled labels use the link color, which every theme checks at 4.5:1 against the background. */
@@ -32,20 +34,30 @@
     color: var(--color-text);
   }
 
-  .win__languages {
+  .win__meta {
     display: flex;
+    align-items: center;
     gap: var(--cell-width);
-    padding-inline-end: var(--cell-width);
+    padding-inline-end: calc(1.5 * var(--cell-width));
+    white-space: nowrap;
+  }
+
+  .win__meta a {
+    color: inherit;
+  }
+
+  .win__meta a:hover {
+    color: var(--color-link);
   }
 
   .side {
     display: flex;
     flex-direction: column;
-    gap: calc(2 * var(--cell-height));
+    gap: calc(1.5 * var(--cell-height));
     min-block-size: 0;
     overflow-y: auto;
-    padding: var(--cell-height) calc(2 * var(--cell-width));
-    border-inline-end: 1px solid var(--color-surface-3);
+    padding: calc(1.25 * var(--cell-height)) calc(2 * var(--cell-width));
+    border-inline-end: var(--line);
   }
 
   /* Reading zooms the pane, like tmux: the side column steps aside and the text takes the window. */
@@ -60,6 +72,7 @@
 
   .side__who a {
     color: var(--color-text);
+    font-size: 1.07em;
     font-weight: bold;
     text-decoration: none;
   }
@@ -69,6 +82,8 @@
   }
 
   .side__panes {
+    display: grid;
+    gap: 2px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -80,8 +95,9 @@
 
   .side__panes a {
     display: grid;
-    grid-template-columns: calc(2 * var(--cell-width)) 1fr auto;
-    padding-inline: var(--cell-width);
+    grid-template-columns: calc(3 * var(--cell-width)) 1fr auto;
+    align-items: baseline;
+    padding: calc(var(--cell-height) / 8) var(--cell-width);
     color: var(--color-text-muted);
     text-decoration: none;
   }
@@ -99,37 +115,30 @@
   .side__key,
   .side__count {
     color: inherit;
-  }
-
-  .side__heading {
-    margin: 0 0 calc(var(--cell-height) / 2);
-    font-size: inherit;
-    font-weight: normal;
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-  }
-
-  .side__facts {
-    display: grid;
-    margin: 0;
-  }
-
-  .side__facts dt {
-    color: var(--color-text-muted);
-  }
-
-  .side__facts dd {
-    margin: 0 0 calc(var(--cell-height) / 2);
+    font-size: var(--font-size-small);
   }
 
   .side__links {
+    display: grid;
+    gap: 2px;
     margin: 0;
     padding: 0;
     list-style: none;
+    font-size: var(--font-size-small);
   }
 
   .side__links li::before {
     content: none;
+  }
+
+  .side__links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .side__links a:is(:hover, :focus-visible) {
+    color: var(--color-link);
+    text-decoration: underline;
   }
 
   .pane__bar {
@@ -138,12 +147,14 @@
     z-index: 1;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 0 calc(2 * var(--cell-width));
-    margin: 0 calc(-2 * var(--cell-width)) calc(2 * var(--cell-height));
-    padding-inline: calc(2 * var(--cell-width));
-    border-block-end: 1px solid var(--color-surface-3);
+    margin: 0 calc(-3 * var(--cell-width)) calc(1.5 * var(--cell-height));
+    padding: calc(var(--cell-height) / 4) calc(3 * var(--cell-width));
+    border-block-end: var(--line);
     background-color: var(--color-background);
-    line-height: var(--cell-height);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
   }
 
   .pane__path {
@@ -161,7 +172,19 @@
 
   .pane__path > li + li:not(:nth-child(2))::before {
     content: '› ' / '';
-    color: var(--color-text-muted);
+  }
+
+  .pane__path a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .pane__path a:hover {
+    color: var(--color-link);
+  }
+
+  .pane__path a[aria-current='page'] {
+    color: var(--color-text);
   }
 
   .pane__number {
@@ -169,19 +192,24 @@
     font-weight: bold;
   }
 
-  .pane__path a[aria-current='page'] {
+  .pane__back {
     color: inherit;
-    text-decoration: none;
   }
 
   .statusbar {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: stretch;
     gap: 0 calc(2 * var(--cell-width));
-    border-block-start: 1px solid var(--color-surface-3);
+    border-block-start: var(--line);
     background-color: var(--color-surface-1);
-    line-height: var(--cell-height);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+
+  .statusbar > * {
+    display: flex;
+    align-items: center;
   }
 
   .statusbar [hidden] {
@@ -189,16 +217,19 @@
   }
 
   .statusbar__mode {
-    padding-inline: var(--cell-width);
+    padding: calc(var(--cell-height) / 8) calc(1.2 * var(--cell-width));
     background-color: var(--color-link);
     color: var(--color-background);
     font-weight: bold;
   }
 
   .statusbar__keys {
-    display: flex;
     flex-wrap: wrap;
-    gap: 0 calc(2 * var(--cell-width));
+  }
+
+  .statusbar__keys > * + *::before {
+    content: '·' / '';
+    padding-inline: var(--cell-width);
   }
 
   .statusbar button {
@@ -213,13 +244,21 @@
   .statusbar kbd,
   .help kbd {
     font: inherit;
-    font-weight: bold;
+    color: var(--color-text);
+  }
+
+  .statusbar__facts {
+    flex-wrap: wrap;
+    gap: 0 calc(2 * var(--cell-width));
+    margin-inline-start: auto;
+    padding-inline-end: calc(1.5 * var(--cell-width));
   }
 
   .statusbar .status-line {
-    margin-inline-start: auto;
-    padding-inline-end: var(--cell-width);
+    padding: 0;
     border: 0;
+    color: inherit;
+    font-size: inherit;
   }
 
   .statusbar__touch {
@@ -232,19 +271,16 @@
   }
 
   @container screen (width < 100ch) {
-    .win__languages {
-      padding-inline-end: var(--cell-width);
-    }
-
-    .tabs__tab:not([data-current]) {
+    .tabs__tab:not([data-current]),
+    .win__meta > :not(.win__languages) {
       display: none;
     }
 
     .side {
       gap: 0;
-      padding: 0 var(--cell-width);
+      padding: calc(var(--cell-height) / 2) calc(2 * var(--cell-width));
       border: 0;
-      border-block-end: 1px solid var(--color-surface-3);
+      border-block-end: var(--line);
       overflow: visible;
     }
 
@@ -256,7 +292,7 @@
     .side__panes {
       display: flex;
       flex-wrap: wrap;
-      gap: 0 var(--cell-width);
+      gap: 2px var(--cell-width);
     }
 
     .side__panes a {
@@ -274,21 +310,19 @@
     }
 
     .pane__bar {
-      margin-inline: calc(-1 * var(--cell-width));
-      padding-inline: var(--cell-width);
+      margin-inline: calc(-2 * var(--cell-width));
+      padding-inline: calc(2 * var(--cell-width));
     }
 
     .statusbar {
       position: sticky;
       inset-block-end: 0;
       padding-block-end: env(safe-area-inset-bottom);
+      font-size: inherit;
     }
 
     .statusbar__keys,
-    .statusbar .status-line {
-      display: none;
-    }
-
+    .statusbar__facts,
     .statusbar__mode {
       display: none;
     }
@@ -303,6 +337,11 @@
       flex: 1;
       min-block-size: round(up, 44px, var(--cell-height));
       text-align: center;
+      color: var(--color-text);
+    }
+
+    .statusbar__touch button + button {
+      border-inline-start: var(--line);
     }
   }
 }

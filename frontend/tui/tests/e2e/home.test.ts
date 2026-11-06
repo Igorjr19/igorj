@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { assert, assertAlmostEquals, assertEquals, assertNotEquals } from '@std/assert';
+import { assert, assertAlmostEquals, assertEquals } from '@std/assert';
 import { HOME_EN, HOME_PT } from './support/paths.ts';
 import { Session } from './support/session.ts';
 
@@ -122,7 +122,7 @@ Deno.test('the home boxes show live facts: the build, the week of music and the 
   });
 });
 
-Deno.test('with JavaScript the name is drawn in moving characters, and stays a heading for screen readers', async (t) => {
+Deno.test('with JavaScript the name is drawn in characters, and stays a heading for screen readers', async (t) => {
   await using session = await Session.start();
 
   const read = () => {
@@ -150,18 +150,12 @@ Deno.test('with JavaScript the name is drawn in moving characters, and stays a h
     assert((name.drawn?.split('\n').length ?? 0) > 4, 'the drawing has several rows');
   });
 
-  await t.step('the drawing moves, and stands still for visitors who ask for reduced motion', async () => {
-    const moving = await session.open(HOME_EN, { viewport: WIDE });
-    await moving.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
-    const first = (await moving.evaluate(read)).drawn;
-    await moving.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
-    assertNotEquals((await moving.evaluate(read)).drawn, first);
-
-    const still = await session.open(HOME_EN, { viewport: WIDE, reducedMotion: true });
-    await still.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
-    const before = (await still.evaluate(read)).drawn;
-    await still.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
-    assertEquals((await still.evaluate(read)).drawn, before);
+  await t.step('the drawing stays still: it is drawn once and does not change', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
+    const first = (await page.evaluate(read)).drawn;
+    await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
+    assertEquals((await page.evaluate(read)).drawn, first);
   });
 });
 

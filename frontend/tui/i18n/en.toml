@@ -124,8 +124,6 @@ helpView = "Switch between the list with a preview and the grid"
 helpZoom = "Hide or show the side column"
 helpPosts = "Go to the previous or the next post, while reading one"
 
-preview = "Preview"
-previewOpen = "enter to open"
 
 [readingTime]
 one = "{{ .Count }} min read"

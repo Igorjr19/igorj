@@ -36,30 +36,21 @@ export function coverage(
   return cells;
 }
 
-function noise(x: number, y: number): number {
-  const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-  return n - Math.floor(n);
+/** Edges get the lighter characters of the dense half and the core the heaviest, so the letters read as solid shapes. */
+function cellValue(covered: number): number {
+  return covered > 0.08 ? 0.45 + 0.55 * covered : 0;
 }
 
-function cellValue(covered: number, x: number, y: number, t: number): number {
-  const wave = 0.5 + 0.5 * Math.sin(x * 0.16 + y * 0.55 - t * 1.4) * Math.cos(x * 0.045 + t * 0.6);
-  if (covered > 0.08) {
-    return 0.45 + 0.55 * covered * (0.55 + 0.45 * wave);
-  }
-  const spark = noise(x, y + Math.floor(t * 3)) > 0.985 ? 0.35 : 0;
-  return (0.14 * wave + spark) * (noise(x, y) > 0.55 ? 1 : 0.3);
-}
-
-/** One frame at time `t` seconds: the letters stay solid while a slow wave and rare sparks move through them and the space around. */
-export function frame(cells: Float32Array, cols: number, rows: number, t: number, ramp: string = RAMP): string {
+/** The name as text, one line per row and one character per column; the space around it stays blank. */
+export function render(cells: Float32Array, cols: number, rows: number, ramp: string = RAMP): string {
   const top = ramp.length - 1;
   const lines: string[] = [];
   for (let y = 0; y < rows; y++) {
     let line = '';
     for (let x = 0; x < cols; x++) {
-      line += ramp[Math.min(top, Math.floor(cellValue(cells[y * cols + x] ?? 0, x, y, t) * ramp.length))];
+      line += ramp[Math.min(top, Math.floor(cellValue(cells[y * cols + x] ?? 0) * ramp.length))];
     }
-    lines.push(line);
+    lines.push(line.trimEnd());
   }
   return lines.join('\n');
 }

@@ -1,15 +1,20 @@
-{{- /* One item of a list: a link with title and facts, then the details. Without JavaScript the list shows as cards;
-   with it, as rows with the details of the selected one beside them. Expects page, item, meta and color. */ -}}
+{{- /* One item of a list: a link with title and facts, then the details. Without JavaScript, and in the grid view, the
+   items are cards with their picture first; in the list view, rows with the summary under the title.
+   Expects page, item, meta, kind and color; summary and chips are optional. */ -}}
 {{- $foreign := ne .page.Language.Lang site.Language.Lang }}
-<li class="item" style="--item-color: {{ .color }}">
+{{- $image := "" }}
+{{- with .item.media }}{{ with index . 0 }}{{ with resources.Get (printf "media/%s" .) }}{{ $image = . }}{{ end }}{{ end }}{{ end }}
+<li class="item" style="--item-color: {{ .color | safeCSS }}">
   <a class="item__link" href="{{ .page.RelPermalink }}"{{ if $foreign }} lang="{{ .page.Language.Locale }}"{{ end }}>
     <span class="item__title">{{ .item.title }}</span>
     <span class="item__meta">{{ .meta }}</span>
   </a>
   <div class="item__detail">
-    {{- with .item.media }}{{ with index . 0 }}{{ with resources.Get (printf "media/%s" .) }}
+    {{- with $image }}
     {{ partial "dither.html" (dict "image" . "class" "item__image" "width" 480 "ink" $.color) }}
-    {{- end }}{{ end }}{{ end }}
+    {{- else }}
+    <span class="item__image item__image--none" aria-hidden="true"><span>{{ .kind }}</span></span>
+    {{- end }}
     {{- with .summary }}<p class="item__summary">{{ . }}</p>{{ end }}
     {{- with .chips }}<p class="item__chips">{{ range . }}<span class="chip">{{ . }}</span>{{ end }}</p>{{ end }}
   </div>

@@ -12,6 +12,12 @@
     font-variant-ligatures: none;
   }
 
+  /* WebTUI gives text blocks the root size, so a smaller bar or label would not reach its paragraphs and items. */
+  :is(p, li, blockquote) {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
   /* Keeps the drawn marker but hides it from screen readers. */
   ul li::before {
     content: '- ' / '';

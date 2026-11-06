@@ -28,6 +28,7 @@ function wire(dialog: HTMLDialogElement): void {
     }
   });
   dialog.addEventListener('close', () => {
+    queueMicrotask(renderThemeStatus);
     const applied = dialog.returnValue === 'apply';
     const chosen = radios(dialog).find((radio) => radio.checked);
     const keep = applied ? choiceToSaved(chosen?.value ?? '') : before;
@@ -59,4 +60,27 @@ export function openThemePicker(): void {
   }
   dialog.showModal();
   selected?.focus();
+}
+
+/** The name of the theme in effect; a family that follows the system names the variant the system picked. */
+function themeName(dialog: HTMLDialogElement): string {
+  const wanted = savedToChoice(currentChoice(), dialog.dataset['defaultFamily'] ?? '');
+  const radio = radios(dialog).find((candidate) => candidate.value === wanted);
+  const family = radio?.closest('fieldset');
+  if (!(radio && family)) {
+    return '';
+  }
+  const variants = [...family.querySelectorAll<HTMLInputElement>('input[value^="theme:"]')];
+  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const shown = radio.value.startsWith('theme:') ? radio : variants[dark ? 1 : 0];
+  return shown?.parentElement?.textContent?.trim() ?? '';
+}
+
+/** Writes the theme in effect into the status line. */
+export function renderThemeStatus(): void {
+  const dialog = document.querySelector<HTMLDialogElement>('.theme-picker');
+  const name = dialog ? themeName(dialog) : '';
+  for (const slot of document.querySelectorAll('[data-status-theme]')) {
+    slot.textContent = name;
+  }
 }

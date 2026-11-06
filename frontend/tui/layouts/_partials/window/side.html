@@ -1,4 +1,4 @@
-{{- /* The side column: who, the panes, what is going on now and how to get in touch. Reading a page hides it. */ -}}
+{{- /* The side column: who, the panes and how to get in touch. Reading a page hides it. */ -}}
 {{- $current := partial "window/current-pane.html" . }}
 {{- $model := partial "model.html" . }}
 <nav class="side" aria-label="{{ i18n "panes" }}">
@@ -11,16 +11,6 @@
     <li><a href="{{ $pane.page.RelPermalink }}" data-pane="{{ add $i 1 }}"{{ if eq $pane.key $current }} aria-current="{{ cond (eq $pane.page.RelPermalink $.RelPermalink) "page" "true" }}"{{ end }}><span class="side__key" aria-hidden="true">{{ add $i 1 }}</span><span class="side__label">{{ i18n $pane.label }}</span>{{ with $pane.count }}<span class="side__count">{{ . }}</span>{{ end }}</a></li>
     {{- end }}
   </ol>
-  {{- with $model.profile.now }}
-  <section class="side__block" aria-label="{{ i18n "panelNow" }}">
-    <p class="side__heading" aria-hidden="true">{{ i18n "panelNow" }}</p>
-    <dl class="side__facts">
-      <dt>{{ i18n "nowWork" }}</dt><dd>{{ .work }}</dd>
-      <dt>{{ i18n "nowMasters" }}</dt><dd>{{ .masters }}</dd>
-      <dt>{{ i18n "nowStudying" }}</dt><dd>{{ .studying }}</dd>
-    </dl>
-  </section>
-  {{- end }}
   {{- with $model.contact }}
   <section class="side__block" aria-label="{{ i18n "systemContact" }}">
     <p class="side__heading" aria-hidden="true">{{ i18n "systemContact" }}</p>

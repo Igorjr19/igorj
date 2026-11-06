@@ -1,9 +1,9 @@
-<div class="items" data-items data-preview-label="{{ i18n "preview" }}" data-open-hint="{{ i18n "previewOpen" }}">
+<div class="items" data-items>
   <ul class="items__list">
     {{- range (partial "model.html" .).research }}
     {{- $item := . }}
     {{- with partial "item-page.html" (dict "section" "research" "item" .) }}
-    {{ partial "item-row.html" (dict "page" . "item" $item "meta" (printf "%s · %d" (i18n (printf "research%s" (title $item.kind))) (int $item.year)) "summary" (printf "%s · %s" (delimit $item.authors ", ") $item.venue) "color" "var(--color-text-muted)") }}
+    {{ partial "item-row.html" (dict "page" . "item" $item "kind" (i18n (printf "research%s" (title $item.kind))) "meta" (printf "%s · %d" (i18n (printf "research%s" (title $item.kind))) (int $item.year)) "summary" (printf "%s · %s" (delimit $item.authors ", ") $item.venue) "color" "var(--color-text-muted)") }}
     {{- end }}
     {{- end }}
   </ul>

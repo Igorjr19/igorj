@@ -36,7 +36,7 @@
   }
 
   .hero__photo {
-    inline-size: calc(36 * var(--cell-width));
+    inline-size: calc(38 * var(--cell-width));
   }
 
   .hero__text {
@@ -56,7 +56,8 @@
     margin: 0;
     inline-size: 100%;
     overflow: hidden;
-    font-size: 0.42em;
+    font-size: 0.5em;
+    font-weight: bold;
     line-height: 1;
     white-space: pre;
     color: var(--color-link);
@@ -66,6 +67,7 @@
   .hero__role {
     margin: 0;
     color: var(--color-link);
+    font-size: 1.15em;
   }
 
   .hero__lines {
@@ -82,13 +84,14 @@
   .hero__location {
     margin: 0;
     color: var(--color-text-muted);
+    font-size: var(--font-size-small);
   }
 
   .recent__list {
     margin: 0;
     padding: 0;
     list-style: none;
-    border-block-start: 1px solid var(--color-surface-3);
+    border-block-start: var(--line);
   }
 
   .recent__list li::before {
@@ -100,7 +103,7 @@
     grid-template-columns: calc(15 * var(--cell-width)) minmax(0, 1fr);
     gap: 0 calc(2 * var(--cell-width));
     padding: calc(var(--cell-height) / 2) var(--cell-width);
-    border-block-end: 1px solid var(--color-surface-3);
+    border-block-end: var(--line);
     color: var(--color-text);
     text-decoration: none;
   }
@@ -110,20 +113,25 @@
   }
 
   .recent__kind {
+    padding-block-start: 0.2em;
     color: var(--item-color);
-    text-transform: lowercase;
+    font-size: var(--font-size-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .recent__sub {
     grid-column: 2;
     color: var(--color-text-muted);
     font-family: var(--font-text);
+    font-size: var(--font-size-small);
+    font-style: italic;
   }
 
   .home__widgets {
     display: grid;
-    gap: calc(2 * var(--cell-height));
-    padding-block-start: var(--cell-height);
+    gap: calc(1.5 * var(--cell-height));
+    padding-block-start: calc(1.5 * var(--cell-height));
   }
 
   .widget .panel__title a {

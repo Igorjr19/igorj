@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { assert, assertEquals } from '@std/assert';
+import { assert, assertAlmostEquals, assertEquals } from '@std/assert';
 import { HOME_EN, POST_EN, POST_PT, POSTS_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
 
@@ -118,20 +118,18 @@ Deno.test('q goes to the parent page, and the status line closes the window at t
     assertEquals(new URL(page.url).pathname, HOME_EN);
   });
 
-  await t.step('the status line is the last row of the window, one cell above the bottom of the screen', async () => {
+  await t.step('the status line is the last row of the window, two cells above the bottom of the screen', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
     const edges = await page.evaluate(() => {
       const win = document.querySelector('.win')?.getBoundingClientRect();
       return {
         statusBottom: Math.round(document.querySelector('.statusbar')?.getBoundingClientRect().bottom ?? 0),
         windowBottom: Math.round((win?.bottom ?? 0) - 1),
-        gap: Math.round(innerHeight - (win?.bottom ?? 0)),
-        cell: Math.round(
-          Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-height')),
-        ),
+        gap: innerHeight - (win?.bottom ?? 0),
+        cell: Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-height')),
       };
     });
     assertEquals(edges.statusBottom, edges.windowBottom);
-    assertEquals(edges.gap, edges.cell);
+    assertAlmostEquals(edges.gap, 2 * edges.cell, 1);
   });
 });

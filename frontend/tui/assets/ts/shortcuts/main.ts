@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 import { LANGUAGE_STORAGE_KEY, siteLanguageOf } from '../language/choice.ts';
 import { browserStorage } from '../shared/storage.ts';
-import { openThemePicker } from '../theme/picker.ts';
+import { openThemePicker, renderThemeStatus } from '../theme/picker.ts';
 import { readShortcutsEnabled, saveShortcutsEnabled } from './preference.ts';
 import { actionForKey, isShortcutCandidate, type NavigationTarget, type ShortcutAction, stepIndex } from './rules.ts';
 
@@ -148,6 +148,7 @@ function onClick(event: MouseEvent): void {
 }
 
 renderEnabled();
+renderThemeStatus();
 for (const element of document.querySelectorAll('[data-script-only]')) {
   element.removeAttribute('hidden');
 }
