@@ -7,7 +7,13 @@ export interface ThemeIndex {
     readonly label: string;
     /** The themes used when the family follows the system. */
     readonly system: { readonly light: string; readonly dark: string };
-    readonly themes: readonly { readonly id: string; readonly name: string; readonly variant: 'light' | 'dark' }[];
+    readonly themes: readonly {
+      readonly id: string;
+      readonly name: string;
+      readonly variant: 'light' | 'dark';
+      /** A strip of the theme's colors for the picker: background, text, link, success, warning. */
+      readonly swatch: readonly string[];
+    }[];
   }[];
   /** The accents a visitor can choose, with each accent's color on every theme of its family. */
   readonly accents: {
@@ -29,10 +35,11 @@ export function describeThemes(
       name,
       label: name.charAt(0).toUpperCase() + name.slice(1),
       system: { light: light.manifest.id, dark: dark.manifest.id },
-      themes: themes.map(({ manifest }) => ({
+      themes: themes.map(({ manifest, colors }) => ({
         id: manifest.id,
         name: manifest.name,
         variant: manifest.variant,
+        swatch: [colors.background, colors.text, colors.link, colors.success, colors.warning],
       })),
     })),
     accents: accents && {

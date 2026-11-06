@@ -16,8 +16,18 @@ Deno.test('describeThemes lists each family with its light theme first, and name
         label: 'One',
         system: { light: 'one-light', dark: 'one-dark' },
         themes: [
-          { id: 'one-light', name: 'one-light', variant: 'light' },
-          { id: 'one-dark', name: 'one-dark', variant: 'dark' },
+          {
+            id: 'one-light',
+            name: 'one-light',
+            variant: 'light',
+            swatch: ['#ffffff', '#000000', '#000000', '#000000', '#000000'],
+          },
+          {
+            id: 'one-dark',
+            name: 'one-dark',
+            variant: 'dark',
+            swatch: ['#000000', '#ffffff', '#000000', '#000000', '#000000'],
+          },
         ],
       },
     ],

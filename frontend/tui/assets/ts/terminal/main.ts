@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { browserStorage } from '../shared/storage.ts';
-import { renderThemeStatus } from '../theme/picker.ts';
+import { renderThemeStatus } from '../theme/status.ts';
 import { applyThemeChoice, saveTheme } from '../theme/storage.ts';
 import { commonPrefix, complete, type Line, type Result, run, type TerminalData } from './commands.ts';
 
@@ -204,7 +204,7 @@ class Terminal {
   }
 }
 
-const source = document.querySelector<HTMLTemplateElement>('template[data-terminal]');
+const source = document.querySelector<HTMLTemplateElement>('template[data-lazy="terminal"]');
 if (source?.dataset['index']) {
   fetch(source.dataset['index'])
     .then((response) => response.json() as Promise<TerminalData>)

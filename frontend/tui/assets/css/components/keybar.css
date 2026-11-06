@@ -1,6 +1,5 @@
 @layer app.components {
-  .help,
-  .theme-picker {
+  .help {
     max-inline-size: min(80ch, calc(100% - 2 * var(--cell-width)));
     margin: auto;
     border: 0;
@@ -9,12 +8,11 @@
   }
 
   .help::backdrop,
-  .theme-picker::backdrop {
+  .pick::backdrop {
     background-color: color-mix(in oklab, var(--color-background) 80%, transparent);
   }
 
-  .help > p,
-  .theme-picker__actions {
+  .help > p {
     margin-block: var(--cell-height) 0;
   }
 
@@ -24,58 +22,6 @@
     margin-block-start: var(--cell-height);
   }
 
-  .theme-picker fieldset {
-    margin: 0 0 var(--cell-height);
-    padding: 0;
-    border: 0;
-  }
-
-  .theme-picker legend {
-    padding: 0;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-label);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  .theme-picker__families {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(calc(22 * var(--cell-width)), 1fr));
-    gap: 0 calc(3 * var(--cell-width));
-  }
-
-  .theme-picker__accents {
-    display: flex;
-    flex-wrap: wrap;
-    gap: calc(var(--cell-height) / 4) calc(2 * var(--cell-width));
-  }
-
-  .theme-picker__accents legend {
-    inline-size: 100%;
-    margin-block-end: calc(var(--cell-height) / 4);
-  }
-
-  .theme-picker .accent {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(var(--cell-width) / 2);
-  }
-
-  .accent__swatch {
-    display: inline-block;
-    inline-size: var(--cell-width);
-    block-size: var(--cell-width);
-  }
-
-  .theme-picker label {
-    display: block;
-  }
-
-  .theme-picker input {
-    accent-color: var(--color-accent);
-  }
-
-  .theme-picker__actions button,
   .help__actions button {
     padding: 0;
     border: 0;

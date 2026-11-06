@@ -1,4 +1,4 @@
-{{- /* The help dialog, the theme picker, the terminal's address and the shortcuts script, shared by every page. */ -}}
+{{- /* The help dialog, where the terminal and the quick-pick box load from, and the shortcuts script, shared by every page. */ -}}
 <dialog class="panel help" box-="square" aria-labelledby="help-title">
   <h2 class="panel__title" id="help-title">{{ i18n "helpTitle" }}</h2>
   <dl class="facts">
@@ -16,6 +16,10 @@
     <dd>{{ i18n "helpZoom" }}</dd>
     <dt><kbd>p</kbd> <kbd>n</kbd></dt>
     <dd>{{ i18n "helpPosts" }}</dd>
+    <dt><kbd>f</kbd></dt>
+    <dd>{{ i18n "helpFind" }}</dd>
+    <dt><kbd>#</kbd></dt>
+    <dd>{{ i18n "helpFilter" }}</dd>
     <dt><kbd>t</kbd></dt>
     <dd>{{ i18n "helpTheme" }}</dd>
     <dt><kbd>:</kbd></dt>
@@ -33,12 +37,13 @@
     <button type="submit">{{ i18n "helpClose" }}</button>
   </form>
 </dialog>
-{{ partial "theme-picker.html" . }}
-{{- /* The terminal script and its index load only when the terminal first opens. */ -}}
-{{- with resources.Get "ts/terminal/main.ts" | js.Build (dict "minify" true) | fingerprint }}
-{{- $script := . }}
-{{- with site.Home.OutputFormats.Get "terminal" }}
-<template data-terminal data-script="{{ $script.RelPermalink }}" data-integrity="{{ $script.Data.Integrity }}" data-index="{{ .RelPermalink }}"></template>
+{{- /* The terminal and the quick-pick box, with the index they read, load only when one first opens. */ -}}
+{{- with site.Home.OutputFormats.Get "site" }}
+{{- $index := .RelPermalink }}
+{{- range slice "terminal" "pick" }}
+{{- with resources.Get (printf "ts/%s/main.ts" .) | js.Build (dict "minify" true) | fingerprint }}
+<template data-lazy="{{ path.Base (path.Dir .Name) }}" data-script="{{ .RelPermalink }}" data-integrity="{{ .Data.Integrity }}" data-index="{{ $index }}"></template>
+{{- end }}
 {{- end }}
 {{- end }}
 {{- with resources.Get "ts/shortcuts/main.ts" | js.Build (dict "minify" true) | fingerprint }}

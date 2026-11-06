@@ -24,6 +24,7 @@
 @import './components/data.css';
 @import './components/zoom.css';
 @import './components/terminal.css';
+@import './components/pick.css';
 @import './components/prose.css';
 @import './components/code.css';
 @import './components/print.css';

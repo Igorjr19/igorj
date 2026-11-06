@@ -13,16 +13,16 @@ repository = "https://github.com/Igorjr19/igorj"
 # Code colors come from the theme roles instead of inline styles.
 noClasses = false
 
-# What the terminal reads, one file per language, fetched only when it opens.
-[outputFormats.terminal]
+# What the terminal and the quick-pick box read, one file per language, fetched only when one opens.
+[outputFormats.site]
 mediaType = "application/json"
-baseName = "terminal"
+baseName = "site"
 isPlainText = true
 notAlternative = true
 
 # Only the home and the categories publish feeds, both with posts only.
 [outputs]
-home = ["html", "rss", "terminal"]
+home = ["html", "rss", "site"]
 section = ["html"]
 taxonomy = ["html"]
 term = ["html", "rss"]
