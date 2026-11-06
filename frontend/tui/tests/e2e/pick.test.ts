@@ -117,3 +117,28 @@ Deno.test('# opens the filter of the blog, one category at a time', async (t) =>
     }
   });
 });
+
+Deno.test('long facts never push the title out of its row', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('a row with very long facts keeps its title on one visible line', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    await openBox(page, 'f');
+    await page.keyboard.type('research');
+    const rows = await page.evaluate(() =>
+      [...document.querySelectorAll('.pick__option')].map((option) => {
+        const hint = option.querySelector('.pick__hint');
+        if (hint) {
+          hint.textContent = 'thesis · 2025 · a very long university name that keeps going and going'.repeat(2);
+        }
+        const label = option.querySelector('.pick__label') as HTMLElement;
+        return { width: label.getBoundingClientRect().width, height: option.getBoundingClientRect().height };
+      }),
+    );
+    assert(rows.length > 0);
+    for (const row of rows) {
+      assert(row.width > 100, `${row.width}px of title`);
+      assert(row.height < 40, `${row.height}px tall`);
+    }
+  });
+});
