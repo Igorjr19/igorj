@@ -42,6 +42,20 @@ function move(step: 1 | -1): boolean {
   return target !== undefined;
 }
 
+let terminalLoaded = false;
+
+/** The first time, loads the terminal, which opens itself; later, asks it to open or close. */
+function toggleTerminal(): void {
+  const { script: src = '', integrity = '' } =
+    document.querySelector<HTMLTemplateElement>('template[data-terminal]')?.dataset ?? {};
+  if (terminalLoaded) {
+    document.dispatchEvent(new Event('terminal:open'));
+  } else if (src) {
+    terminalLoaded = true;
+    document.body.append(Object.assign(document.createElement('script'), { src, integrity }));
+  }
+}
+
 function openHelp(): void {
   document.querySelector<HTMLDialogElement>('.help')?.showModal();
 }
@@ -70,6 +84,9 @@ function perform(action: ShortcutAction): boolean {
       return true;
     case 'theme':
       openThemePicker();
+      return true;
+    case 'terminal':
+      toggleTerminal();
       return true;
     case 'help':
       openHelp();
@@ -134,6 +151,9 @@ function onClick(event: MouseEvent): void {
       break;
     case 'theme':
       openThemePicker();
+      break;
+    case 'terminal':
+      toggleTerminal();
       break;
     case 'toggle-shortcuts':
       enabled = !enabled;

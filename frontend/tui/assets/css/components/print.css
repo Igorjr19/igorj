@@ -13,7 +13,8 @@
     .win__top,
     .side,
     .statusbar,
-    .pane__bar {
+    .pane__bar,
+    .drawer {
       display: none;
     }
 

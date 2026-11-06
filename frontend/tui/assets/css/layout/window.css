@@ -11,6 +11,7 @@
     max-inline-size: min(calc(150 * var(--cell-width)), calc(100% - 4 * var(--cell-width)));
     block-size: calc(100dvh - 4 * var(--cell-height));
     margin: calc(2 * var(--cell-height)) auto;
+    position: relative;
     border: 1px solid var(--color-accent);
     overflow: hidden;
   }
