@@ -16,10 +16,27 @@
     overflow: hidden;
   }
 
+  /* The terminal, when open, takes a row under the pane, as tall as the visitor left it. */
   .win__body {
     display: grid;
     grid-template-columns: calc(30 * var(--cell-width)) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 0;
     min-block-size: 0;
+    transition: grid-template-rows 160ms ease-out;
+  }
+
+  .has-terminal .win__body {
+    grid-template-rows: minmax(0, 1fr) var(--terminal-height, 45%);
+  }
+
+  .win__body > .side {
+    grid-row: 1 / -1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .win__body {
+      transition: none;
+    }
   }
 
   .pane {
@@ -35,6 +52,10 @@
   /* Reading zooms the pane, like tmux: the side column steps aside and the text takes the window. */
   .is-zoomed .win__body {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .is-zoomed .win__body > .pane {
+    grid-column: 1;
   }
 
   /* Below a full-width terminal the window becomes the page: the side turns into a row of panes and the status line sticks to the bottom. */

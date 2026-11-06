@@ -93,7 +93,7 @@ Deno.test('theme switches by short name and accent, and refuses an unknown one',
 });
 
 Deno.test('an unknown command says so, and the ones that act on the page say what to do', () => {
-  assertEquals(text(run('rm -rf', context).lines), ['rm: command not found']);
+  assertEquals(text(run('frobnicate', context).lines), ['frobnicate: command not found']);
   assertEquals([run('clear', context).clear, run('exit', context).exit], [true, true]);
 });
 
@@ -114,4 +114,15 @@ Deno.test('complete offers commands, then folders and files, then themes and acc
 Deno.test('commonPrefix is what every candidate starts with', () => {
   assertEquals(commonPrefix(['projects/', 'posts/']), 'p');
   assertEquals(commonPrefix([]), '');
+});
+
+Deno.test('a few commands stay out of help and tab, for the curious', () => {
+  const secrets = {
+    ...context,
+    data: { ...data, strings: { ...data.strings, termSudo: '%s is not in the sudoers file.', termRm: 'nice try' } },
+  };
+  assertEquals(text(run('sudo ls', secrets).lines), ['igor is not in the sudoers file.']);
+  assertEquals(text(run('rm -rf /', secrets).lines), ['nice try']);
+  assertEquals(text(run('cowsay hi', secrets).lines).slice(0, 3), [' ____', '< hi >', ' ----']);
+  assertEquals(complete('su', '', data), []);
 });

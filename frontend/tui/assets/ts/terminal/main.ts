@@ -5,6 +5,23 @@ import { applyThemeChoice, saveTheme } from '../theme/storage.ts';
 import { commonPrefix, complete, type Line, type Result, run, type TerminalData } from './commands.ts';
 
 const OPEN_EVENT = 'terminal:open';
+const HEIGHT_KEY = 'terminal-height';
+const DEFAULT_HEIGHT = 0.45;
+const MIN_HEIGHT = 0.2;
+const MAX_HEIGHT = 0.85;
+const HEIGHT_STEPS = new Map([
+  ['ArrowUp', 0.05],
+  ['ArrowDown', -0.05],
+]);
+
+function readHeight(): number {
+  try {
+    const saved = Number(localStorage.getItem(HEIGHT_KEY));
+    return saved > 0 ? saved : DEFAULT_HEIGHT;
+  } catch {
+    return DEFAULT_HEIGHT;
+  }
+}
 
 function element<K extends keyof HTMLElementTagNameMap>(tag: K, className: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
@@ -40,6 +57,8 @@ function saveChosenTheme(theme: NonNullable<Result['theme']>): void {
 class Terminal {
   readonly drawer = element('section', 'drawer');
   readonly log = element('div', 'term__log');
+  readonly scroll = element('div', 'term__scroll');
+  readonly handle = element('div', 'drawer__handle');
   readonly suggest = element('div', 'term__suggest');
   readonly prompt = element('label', 'term__prompt');
   readonly input = element('input', 'term__input');
@@ -81,15 +100,68 @@ class Terminal {
     this.input.setAttribute('autocapitalize', 'off');
     const form = element('form', 'term__form');
     form.append(this.prompt, this.input);
+    // The prompt sits right after the last line of output, as in a terminal, and moves down with it.
+    this.scroll.append(this.log, form, this.suggest);
     const body = element('div', 'term');
-    body.append(this.log, this.suggest, form);
-    this.drawer.append(bar, body);
-    document.querySelector('.win')?.append(this.drawer);
+    body.append(this.scroll);
+    this.buildHandle();
+    this.drawer.append(this.handle, bar, body);
+    document.querySelector('.win__body')?.append(this.drawer);
+    this.setHeight(readHeight());
+  }
+
+  /** The top edge sets the height: dragged with the pointer, or moved with the arrow keys once focused. */
+  buildHandle(): void {
+    this.handle.setAttribute('role', 'separator');
+    this.handle.setAttribute('aria-orientation', 'horizontal');
+    this.handle.setAttribute('aria-label', this.data.strings['termResize'] ?? '');
+    this.handle.setAttribute('aria-valuemin', String(MIN_HEIGHT * 100));
+    this.handle.setAttribute('aria-valuemax', String(MAX_HEIGHT * 100));
+    this.handle.tabIndex = 0;
+    this.handle.addEventListener('pointerdown', (event) => this.drag(event));
+    this.handle.addEventListener('keydown', (event) => {
+      const step = HEIGHT_STEPS.get(event.key);
+      if (step) {
+        event.preventDefault();
+        this.setHeight(this.height + step, true);
+      }
+    });
+  }
+
+  height = DEFAULT_HEIGHT;
+
+  /** The share of the content column the terminal takes, kept between visits. */
+  setHeight(share: number, save = false): void {
+    this.height = Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, share));
+    document.querySelector<HTMLElement>('.win')?.style.setProperty('--terminal-height', `${this.height * 100}%`);
+    this.handle.setAttribute('aria-valuenow', String(Math.round(this.height * 100)));
+    if (save) {
+      try {
+        localStorage.setItem(HEIGHT_KEY, String(this.height));
+      } catch {
+        // Storage blocked: the height lasts until the page closes.
+      }
+    }
+  }
+
+  drag(start: PointerEvent): void {
+    const column = this.drawer.parentElement?.getBoundingClientRect();
+    if (!column) {
+      return;
+    }
+    this.handle.setPointerCapture(start.pointerId);
+    const move = (event: PointerEvent): void => this.setHeight((column.bottom - event.clientY) / column.height);
+    const stop = (): void => {
+      this.handle.removeEventListener('pointermove', move);
+      this.setHeight(this.height, true);
+    };
+    this.handle.addEventListener('pointermove', move);
+    this.handle.addEventListener('pointerup', stop, { once: true });
   }
 
   print(lines: readonly Line[]): void {
     this.log.append(...lines.map(renderLine));
-    this.log.scrollTop = this.log.scrollHeight;
+    this.scroll.scrollTop = this.scroll.scrollHeight;
   }
 
   showPrompt(): void {
@@ -98,6 +170,7 @@ class Terminal {
 
   open(): void {
     this.drawer.classList.add('drawer--open');
+    document.body.classList.add('has-terminal');
     if (this.mode) {
       this.mode.textContent = this.data.strings['modeTerminal'] ?? 'TERMINAL';
     }
@@ -106,6 +179,7 @@ class Terminal {
 
   close(): void {
     this.drawer.classList.remove('drawer--open');
+    document.body.classList.remove('has-terminal');
     if (this.mode) {
       this.mode.textContent = this.normalMode;
     }

@@ -1,38 +1,29 @@
 @layer app.components {
-  /* The terminal drops from the top of the window over whatever pane is open. */
+  /* The terminal is a panel at the foot of the content column, growing upwards, like an editor's. */
   .drawer {
-    position: absolute;
-    inset: 0 0 auto;
-    z-index: 3;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    block-size: 62%;
-    min-block-size: calc(14 * var(--cell-height));
-    border-block-end: 1px solid var(--color-accent);
+    display: none;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-column: -2;
+    min-block-size: 0;
+    border-block-start: 1px solid var(--color-accent);
     background-color: var(--color-background);
-    box-shadow: 0 calc(var(--cell-height)) calc(3 * var(--cell-height))
-      color-mix(in oklab, var(--color-background) 60%, transparent);
     font-size: 0.93em;
-    transform: translateY(-102%);
-    visibility: hidden;
-    transition:
-      transform 180ms ease-out,
-      visibility 180ms;
   }
 
-  /* Visible at once on opening, so the prompt can take the focus; hidden only after closing slides it away. */
   .drawer--open {
-    transform: none;
-    visibility: visible;
-    transition:
-      transform 180ms ease-out,
-      visibility 0s;
+    display: grid;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .drawer {
-      transition: none;
-    }
+  /* The top edge is the grip for the height: a thin line that thickens under the pointer or the focus. */
+  .drawer__handle {
+    block-size: calc(var(--cell-height) / 4);
+    margin-block-start: calc(-1 * var(--cell-height) / 8);
+    cursor: ns-resize;
+    touch-action: none;
+  }
+
+  .drawer__handle:is(:hover, :focus-visible) {
+    background-color: var(--color-accent);
   }
 
   .drawer__bar {
@@ -57,10 +48,13 @@
     padding: calc(var(--cell-height) / 2) calc(1.5 * var(--cell-width));
   }
 
-  .term__log {
+  .term__scroll {
     flex: 1 1 auto;
     min-block-size: 0;
     overflow-y: auto;
+  }
+
+  .term__log {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
@@ -119,9 +113,12 @@
   }
 
   @container screen (width < 100ch) {
+    /* On a narrow screen the page scrolls as a whole, so the panel sits fixed above the buttons. */
     .drawer {
       position: fixed;
-      block-size: calc(100dvh - round(up, 44px, var(--cell-height)) - env(safe-area-inset-bottom));
+      inset: auto 0 calc(round(up, 44px, var(--cell-height)) + env(safe-area-inset-bottom));
+      z-index: 3;
+      block-size: var(--terminal-height, 45%);
     }
 
     .drawer__keys {
