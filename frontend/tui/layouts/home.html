@@ -10,9 +10,7 @@
     {{ partial "home/watched.html" . }}
   </div>
 </div>
-{{- range slice "ts/home/main.ts" "ts/name/main.ts" }}
-{{- with resources.Get . | js.Build (dict "minify" true) | fingerprint }}
+{{- with resources.Get "ts/home/page.ts" | js.Build (dict "minify" true) | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
-{{- end }}
 {{- end }}
 {{ end }}

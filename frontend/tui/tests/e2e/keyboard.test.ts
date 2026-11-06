@@ -182,12 +182,19 @@ Deno.test('the status line shows the keys that work on each page', async (t) => 
 
   await t.step('wide home: panes, theme and help', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleKeys), ['1–6 panels', 't theme', '? help']);
+    assertEquals(await page.evaluate(visibleKeys), ['1–6 panels', 't theme', ': terminal', '? help']);
   });
 
   await t.step('wide list: moving, opening and the view', async () => {
     const page = await session.open(POSTS_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(visibleKeys), ['j k move', 'enter open', 'v list or grid', 't theme', '? help']);
+    assertEquals(await page.evaluate(visibleKeys), [
+      'j k move',
+      'enter open',
+      'v list or grid',
+      't theme',
+      ': terminal',
+      '? help',
+    ]);
   });
 
   await t.step('wide post: back, zoom and the neighbouring posts', async () => {
@@ -197,11 +204,16 @@ Deno.test('the status line shows the keys that work on each page', async (t) => 
       'z zoom',
       'p n previous / next post',
       't theme',
+      ': terminal',
       '? help',
     ]);
   });
+});
 
-  await t.step('narrow: four buttons tall enough to tap, stuck to the bottom of the screen', async () => {
+Deno.test('on a narrow screen the status line turns into buttons', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('narrow: five buttons tall enough to tap, stuck to the bottom of the screen', async () => {
     const page = await session.open(HOME_EN, { viewport: NARROW });
     const bar = await page.evaluate(() => {
       const buttons = [...document.querySelectorAll<HTMLElement>('.statusbar__touch button')];
@@ -211,7 +223,7 @@ Deno.test('the status line shows the keys that work on each page', async (t) => 
         bottom: document.querySelector('.statusbar')?.getBoundingClientRect().bottom,
       };
     });
-    assertEquals(bar.labels, ['‹', '›', 't', '?']);
+    assertEquals(bar.labels, ['‹', '›', 't', ':', '?']);
     for (const height of bar.heights) {
       assert(height >= 44, `${height}px is below the 44px touch target`);
     }
