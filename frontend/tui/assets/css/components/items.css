@@ -170,3 +170,69 @@
     }
   }
 }
+
+@layer app.components {
+  /* The head of a list: the filter on the left, the view switch and the feed on the right. */
+  .items__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--cell-height) / 2) calc(2 * var(--cell-width));
+    font-size: var(--font-size-small);
+  }
+
+  .items__bar .filter ul {
+    margin: 0;
+  }
+
+  .items__tools {
+    display: flex;
+    align-items: center;
+    gap: calc(2 * var(--cell-width));
+    margin-inline-start: auto;
+  }
+
+  .view-switch {
+    display: inline-flex;
+    border: var(--line);
+  }
+
+  .view-switch[hidden] {
+    display: none;
+  }
+
+  .view-switch button {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--cell-width) / 2);
+    padding: 0 var(--cell-width);
+    border: 0;
+    background: none;
+    color: var(--color-text-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .view-switch button + button {
+    border-inline-start: var(--line);
+  }
+
+  .view-switch button:is(:hover, :focus-visible) {
+    color: var(--color-text);
+  }
+
+  /* The view in effect is a filled label, in the link color like the other filled labels. */
+  .view-switch button[aria-pressed='true'] {
+    background-color: var(--color-link);
+    color: var(--color-background);
+  }
+
+  .items__feed {
+    color: var(--color-text-muted);
+  }
+
+  .items__feed:is(:hover, :focus-visible) {
+    color: var(--color-link);
+  }
+}

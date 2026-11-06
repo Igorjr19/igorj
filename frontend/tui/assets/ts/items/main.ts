@@ -24,19 +24,32 @@ function setup(root: HTMLElement): void {
       select(item);
     }
   });
-  document.addEventListener('items:toggle-view', () => {
-    view = otherView(view);
+  /** Shows a view, says which one on the switch, and remembers it. */
+  const show = (next: ItemsView, save: boolean): void => {
+    view = next;
+    root.dataset['view'] = view;
+    for (const button of document.querySelectorAll<HTMLElement>('.view-switch [data-view]')) {
+      button.setAttribute('aria-pressed', String(button.dataset['view'] === view));
+    }
     try {
-      if (storage) {
+      if (save && storage) {
         saveView(storage, view);
       }
     } catch {
       // Storage full or blocked: the view lasts until the page closes.
     }
-    root.dataset['view'] = view;
+  };
+
+  document.addEventListener('items:toggle-view', () => show(otherView(view), true));
+  document.addEventListener('click', (event) => {
+    const button =
+      event.target instanceof Element ? event.target.closest<HTMLElement>('.view-switch [data-view]') : null;
+    if (button?.dataset['view'] === 'list' || button?.dataset['view'] === 'grid') {
+      show(button.dataset['view'], true);
+    }
   });
 
-  root.dataset['view'] = view;
+  show(view, false);
   if (items[0]) {
     select(items[0]);
   }

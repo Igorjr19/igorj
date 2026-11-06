@@ -1,0 +1,6 @@
+{{- /* The profile address the contacts give for a network, or nothing. Expects the network name. */ -}}
+{{- $url := "" }}
+{{- with (partial "model.html" site.Home).contact }}
+{{- range append .personal .professional }}{{ if eq .network $ }}{{ $url = .url }}{{ end }}{{ end }}
+{{- end }}
+{{- return $url }}

@@ -1,5 +1,5 @@
 {{- $model := partial "model.html" . }}
-<div class="listening">
+<div class="shelf">
   <section aria-labelledby="music-title">
     <h2 class="label" id="music-title">{{ i18n "panelListening" }}</h2>
     {{- with $model.music }}{{ with .artists }}

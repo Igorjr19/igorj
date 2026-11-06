@@ -1,0 +1,3 @@
+{{- /* A box title on the border: the name, linking to the profile on the network the data comes from when there is one. Expects id, label and network. */ -}}
+{{- $url := partial "network-url.html" .network }}
+<h2 class="panel__title" id="{{ .id }}-title">{{ with $url }}<a href="{{ . }}">{{ $.label | lower }}</a>{{ else }}{{ $.label | lower }}{{ end }}</h2>

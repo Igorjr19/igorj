@@ -7,7 +7,7 @@
   (dict "key" "posts" "path" "/posts" "label" "panePosts" "count" (len $model.posts))
   (dict "key" "research" "path" "/research" "label" "paneResearch" "count" (len $model.research))
   (dict "key" "cv" "path" "/cv" "label" "paneCv")
-  (dict "key" "listening" "path" "/listening" "label" "paneListening")
+  (dict "key" "shelf" "path" "/shelf" "label" "paneShelf")
 }}
   {{- $pane := . }}
   {{- with site.GetPage .path }}{{ $panes = $panes | append (merge $pane (dict "page" .)) }}{{ end }}

@@ -1,18 +1,4 @@
-{{- $section := site.GetPage "/posts" }}
-{{- with site.Taxonomies.categories.Alphabetical }}
-<nav class="filter" aria-label="{{ i18n "filterLabel" }}">
-  <ul>
-    <li><a href="{{ $section.RelPermalink }}"{{ if eq $.Kind "section" }} aria-current="page"{{ end }}>{{ i18n "filterAll" }}</a></li>
-    {{- range . }}
-    <li><a href="{{ .Page.RelPermalink }}"{{ if eq $.RelPermalink .Page.RelPermalink }} aria-current="page"{{ end }}>{{ partial "category-label.html" .Page }}</a> <span class="panel__meta">{{ .Count }}</span></li>
-    {{- end }}
-  </ul>
-</nav>
-{{- end }}
-<p class="panel__meta">
-  {{- with site.Home.OutputFormats.Get "rss" }}<a href="{{ .RelPermalink }}">{{ i18n "feedAll" }}</a>{{ end }}
-  {{- if eq $.Kind "term" }}{{ with $.OutputFormats.Get "rss" }} · <a href="{{ .RelPermalink }}">{{ i18n "feedCategory" (partial "category-label.html" $) }}</a>{{ end }}{{ end }}
-</p>
+{{ partial "lists/bar.html" (dict "page" .) }}
 {{- /* A category lists only the posts written in the page language; the blog lists every post the model gives it. */ -}}
 {{- $posts := (partial "model.html" .).posts }}
 {{- if eq .Kind "term" }}{{ $posts = where (where $posts "language" site.Language.Lang) "category.slug" .Data.Term }}{{ end }}
