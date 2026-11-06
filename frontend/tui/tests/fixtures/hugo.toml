@@ -42,6 +42,7 @@ files = [
   "filter.svg",
   "magnifying-glass.svg",
   "star.svg",
+  "share-nodes.svg",
 ]
 [[module.mounts]]
 source = "generated/css"
@@ -52,6 +53,9 @@ target = "data/model"
 [[module.mounts]]
 source = "generated/media"
 target = "assets/media"
+[[module.mounts]]
+source = "generated/share"
+target = "assets/share"
 [[module.mounts]]
 source = "generated/data"
 target = "data/generated"
