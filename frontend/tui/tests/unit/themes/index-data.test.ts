@@ -14,11 +14,13 @@ Deno.test('describeThemes lists each family with its light theme first, and name
       {
         name: 'one',
         label: 'One',
+        system: { light: 'one-light', dark: 'one-dark' },
         themes: [
           { id: 'one-light', name: 'one-light', variant: 'light' },
           { id: 'one-dark', name: 'one-dark', variant: 'dark' },
         ],
       },
     ],
+    accents: null,
   });
 });

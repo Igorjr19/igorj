@@ -35,6 +35,7 @@ creditsIntro = "O site usa o material de terceiros abaixo, cada um com a sua lic
 creditsTexts = "Textos completos das licenças"
 themeTitle = "Tema"
 themeFollowSystem = "acompanha o sistema (claro ou escuro)"
+themeAccent = "Acento do {{ . }}"
 themeApply = "Aplicar"
 themeCancel = "Cancelar"
 notFoundHome = "Ir para a página inicial"

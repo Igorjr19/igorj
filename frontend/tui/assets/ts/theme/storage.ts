@@ -6,6 +6,8 @@ export interface SavedTheme {
   readonly family?: string;
   /** Theme id that overrides the system preference. */
   readonly theme?: string;
+  /** Accent name, for the family whose themes have accents. */
+  readonly accent?: string;
 }
 
 export function readSavedTheme(storage: Storage): SavedTheme | null {
@@ -17,10 +19,11 @@ export function readSavedTheme(storage: Storage): SavedTheme | null {
   if (typeof value !== 'object' || value === null) {
     return null;
   }
-  const { family, theme } = value as Record<string, unknown>;
+  const { family, theme, accent } = value as Record<string, unknown>;
   return {
     ...(typeof family === 'string' && { family }),
     ...(typeof theme === 'string' && { theme }),
+    ...(typeof accent === 'string' && { accent }),
   };
 }
 
@@ -30,6 +33,9 @@ export function applySavedTheme(root: HTMLElement, saved: SavedTheme): void {
   }
   if (saved.theme) {
     root.dataset['theme'] = saved.theme;
+  }
+  if (saved.accent) {
+    root.dataset['accent'] = saved.accent;
   }
 }
 
@@ -45,6 +51,7 @@ export function saveTheme(storage: Pick<Storage, 'setItem' | 'removeItem'>, save
 export function applyThemeChoice(root: HTMLElement, saved: SavedTheme | null): void {
   root.removeAttribute('data-theme-family');
   root.removeAttribute('data-theme');
+  root.removeAttribute('data-accent');
   if (saved) {
     applySavedTheme(root, saved);
   }

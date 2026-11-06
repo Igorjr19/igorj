@@ -11,6 +11,7 @@ export const CONTRAST_REQUIREMENTS: readonly ContrastRequirement[] = [
   { foreground: 'error', background: 'background', minimum: MIN_TEXT_CONTRAST },
   { foreground: 'selection-text', background: 'selection-background', minimum: MIN_TEXT_CONTRAST },
   { foreground: 'text', background: 'surface-1', minimum: MIN_TEXT_CONTRAST },
+  { foreground: 'text-muted', background: 'surface-1', minimum: MIN_TEXT_CONTRAST },
   { foreground: 'syntax-keyword', background: 'surface-1', minimum: MIN_TEXT_CONTRAST },
   { foreground: 'syntax-string', background: 'surface-1', minimum: MIN_TEXT_CONTRAST },
   { foreground: 'syntax-number', background: 'surface-1', minimum: MIN_TEXT_CONTRAST },

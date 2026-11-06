@@ -5,12 +5,48 @@ import { choiceToSaved, savedToChoice } from './choice.ts';
 import { applyThemeChoice, type SavedTheme, saveTheme } from './storage.ts';
 
 function currentChoice(): SavedTheme | null {
-  const { themeFamily, theme } = document.documentElement.dataset;
-  return themeFamily || theme ? { ...(themeFamily && { family: themeFamily }), ...(theme && { theme }) } : null;
+  const { themeFamily, theme, accent } = document.documentElement.dataset;
+  return themeFamily || theme || accent
+    ? { ...(themeFamily && { family: themeFamily }), ...(theme && { theme }), ...(accent && { accent }) }
+    : null;
 }
 
-function radios(dialog: HTMLDialogElement): HTMLInputElement[] {
-  return [...dialog.querySelectorAll<HTMLInputElement>('input[name="theme"]')];
+function radios(dialog: HTMLDialogElement, name = 'theme'): HTMLInputElement[] {
+  return [...dialog.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`)];
+}
+
+function checkedValue(dialog: HTMLDialogElement, name: string): string {
+  return radios(dialog, name).find((radio) => radio.checked)?.value ?? '';
+}
+
+/** The theme and accent the picker shows: a family or a theme, plus the accent when one is chosen. */
+function pickerChoice(dialog: HTMLDialogElement): SavedTheme | null {
+  const theme = choiceToSaved(checkedValue(dialog, 'theme'));
+  const accent = checkedValue(dialog, 'accent');
+  const defaultAccent = dialog.querySelector<HTMLElement>('.theme-picker__accents')?.dataset['default'];
+  return theme && accent && accent !== defaultAccent ? { ...theme, accent } : theme;
+}
+
+/** The theme in effect: a chosen theme, or the variant the system picks for the chosen or default family. */
+function effectiveTheme(dialog: HTMLDialogElement): { id: string; radio: HTMLInputElement | undefined } {
+  const wanted = savedToChoice(currentChoice(), dialog.dataset['defaultFamily'] ?? '');
+  const radio = radios(dialog).find((candidate) => candidate.value === wanted);
+  if (radio?.value.startsWith('theme:')) {
+    return { id: radio.value.slice('theme:'.length), radio };
+  }
+  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const id = (dark ? radio?.dataset['dark'] : radio?.dataset['light']) ?? '';
+  return { id, radio: radios(dialog).find((candidate) => candidate.value === `theme:${id}`) };
+}
+
+/** Colors each accent swatch as it looks on the theme in effect. */
+function paintSwatches(dialog: HTMLDialogElement): void {
+  const { id } = effectiveTheme(dialog);
+  for (const radio of radios(dialog, 'accent')) {
+    const colors = JSON.parse(radio.dataset['colors'] ?? '{}') as Record<string, string>;
+    const swatch = radio.parentElement?.querySelector<HTMLElement>('.accent__swatch');
+    swatch?.style.setProperty('background-color', colors[id] ?? 'transparent');
+  }
 }
 
 /** The theme in effect when the picker opened, which closing without applying brings back. */
@@ -24,15 +60,15 @@ function wire(dialog: HTMLDialogElement): void {
   wired = true;
   dialog.addEventListener('change', (event) => {
     if (event.target instanceof HTMLInputElement) {
-      applyThemeChoice(document.documentElement, choiceToSaved(event.target.value));
+      applyThemeChoice(document.documentElement, pickerChoice(dialog));
+      paintSwatches(dialog);
     }
   });
   dialog.addEventListener('close', () => {
-    queueMicrotask(renderThemeStatus);
     const applied = dialog.returnValue === 'apply';
-    const chosen = radios(dialog).find((radio) => radio.checked);
-    const keep = applied ? choiceToSaved(chosen?.value ?? '') : before;
+    const keep = applied ? pickerChoice(dialog) : before;
     applyThemeChoice(document.documentElement, keep);
+    queueMicrotask(renderThemeStatus);
     const saved = browserStorage('localStorage');
     if (applied && saved) {
       try {
@@ -44,7 +80,20 @@ function wire(dialog: HTMLDialogElement): void {
   });
 }
 
-/** Previews each theme as the choice moves, and keeps one only when it is applied. */
+function checkOpening(dialog: HTMLDialogElement): HTMLInputElement | undefined {
+  const wanted = savedToChoice(before, dialog.dataset['defaultFamily'] ?? '');
+  const selected = radios(dialog).find((radio) => radio.value === wanted);
+  for (const radio of radios(dialog)) {
+    radio.checked = radio === selected;
+  }
+  const accent = before?.accent ?? dialog.querySelector<HTMLElement>('.theme-picker__accents')?.dataset['default'];
+  for (const radio of radios(dialog, 'accent')) {
+    radio.checked = radio.value === accent;
+  }
+  return selected;
+}
+
+/** Previews each theme and accent as the choice moves, and keeps them only when they are applied. */
 export function openThemePicker(): void {
   const dialog = document.querySelector<HTMLDialogElement>('.theme-picker');
   if (!dialog) {
@@ -53,27 +102,22 @@ export function openThemePicker(): void {
   wire(dialog);
   before = currentChoice();
   dialog.returnValue = '';
-  const wanted = savedToChoice(before, dialog.dataset['defaultFamily'] ?? '');
-  const selected = radios(dialog).find((radio) => radio.value === wanted);
-  for (const radio of radios(dialog)) {
-    radio.checked = radio === selected;
-  }
+  const selected = checkOpening(dialog);
+  paintSwatches(dialog);
   dialog.showModal();
   selected?.focus();
 }
 
-/** The name of the theme in effect; a family that follows the system names the variant the system picked. */
+/** The name of the theme in effect, with the accent for a family that has accents. */
 function themeName(dialog: HTMLDialogElement): string {
-  const wanted = savedToChoice(currentChoice(), dialog.dataset['defaultFamily'] ?? '');
-  const radio = radios(dialog).find((candidate) => candidate.value === wanted);
-  const family = radio?.closest('fieldset');
-  if (!(radio && family)) {
-    return '';
+  const { id, radio } = effectiveTheme(dialog);
+  const name = radio?.parentElement?.textContent?.trim() ?? '';
+  const accents = dialog.querySelector<HTMLElement>('.theme-picker__accents');
+  const family = accents?.dataset['family'];
+  if (!(name && family && id.startsWith(`${family}-`))) {
+    return name;
   }
-  const variants = [...family.querySelectorAll<HTMLInputElement>('input[value^="theme:"]')];
-  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
-  const shown = radio.value.startsWith('theme:') ? radio : variants[dark ? 1 : 0];
-  return shown?.parentElement?.textContent?.trim() ?? '';
+  return `${name} · ${currentChoice()?.accent ?? accents?.dataset['default']}`;
 }
 
 /** Writes the theme in effect into the status line. */

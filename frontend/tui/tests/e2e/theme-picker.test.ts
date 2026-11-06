@@ -28,23 +28,30 @@ const state = async () => {
 Deno.test('t opens the theme picker with every family and previews while moving', async (t) => {
   await using session = await Session.start();
 
-  await t.step('it lists every family with a follow-the-system choice and its light and dark themes', async () => {
-    const page = await session.open(HOME_EN, { viewport: WIDE });
-    const options = await page.evaluate(() =>
-      [...document.querySelectorAll<HTMLInputElement>('.theme-picker input')].map((input) => input.value),
-    );
-    assertEquals(options, [
-      'family:catppuccin',
-      'theme:catppuccin-latte',
-      'theme:catppuccin-mocha',
-      'family:gruvbox',
-      'theme:gruvbox-light',
-      'theme:gruvbox-dark',
-      'family:one',
-      'theme:one-light',
-      'theme:one-dark',
-    ]);
-  });
+  await t.step(
+    'it lists every family with a follow-the-system choice and its light and dark themes, then the accents',
+    async () => {
+      const page = await session.open(HOME_EN, { viewport: WIDE });
+      const options = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLInputElement>('.theme-picker input[name="theme"]')].map(
+          (input) => input.value,
+        ),
+      );
+      assertEquals(options, [
+        'family:catppuccin',
+        'theme:catppuccin-latte',
+        'theme:catppuccin-frappe',
+        'theme:catppuccin-macchiato',
+        'theme:catppuccin-mocha',
+        'family:gruvbox',
+        'theme:gruvbox-light',
+        'theme:gruvbox-dark',
+        'family:one',
+        'theme:one-light',
+        'theme:one-dark',
+      ]);
+    },
+  );
 
   await t.step('it opens on the theme in effect, here the default family', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
@@ -62,11 +69,9 @@ Deno.test('t opens the theme picker with every family and previews while moving'
     const page = await session.open(HOME_EN, { viewport: WIDE, colorScheme: 'dark' });
     const initial = await page.evaluate(state);
     await page.keyboard.press('t');
-    await page.keyboard.press('ArrowDown');
-    await page.keyboard.press('ArrowDown');
-    await page.keyboard.press('ArrowDown');
-    await page.keyboard.press('ArrowDown');
-    await page.keyboard.press('ArrowDown');
+    for (let step = 0; step < 7; step++) {
+      await page.keyboard.press('ArrowDown');
+    }
     const previewed = await page.evaluate(state);
     assertEquals([previewed.theme, previewed.saved], ['gruvbox-dark', null]);
     assertEquals(previewed.background !== initial.background, true);
@@ -89,7 +94,7 @@ Deno.test('the picker keeps only what is applied', async (t) => {
   await t.step('applying saves the theme, which survives a reload before the first paint', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await page.keyboard.press('t');
-    for (let step = 0; step < 5; step++) {
+    for (let step = 0; step < 7; step++) {
       await page.keyboard.press('ArrowDown');
     }
     await page.keyboard.press('Enter');
@@ -123,6 +128,46 @@ Deno.test('the open picker is accessible in every theme', async (t) => {
         await page.keyboard.press('t');
         assertEquals(await findAccessibilityViolations(page), []);
       }
+    }
+  });
+});
+
+Deno.test('Catppuccin has every flavor and fourteen accents, and the accent is kept like the theme', async (t) => {
+  await using session = await Session.start();
+  const accentState = () => ({
+    accent: document.documentElement.dataset['accent'] ?? null,
+    color: getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim(),
+    saved: localStorage.getItem('theme'),
+    status: document.querySelector('[data-status-theme]')?.textContent ?? null,
+  });
+
+  await t.step('the default accent is mauve, named in the status line', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE, colorScheme: 'dark' });
+    const initial = await page.evaluate(accentState);
+    assertEquals([initial.accent, initial.color, initial.status], [null, '#cba6f7', 'Catppuccin Mocha · mauve']);
+    assertEquals(await page.evaluate(() => document.querySelectorAll('.theme-picker input[name="accent"]').length), 14);
+  });
+
+  await t.step('choosing an accent previews it, and applying saves it with the theme', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE, colorScheme: 'dark' });
+    await page.keyboard.press('t');
+    await page.locator('.theme-picker input[value="peach"]').click();
+    assertEquals((await page.evaluate(accentState)).color, '#fab387');
+    await page.locator('.theme-picker button[value="apply"]').click();
+    await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 50)));
+    await page.reload();
+    const kept = await page.evaluate(accentState);
+    assertEquals(
+      [kept.accent, kept.color, kept.saved, kept.status],
+      ['peach', '#fab387', '{"family":"catppuccin","accent":"peach"}', 'Catppuccin Mocha · peach'],
+    );
+    await page.evaluate(() => localStorage.clear());
+  });
+
+  await t.step('every flavor stays accessible with the faintest accent', async () => {
+    for (const theme of ['catppuccin-latte', 'catppuccin-frappe', 'catppuccin-macchiato', 'catppuccin-mocha']) {
+      const page = await openSaved(session, POST_EN, JSON.stringify({ theme, accent: 'yellow' }));
+      assertEquals(await findAccessibilityViolations(page), []);
     }
   });
 });

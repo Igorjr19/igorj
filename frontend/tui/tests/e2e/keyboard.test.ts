@@ -234,8 +234,8 @@ Deno.test('the status line names the theme in effect, and lists say no more than
 
   await t.step('the theme of the system scheme, by name', async () => {
     for (const [colorScheme, name] of [
-      ['light', 'Catppuccin Latte'],
-      ['dark', 'Catppuccin Mocha'],
+      ['light', 'Catppuccin Latte · mauve'],
+      ['dark', 'Catppuccin Mocha · mauve'],
     ] as const) {
       const page = await session.open(HOME_EN, { viewport: WIDE, colorScheme });
       assertEquals(await page.evaluate(() => document.querySelector('[data-status-theme]')?.textContent), name);

@@ -1,0 +1,16 @@
+# The accents a visitor can choose for the Catppuccin themes, from the official palette
+# pinned by commit (v1.8.0). The build darkens or lightens an accent only as much as each
+# contrast check needs: 3:1 for borders, 4.5:1 where it colors text.
+family = "catppuccin"
+default = "mauve"
+
+[palette]
+url = "https://raw.githubusercontent.com/catppuccin/palette/07d02aa110ef9eb7e7427afca5c73ba9cf7f8ebd/palette.json"
+sha256 = "4bc114bb6b3c9a9c9e156564aa84625aef32c5da514d9dd431cf1fcad433a05f"
+
+# Theme id = flavor name in the palette.
+[flavors]
+catppuccin-latte = "latte"
+catppuccin-frappe = "frappe"
+catppuccin-macchiato = "macchiato"
+catppuccin-mocha = "mocha"

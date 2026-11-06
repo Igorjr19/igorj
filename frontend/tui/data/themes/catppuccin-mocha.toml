@@ -1,6 +1,8 @@
 name = "Catppuccin Mocha"
 family = "catppuccin"
 variant = "dark"
+# The dark theme a visitor gets when the family follows the system.
+system = true
 
 [credit]
 author = "Catppuccin"
