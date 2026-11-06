@@ -23,7 +23,7 @@ const POST = {
 const PROJECT = {
   title: 'A project',
   summary: 'One sentence.',
-  stack: ['go'],
+  tags: ['go'],
 };
 
 const ABOUT = {
@@ -152,4 +152,15 @@ Deno.test('every category has a slug and a name per language, so the interface n
   assertEquals(issuesFor('categories/categories.yaml', categories), null);
   assertRejected('categories/categories.yaml', { categories: [{ slug: 'Notas', name: { pt: 'Notas' } }] }, 'slug');
   assertRejected('categories/categories.yaml', { categories: [{ slug: 'notes', name: { pt: '' } }] }, 'name');
+});
+
+Deno.test('a project names its tags as tags; the former stack key is rejected, so a leftover is caught', () => {
+  assertEquals(issuesFor('projects/a/index.en.md', PROJECT), null);
+  assertRejected('projects/a/index.en.md', { ...PROJECT, stack: ['go'] }, 'stack');
+});
+
+Deno.test('the tags file names a tag in each language', () => {
+  const tags = { tags: [{ slug: 'machine-learning', name: { pt: 'aprendizado de máquina', en: 'machine learning' } }] };
+  assertEquals(issuesFor('tags/tags.yaml', tags), null);
+  assertRejected('tags/tags.yaml', { tags: [{ slug: 'Machine Learning', name: { en: 'x' } }] }, 'slug');
 });
