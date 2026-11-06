@@ -16,4 +16,7 @@
     <p class="hero__location">{{ .location }}</p>
   </div>
 </section>
+{{- with resources.Get "ts/name/lens.ts" | js.Build (dict "minify" true) | fingerprint }}
+<template data-lazy="lens" data-script="{{ .RelPermalink }}" data-integrity="{{ .Data.Integrity }}"></template>
+{{- end }}
 {{- end }}

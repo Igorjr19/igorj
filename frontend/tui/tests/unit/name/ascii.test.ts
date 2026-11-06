@@ -1,5 +1,5 @@
 import { assert, assertEquals } from '@std/assert';
-import { coverage, nameLines, RAMP, render } from '../../../assets/ts/name/ascii.ts';
+import { coverage, lensed, lensRadius, nameLines, RAMP, render, scrambled } from '../../../assets/ts/name/ascii.ts';
 
 Deno.test('coverage averages the alpha of each cell, so a cell half covered by the name reads 0.5', () => {
   // A 2x1 grid of 2x2 cells: the first is fully drawn, the second only in its top row.
@@ -27,4 +27,29 @@ Deno.test('render leaves the space around the name blank, so nothing moves or sp
 Deno.test('nameLines puts a long name on two lines and leaves a short one alone', () => {
   assertEquals(nameLines('Ígor José Rodrigues'), ['Ígor José', 'Rodrigues']);
   assertEquals(nameLines('Fixture Author'), ['Fixture Author']);
+});
+
+const GRID = { cols: 30, rows: 3, cells: new Float32Array(90).fill(0.3), aspect: 2 };
+
+Deno.test('lensed makes the cells under the pointer denser and leaves the far ones alone', () => {
+  const cells = lensed(GRID, { col: 2, row: 1 });
+  const at = (col: number, row: number) => cells[row * GRID.cols + col] ?? 0;
+  assert(at(2, 1) > at(5, 1), 'denser at the pointer than beside it');
+  assert(at(5, 1) > (GRID.cells[0] ?? 0), 'still denser within the lens');
+  assertEquals(at(2 + lensRadius(GRID), 1), GRID.cells[0]);
+  assertEquals(at(29, 1), GRID.cells[0]);
+});
+
+Deno.test('lensed keeps blank cells blank, so the space around the name stays clear', () => {
+  const blank = { ...GRID, cells: new Float32Array(90) };
+  assertEquals([...lensed(blank, { col: 2, row: 1 })], [...blank.cells]);
+});
+
+Deno.test('scrambled only touches characters near the pointer, and never the spaces', () => {
+  const text = ['#'.repeat(30), '#  '.repeat(10), '#'.repeat(30)].join('\n');
+  const always = () => 0;
+  const lines = scrambled(text, GRID, { col: 2, row: 1 }, always).split('\n');
+  assertEquals(lines[1]?.[0], RAMP[4]);
+  assertEquals(lines[1]?.slice(1, 3), '  ');
+  assertEquals(lines[0]?.slice(20), '#'.repeat(10));
 });
