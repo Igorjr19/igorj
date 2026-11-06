@@ -78,8 +78,8 @@ Deno.test('the terminal opens with : and answers from the content of the page la
 
   await t.step('an unknown command says so', async () => {
     const page = await openTerminal(session);
-    await type(page, 'rm -rf');
-    assert((await page.evaluate(read)).log.includes('rm: command not found. Type help.'));
+    await type(page, 'frobnicate');
+    assert((await page.evaluate(read)).log.includes('frobnicate: command not found. Type help.'));
   });
 });
 
@@ -122,5 +122,47 @@ Deno.test('the terminal acts on the window and steps aside', async (t) => {
     const page = await openTerminal(session);
     await type(page, 'help');
     assertEquals(await findAccessibilityViolations(page), []);
+  });
+});
+
+Deno.test('the terminal is a panel at the foot of the content, as tall as the visitor leaves it', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('it opens under the pane, inside the content column, with the side column still there', async () => {
+    const page = await openTerminal(session);
+    const boxes = await page.evaluate(() => {
+      const edge = (selector: string) => {
+        const { top, bottom, left } = (document.querySelector(selector) as HTMLElement).getBoundingClientRect();
+        return { top, bottom, left };
+      };
+      return { pane: edge('.pane'), drawer: edge('.drawer'), side: edge('.side') };
+    });
+    assert(boxes.drawer.top >= boxes.pane.bottom - 1, 'the panel starts where the pane ends');
+    assert(boxes.drawer.left > boxes.side.left, 'the panel sits in the content column');
+  });
+
+  await t.step('the prompt follows the last line of output instead of staying at the bottom', async () => {
+    const page = await openTerminal(session);
+    const gap = await page.evaluate(() => {
+      const lines = document.querySelectorAll('.term__line');
+      const last = lines[lines.length - 1]?.getBoundingClientRect().bottom ?? 0;
+      const form = document.querySelector('.term__form')?.getBoundingClientRect().top ?? 0;
+      return form - last;
+    });
+    assert(gap >= 0 && gap < 4, `${gap}px between the output and the prompt`);
+  });
+
+  await t.step('the arrows on its top edge change the height, which is kept', async () => {
+    const page = await openTerminal(session);
+    const height = () => document.querySelector('.drawer')?.getBoundingClientRect().height ?? 0;
+    const before = await page.evaluate(height);
+    await page.evaluate(() => document.querySelector<HTMLElement>('.drawer__handle')?.focus());
+    await page.keyboard.press('ArrowUp');
+    await page.keyboard.press('ArrowUp');
+    await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 300)));
+    const after = await page.evaluate(height);
+    assert(after > before, `${before}px became ${after}px`);
+    assertEquals(await page.evaluate(() => localStorage.getItem('terminal-height')), '0.55');
+    await page.evaluate(() => localStorage.clear());
   });
 });

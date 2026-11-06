@@ -293,6 +293,37 @@ function manual(data: TerminalData, topic: string): Result {
   };
 }
 
+/** A cow saying the text, drawn by the script like the tree. */
+export function cowsay(text: string): Line[] {
+  const said = text.trim() || 'moo';
+  const rule = '-'.repeat(said.length + 2);
+  return [
+    ` ${'_'.repeat(said.length + 2)}`,
+    `< ${said} >`,
+    ` ${rule}`,
+    '        \\   ^__^',
+    '         \\  (oo)\\_______',
+    '            (__)\\       )\\/\\',
+    '                ||----w |',
+    '                ||     ||',
+  ].map(plain);
+}
+
+/** Commands that help does not list and tab does not complete, left for the curious. */
+function secret(command: string, argument: string, data: TerminalData): Result | null {
+  const s = data.strings;
+  if (command === 'sudo') {
+    return error(format(s['termSudo'], 'igor'));
+  }
+  if (command === 'rm') {
+    return { lines: [[['ok', s['termRm'] ?? '']]] };
+  }
+  if (command === 'cowsay') {
+    return { lines: cowsay(argument) };
+  }
+  return null;
+}
+
 export interface Context {
   readonly data: TerminalData;
   readonly cwd: string;
@@ -304,6 +335,10 @@ export interface Context {
 export function run(input: string, { data, cwd, history, themeName }: Context): Result {
   const [command = '', ...args] = input.trim().split(/\s+/);
   const arg = args.join(' ');
+  const hidden = secret(command, arg, data);
+  if (hidden) {
+    return hidden;
+  }
   switch (command) {
     case '':
       return { lines: [] };
