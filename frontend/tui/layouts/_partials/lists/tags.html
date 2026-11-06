@@ -1,0 +1,8 @@
+{{- /* Every tag of the language, most used first, each with how many items carry it. */ -}}
+<p class="tag-cloud">
+  {{- range (partial "model.html" .).tags }}
+  {{- with site.GetPage (printf "/tags/%s" .slug) }}
+  <a class="chip" href="{{ .RelPermalink }}">{{ partial "tag-label.html" . }} <span class="panel__meta">{{ len .Pages }}</span></a>
+  {{- end }}
+  {{- end }}
+</p>

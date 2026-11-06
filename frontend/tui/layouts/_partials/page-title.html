@@ -4,6 +4,6 @@
   {{- return i18n (index $keys .Section) }}
 {{- end }}
 {{- if eq .Kind "term" }}
-  {{- return partial "category-label.html" . }}
+  {{- return partial "term-label.html" . }}
 {{- end }}
 {{- return .Title }}

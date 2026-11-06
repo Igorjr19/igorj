@@ -5,12 +5,7 @@
 <div class="items" data-items>
   <ul class="items__list">
     {{- range $posts }}
-    {{- $item := . }}
-    {{- with partial "item-page.html" (dict "section" "posts" "item" .) }}
-    {{- $meta := printf "%s · %s" $item.category.name $item.date }}
-    {{- if ne .Language.Lang site.Language.Lang }}{{ $meta = printf "%s · %s" $meta .Language.Label }}{{ end }}
-    {{ partial "item-row.html" (dict "page" . "item" $item "kind" $item.category.name "meta" $meta "summary" $item.summary "color" (printf "var(--color-category-%s)" $item.category.slug)) }}
-    {{- end }}
+    {{ partial "item-entry.html" (dict "section" "posts" "item" .) }}
     {{- end }}
   </ul>
 </div>

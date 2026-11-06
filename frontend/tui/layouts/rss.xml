@@ -1,8 +1,8 @@
-{{- /* Feeds carry posts only: the home feed has every post, a category feed only its own. */ -}}
+{{- /* The home feed has every post, a category feed its own posts, a tag feed everything with the tag. */ -}}
 {{- $posts := cond .IsHome (where site.RegularPages "Section" "posts") .Pages }}
 {{- $posts = $posts.ByDate.Reverse }}
 {{- $title := (partial "author.html" .) }}
-{{- if eq .Kind "term" }}{{ $title = printf "%s — %s" (partial "author.html" .) (partial "category-label.html" .) }}{{ end }}
+{{- if eq .Kind "term" }}{{ $title = printf "%s — %s" (partial "author.html" .) (partial "term-label.html" .) }}{{ end }}
 {{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>

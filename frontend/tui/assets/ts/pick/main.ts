@@ -14,6 +14,7 @@ import {
   parseQuery,
   placeEntries,
   rank,
+  tagEntries,
   themeEntries,
 } from './entries.ts';
 
@@ -89,7 +90,10 @@ class Pick {
   }
 
   openFilter(): void {
-    const entries = categoryEntries(this.index, location.pathname, true);
+    const entries = [
+      ...categoryEntries(this.index, location.pathname, true),
+      ...tagEntries(this.index, location.pathname),
+    ];
     const current = Math.max(
       0,
       entries.findIndex((entry) => entry.current),

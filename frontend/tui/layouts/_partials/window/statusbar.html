@@ -3,7 +3,7 @@
 {{- $current := partial "window/current-pane.html" . }}
 {{- $isList := and (not .IsPage) (in (slice "projects" "posts" "research") $current) }}
 {{- $parent := .Parent }}
-{{- if eq .Kind "term" }}{{ with site.GetPage "/posts" }}{{ $parent = . }}{{ end }}{{ end }}
+{{- if and (eq .Kind "term") (ne .Data.Plural "tags") }}{{ with site.GetPage "/posts" }}{{ $parent = . }}{{ end }}{{ end }}
 <footer class="statusbar">
   <span class="statusbar__mode">{{ if .IsPage }}{{ i18n "modeReading" }}{{ else }}{{ i18n "modeNormal" }}{{ end }}</span>
   <span class="statusbar__keys" data-script-only hidden>

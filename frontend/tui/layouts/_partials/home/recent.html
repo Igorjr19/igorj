@@ -26,7 +26,7 @@
       <a class="recent__row" href="{{ .RelPermalink }}">
         <span class="recent__kind">{{ i18n "kindProject" }}</span>
         <span class="recent__title">{{ $item.title }}</span>
-        <span class="recent__sub">{{ delimit $item.stack " · " }}</span>
+        <span class="recent__sub">{{ delimit (apply $item.tags "index" "." "name") " · " }}</span>
       </a>
     </li>
     {{- end }}

@@ -6,9 +6,8 @@
 </p>
 {{- else if eq .Section "projects" }}
 {{- $item := partial "model-item.html" . }}
+{{- if or $item.links.repository $item.links.demo }}
 <dl class="facts">
-  <dt>{{ i18n "factStack" }}</dt>
-  <dd>{{ delimit $item.stack " · " }}</dd>
   {{- with $item.links.repository }}
   <dt>{{ i18n "factRepository" }}</dt>
   <dd><a href="{{ . }}">{{ . }}</a></dd>
@@ -18,6 +17,7 @@
   <dd><a href="{{ . }}">{{ . }}</a></dd>
   {{- end }}
 </dl>
+{{- end }}
 {{- else if eq .Section "research" }}
 {{- $item := partial "model-item.html" . }}
 <dl class="facts">
@@ -39,6 +39,12 @@
   {{- end }}{{ end }}
 </dl>
 {{- end }}
+{{- with partial "model-item.html" . }}{{ with .tags }}
+<div class="zoom__tags">
+  <span class="label">{{ i18n "factTags" }}</span>
+  {{ partial "tags.html" . }}
+</div>
+{{- end }}{{ end }}
 {{ .Content }}
 {{- if eq .Section "posts" }}
 <nav class="pager" aria-label="{{ i18n "pagerLabel" }}">

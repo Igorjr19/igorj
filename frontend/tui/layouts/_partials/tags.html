@@ -1,0 +1,9 @@
+{{- /* The tags of an item as chips, each leading to the page of the tag. Expects the model's tags. */ -}}
+{{- with . }}
+<p class="item__chips">
+  {{- range . }}
+  {{- $page := site.GetPage (printf "/tags/%s" .slug) }}
+  {{- if $page }}<a class="chip" href="{{ $page.RelPermalink }}">{{ .name }}</a>{{ else }}<span class="chip">{{ .name }}</span>{{ end }}
+  {{- end }}
+</p>
+{{- end }}

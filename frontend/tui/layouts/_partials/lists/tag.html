@@ -1,0 +1,16 @@
+{{- /* A tag lists everything that carries it in the page language: posts, projects and research, each as its section shows it. */ -}}
+{{ partial "lists/bar.html" (dict "page" .) }}
+{{- $model := partial "model.html" . }}
+{{- $slug := .Data.Term }}
+<div class="items" data-items>
+  <ul class="items__list">
+    {{- range $section := slice "posts" "projects" "research" }}
+    {{- range index $model $section }}
+    {{- $item := . }}
+    {{- if and (eq $item.language site.Language.Lang) (in (apply $item.tags "index" "." "slug") $slug) }}
+    {{ partial "item-entry.html" (dict "section" $section "item" $item) }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+  </ul>
+</div>

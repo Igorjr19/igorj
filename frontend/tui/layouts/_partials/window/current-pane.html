@@ -1,4 +1,5 @@
 {{- /* The key of the pane a page belongs to; categories belong to the posts, credits and errors to none. */ -}}
 {{- if .IsHome }}{{ return "home" }}{{ end }}
+{{- if and (eq .Kind "taxonomy" "term") (eq .Data.Plural "tags") }}{{ return "" }}{{ end }}
 {{- if eq .Kind "taxonomy" "term" }}{{ return "posts" }}{{ end }}
 {{- return .Section }}

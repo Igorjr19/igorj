@@ -20,7 +20,7 @@
   {{- if and (eq .Kind "section") (eq .Section "posts") }}{{ $count = len (partial "model.html" .).posts }}{{ end }}
   <span>{{ i18n "items" $count }}</span>
   {{- if eq .Kind "term" }}
-  <span>{{ partial "category-label.html" . }}</span>
+  <span>{{ partial "term-label.html" . }}</span>
   {{- end }}
   {{- end }}
 </p>

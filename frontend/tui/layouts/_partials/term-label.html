@@ -1,0 +1,3 @@
+{{- /* The name of a category or tag page. */ -}}
+{{- if eq .Data.Plural "tags" }}{{ return partial "tag-label.html" . }}{{ end }}
+{{- return partial "category-label.html" . }}

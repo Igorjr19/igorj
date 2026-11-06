@@ -76,7 +76,7 @@ Deno.test('the post list shows every published post, newest first, with a catego
 Deno.test('projects show their facts in the list and on their own page', async (t) => {
   await using session = await Session.start();
 
-  await t.step('the list shows stack and summary, ordered by weight before title', async () => {
+  await t.step('the list shows tags and summary, ordered by weight before title', async () => {
     const page = await session.open(PROJECTS_EN, { viewport: WIDE, javascript: false });
     assertEquals(
       await page.evaluate(() => [
@@ -91,19 +91,22 @@ Deno.test('projects show their facts in the list and on their own page', async (
       ]),
       [
         'Projects',
-        'Second fixture project | go | A project the weight puts first, although its title sorts after the other.',
+        'Second fixture project | Go | A project the weight puts first, although its title sorts after the other.',
         'Fixture project | hugo · deno | A project used by the end-to-end tests.',
       ],
     );
   });
 
-  await t.step('the project page lists the stack, with no period or status', async () => {
+  await t.step('the project page lists its tags, each leading to the tag, with no period or status', async () => {
     const page = await session.open(PROJECT_EN, { viewport: WIDE, javascript: false });
     assertEquals(
-      await page.evaluate(() =>
-        [...document.querySelectorAll('.zoom__body .facts > *')].map((cell) => cell.textContent?.trim()),
-      ),
-      ['Stack', 'hugo · deno'],
+      await page.evaluate(() => ({
+        facts: document.querySelectorAll('.zoom__body .facts > *').length,
+        tags: [...document.querySelectorAll('.zoom__tags .chip')].map(
+          (chip) => `${chip.textContent} ${chip.getAttribute('href')}`,
+        ),
+      })),
+      { facts: 0, tags: ['hugo /en/tags/hugo/', 'deno /en/tags/deno/'] },
     );
   });
 });
@@ -157,5 +160,29 @@ Deno.test('the view switch says which view is on and changes it with a click', a
       ],
     );
     await page.evaluate(() => localStorage.clear());
+  });
+});
+
+Deno.test('a tag gathers everything that carries it, under its name in the language', async (t) => {
+  await using session = await Session.start();
+
+  const read = () => ({
+    heading: document.querySelector('h1')?.textContent,
+    titles: [...document.querySelectorAll('.zoom__body .item__title')].map((title) => title.textContent?.trim()),
+    feed: document.querySelector('.items__feed')?.getAttribute('href'),
+  });
+
+  await t.step('in English: the post and the research item, with the feed of the tag', async () => {
+    const page = await session.open('/en/tags/machine-learning/', { viewport: WIDE, javascript: false });
+    assertEquals(await page.evaluate(read), {
+      heading: 'machine learning',
+      titles: ['Fixture post', 'Fixture research'],
+      feed: '/en/tags/machine-learning/index.xml',
+    });
+  });
+
+  await t.step('in Portuguese the tags file gives it its translated name', async () => {
+    const page = await session.open('/pt/tags/machine-learning/', { viewport: WIDE, javascript: false });
+    assertEquals((await page.evaluate(read)).heading, 'aprendizado de máquina');
   });
 });

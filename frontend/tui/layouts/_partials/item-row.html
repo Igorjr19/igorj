@@ -1,6 +1,6 @@
 {{- /* One item of a list: a link with title and facts, then the details. Without JavaScript, and in the grid view, the
    items are cards with their picture first; in the list view, rows with the summary under the title.
-   Expects page, item, meta, kind and color; summary and chips are optional. */ -}}
+   Expects page, item, meta, kind and color; summary and tags are optional. */ -}}
 {{- $foreign := ne .page.Language.Lang site.Language.Lang }}
 {{- $image := "" }}
 {{- with .item.media }}{{ with index . 0 }}{{ with resources.Get (printf "media/%s" .) }}{{ $image = . }}{{ end }}{{ end }}{{ end }}
@@ -16,6 +16,6 @@
     <span class="item__image item__image--none" aria-hidden="true"><span>{{ .kind }}</span></span>
     {{- end }}
     {{- with .summary }}<p class="item__summary">{{ . }}</p>{{ end }}
-    {{- with .chips }}<p class="item__chips">{{ range . }}<span class="chip">{{ . }}</span>{{ end }}</p>{{ end }}
+    {{- partial "tags.html" .tags }}
   </div>
 </li>

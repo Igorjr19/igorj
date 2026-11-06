@@ -1,6 +1,6 @@
 import { assertEquals } from '@std/assert';
 import type { ContentItem, RawContent } from '../../../tools/content/types.ts';
-import { buildModel, cvFor, postsFor, projectsFor, researchFor } from '../../../tools/model/build.ts';
+import { buildModel, cvFor, postsFor, projectsFor, researchFor, tagFor, tagSlug } from '../../../tools/model/build.ts';
 
 function item<T>(folder: string, language: string, data: T, media: string[] = []): ContentItem<T> {
   return { path: `items/${folder}/index.${language}.md`, folder, language, data, body: `Body of ${folder}.`, media };
@@ -34,6 +34,7 @@ const cv = (label: string) => ({
 const RAW: RawContent = {
   site: { author: 'Author', languages: ['pt', 'en'] },
   categories: { categories: [{ slug: 'notes', name: { pt: 'Notas', en: 'Notes' } }] },
+  tags: { tags: [{ slug: 'machine-learning', name: { pt: 'aprendizado de máquina', en: 'machine learning' } }] },
   about: {
     en: {
       role: 'Developer',
@@ -64,7 +65,7 @@ const RAW: RawContent = {
   projects: [
     item('zeta', 'en', { title: 'Zeta', summary: 'Z.', stack: ['go'] }),
     item('alpha', 'en', { title: 'Alpha', summary: 'A.', stack: ['go'] }),
-    item('heavy', 'en', { title: 'Heavy', summary: 'H.', stack: ['go'], weight: 1, featured: true }),
+    item('heavy', 'en', { title: 'Heavy', summary: 'H.', tags: ['Go', 'machine learning'], weight: 1, featured: true }),
     item('portuguese', 'pt', { title: 'Português', summary: 'P.', stack: ['go'] }),
   ],
   research: [
@@ -157,4 +158,30 @@ Deno.test('buildModel leaves out what the language does not have instead of inve
   const model = buildModel(RAW, 'pt');
   assertEquals([model.profile, model.reading, model.films], [null, [], null]);
   assertEquals(model.categories, [{ slug: 'notes', name: 'Notas' }]);
+});
+
+Deno.test('a tag gets its address from the text, and the name the tags file gives it in the language', () => {
+  assertEquals(tagSlug('Aprendizado de Máquina'), 'aprendizado-de-maquina');
+  assertEquals(tagFor(RAW, 'machine learning', 'pt'), {
+    slug: 'machine-learning',
+    name: 'aprendizado de máquina',
+    names: ['machine learning', 'aprendizado de máquina'],
+  });
+  assertEquals(tagFor(RAW, 'Go', 'pt'), { slug: 'go', name: 'Go', names: ['Go'] });
+});
+
+Deno.test('projects read their tags, or their former stack until the content moves over', () => {
+  const projects = buildModel(RAW, 'en').projects;
+  const tags = (id: string) => projects.find((project) => project.id === id)?.tags.map((tag) => tag.name);
+  assertEquals([tags('heavy'), tags('alpha')], [['Go', 'machine learning'], ['go']]);
+});
+
+Deno.test('the model sums the tags of the language, most used first', () => {
+  assertEquals(
+    buildModel(RAW, 'en').tags.map((tag) => [tag.slug, tag.count]),
+    [
+      ['go', 3],
+      ['machine-learning', 1],
+    ],
+  );
 });

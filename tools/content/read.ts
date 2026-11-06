@@ -68,6 +68,7 @@ export function readContent(files: readonly ContentFile[], paths: readonly strin
   return {
     site: required(byPath, 'site/site.yaml'),
     categories: required(byPath, 'categories/categories.yaml'),
+    tags: single(byPath, 'tags/tags.yaml'),
     about: perLanguage.about as RawContent['about'],
     cv: perLanguage.cv as RawContent['cv'],
     contact: single(byPath, 'contact/contact.yaml'),

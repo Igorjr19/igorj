@@ -12,6 +12,13 @@ export interface PickIndex {
     readonly url: string;
     readonly count: number;
   }[];
+  readonly tags: readonly {
+    readonly slug: string;
+    readonly name: string;
+    readonly names: readonly string[];
+    readonly count: number;
+    readonly url: string;
+  }[];
   readonly postsUrl: string;
   readonly accents: readonly string[];
   readonly themeIndex: ThemeIndex;
@@ -66,6 +73,8 @@ export interface Entry {
   /** For themes: the colors to show beside the name. */
   readonly swatch?: readonly string[];
   readonly current?: boolean;
+  /** Other names that find the entry too, such as a tag's name in the other language. */
+  readonly keywords?: readonly string[];
 }
 
 export interface Ranked {
@@ -101,7 +110,22 @@ export function placeEntries(index: PickIndex): Entry[] {
       }),
     ),
   );
-  return [...panes, ...items, ...categoryEntries(index, '')];
+  return [...panes, ...items, ...categoryEntries(index, ''), ...tagEntries(index, '')];
+}
+
+/** Each tag with its count; it is found by its name in any language. */
+export function tagEntries(index: PickIndex, currentUrl: string): Entry[] {
+  return index.tags.map(
+    (tag): Entry => ({
+      id: `tag:${tag.slug}`,
+      label: tag.name,
+      kind: index.strings['pickKindTag'] ?? '',
+      hint: String(tag.count),
+      keywords: tag.names.filter((name) => name !== tag.name),
+      action: { type: 'go', url: tag.url },
+      current: currentUrl === tag.url,
+    }),
+  );
 }
 
 /** The filter's choices: all posts, then each category with its count; the one open is marked. */
@@ -191,11 +215,18 @@ export function themeEntries(index: ThemeIndex, followLabel: string, current: st
   });
 }
 
+/** A match on another name still counts, a little lower, and highlights nothing in the label shown. */
+function keywordMatch(query: string, keywords: readonly string[]): FuzzyMatch | null {
+  const scores = keywords.map((keyword) => fuzzyMatch(query, keyword)?.score ?? Number.NEGATIVE_INFINITY);
+  const best = Math.max(...scores);
+  return Number.isFinite(best) ? { score: best - 1, positions: [] } : null;
+}
+
 /** Entries that fit the query, best first; an empty query keeps the given order. */
 export function rank(entries: readonly Entry[], query: string, limit = 60): Ranked[] {
   const ranked: Ranked[] = [];
   for (const entry of entries) {
-    const match = fuzzyMatch(query, entry.label);
+    const match = fuzzyMatch(query, entry.label) ?? keywordMatch(query, entry.keywords ?? []);
     if (match) {
       ranked.push({ entry, match });
     }

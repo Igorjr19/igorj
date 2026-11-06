@@ -9,7 +9,7 @@
       "title" .title
       "content" (dict "mediaType" "text/markdown" "value" .body)
       "sitemap" (dict "priority" -1)
-      "params" (dict "id" .id "source" .source "summary" .summary)
+      "params" (dict "tags" (apply .tags "index" "." "slug") "id" .id "source" .source "summary" .summary)
     }}
     {{- if ne .slug .id }}{{ $page = merge $page (dict "slug" .slug) }}{{ end }}
     {{- $.AddPage $page }}

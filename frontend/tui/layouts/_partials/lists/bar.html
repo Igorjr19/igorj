@@ -1,5 +1,6 @@
 {{- /* The head of a list: the category filter of the blog on the left; the view and the feed on the right. Expects page. */ -}}
-{{- $blog := or (eq .page.Section "posts") (eq .page.Kind "term") }}
+{{- $tag := and (eq .page.Kind "term") (eq .page.Data.Plural "tags") }}
+{{- $blog := and (not $tag) (or (eq .page.Section "posts") (eq .page.Kind "term")) }}
 <div class="items__bar">
   {{- if $blog }}
 {{- with site.Taxonomies.categories.Alphabetical }}
@@ -14,7 +15,7 @@
 {{- end }}
   {{- end }}
   {{- if $blog }}
-  {{- $current := i18n "pickAll" }}{{ if eq .page.Kind "term" }}{{ $current = partial "category-label.html" .page }}{{ end }}
+  {{- $current := i18n "pickAll" }}{{ if eq .page.Kind "term" }}{{ $current = partial "term-label.html" .page }}{{ end }}
   <button type="button" class="items__filter" data-action="filter" data-script-only hidden>{{ partial "icon.html" "filter" }}{{ i18n "keyFilter" }}: <span class="items__filter-current">{{ $current | lower }}</span> <kbd>#</kbd></button>
   {{- end }}
   <div class="items__tools">
@@ -22,11 +23,11 @@
       <button type="button" data-view="list" aria-pressed="true">{{ partial "icon.html" "list" }}{{ i18n "viewList" }}</button>
       <button type="button" data-view="grid" aria-pressed="false">{{ partial "icon.html" "table-cells-large" }}{{ i18n "viewGrid" }}</button>
     </span>
-    {{- if $blog }}
+    {{- if or $blog $tag }}
     {{- $feed := site.Home.OutputFormats.Get "rss" }}
     {{- if eq .page.Kind "term" }}{{ $feed = .page.OutputFormats.Get "rss" }}{{ end }}
     {{- with $feed }}
-    <a class="items__feed" href="{{ .RelPermalink }}" title="RSS">{{ partial "icon.html" "rss" }}<span class="sr-only">{{ if eq $.page.Kind "term" }}{{ i18n "feedCategory" (partial "category-label.html" $.page) }}{{ else }}{{ i18n "feedAll" }}{{ end }}</span></a>
+    <a class="items__feed" href="{{ .RelPermalink }}" title="RSS">{{ partial "icon.html" "rss" }}<span class="sr-only">{{ if eq $.page.Kind "term" }}{{ i18n "feedCategory" (partial "term-label.html" $.page) }}{{ else }}{{ i18n "feedAll" }}{{ end }}</span></a>
     {{- end }}
     {{- end }}
   </div>

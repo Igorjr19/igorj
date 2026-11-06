@@ -9,7 +9,7 @@
 {{- with partial "item-page.html" (dict "section" $section "item" .) }}
 {{- $facts := "" }}
 {{- if eq $section "posts" }}{{ $facts = printf "%s · %s" $item.category.name $item.date }}
-{{- else if eq $section "projects" }}{{ $facts = delimit $item.stack ", " }}
+{{- else if eq $section "projects" }}{{ $facts = delimit (apply $item.tags "index" "." "name") ", " }}
 {{- else }}{{ $facts = printf "%s · %d · %s" (i18n (printf "research%s" (title $item.kind))) (int $item.year) $item.venue }}{{ end }}
 {{- $list = $list | append (dict "name" (printf "%s.md" $item.id) "title" $item.title "facts" $facts "summary" ($item.summary | default "") "url" .RelPermalink "text" .Plain) }}
 {{- end }}
@@ -24,8 +24,10 @@
 {{- with hugo.Data.generated.themes.accents }}{{ range .options }}{{ $accents = $accents | append .name }}{{ end }}{{ end }}
 {{- $categories := slice }}
 {{- with site.Taxonomies.categories }}{{ range .Alphabetical }}{{ $categories = $categories | append (dict "slug" .Page.Data.Term "name" (partial "category-label.html" .Page) "url" .Page.RelPermalink "count" .Count) }}{{ end }}{{ end }}
+{{- $tags := slice }}
+{{- range $tag := $model.tags }}{{ with site.GetPage (printf "/tags/%s" $tag.slug) }}{{ $tags = $tags | append (dict "slug" $tag.slug "name" $tag.name "names" $tag.names "count" $tag.count "url" .RelPermalink) }}{{ end }}{{ end }}
 {{- $strings := dict }}
-{{- range slice "termWelcome" "termNotFound" "termNotDir" "termNeedFile" "termUnknown" "termOpening" "termThemeSet" "termThemeUnknown" "termAccents" "termNoManual" "termHelpLs" "termHelpCd" "termHelpCat" "termHelpOpen" "termHelpTree" "termHelpFetch" "termHelpTheme" "termHelpMan" "termHelpRest" "termRole" "termLocation" "termContent" "termListening" "termWatched" "termThemeLabel" "termBuild" "termShell" "termShellValue" "termKeys" "termName" "termSynopsis" "termDescription" "termNow" "termSeeAlso" "termContact" "termPlays" "nowWork" "nowMasters" "nowStudying" "modeTerminal" "pickPalette" "pickFilter" "pickTheme" "pickPlaceholder" "pickCommands" "pickNothing" "pickKeysList" "pickKeysTheme" "pickAll" "pickKindPane" "pickKindPost" "pickKindProject" "pickKindResearch" "pickKindCategory" "pickKindCommand" "pickFollowSystem" "pickAccent" "cmdTheme" "cmdAccent" "cmdLanguage" "cmdSide" "cmdView" "cmdTerminal" "cmdHelp" "cmdShortcuts" "cmdCopyLink" "cmdFilter" "pickCopied" }}
+{{- range slice "termWelcome" "termNotFound" "termNotDir" "termNeedFile" "termUnknown" "termOpening" "termThemeSet" "termThemeUnknown" "termAccents" "termNoManual" "termHelpLs" "termHelpCd" "termHelpCat" "termHelpOpen" "termHelpTree" "termHelpFetch" "termHelpTheme" "termHelpMan" "termHelpRest" "termRole" "termLocation" "termContent" "termListening" "termWatched" "termThemeLabel" "termBuild" "termShell" "termShellValue" "termKeys" "termName" "termSynopsis" "termDescription" "termNow" "termSeeAlso" "termContact" "termPlays" "nowWork" "nowMasters" "nowStudying" "modeTerminal" "pickPalette" "pickFilter" "pickTheme" "pickPlaceholder" "pickCommands" "pickNothing" "pickKeysList" "pickKeysTheme" "pickAll" "pickKindPane" "pickKindPost" "pickKindProject" "pickKindResearch" "pickKindCategory" "pickKindTag" "pickKindCommand" "pickFollowSystem" "pickAccent" "cmdTheme" "cmdAccent" "cmdLanguage" "cmdSide" "cmdView" "cmdTerminal" "cmdHelp" "cmdShortcuts" "cmdCopyLink" "cmdFilter" "pickCopied" }}
 {{- $strings = merge $strings (dict . (i18n .)) }}
 {{- end }}
 {{- $strings = merge $strings (dict "contentSummary" (printf "%s · %s · %s" (i18n "countPosts" (len $model.posts)) (i18n "countProjects" (len $model.projects)) (i18n "countResearch" (len $model.research)))) }}
@@ -39,6 +41,7 @@
   "reading" ($model.reading | default slice)
   "panes" $panes
   "categories" $categories
+  "tags" $tags
   "postsUrl" (site.GetPage "/posts").RelPermalink
   "themeIndex" hugo.Data.generated.themes
   "themes" $themes

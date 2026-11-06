@@ -1,4 +1,8 @@
-{{- if or (eq .Section "posts") (eq .Kind "term") }}
+{{- if and (eq .Kind "term") (eq .Data.Plural "tags") }}
+{{ partial "lists/tag.html" . }}
+{{- else if and (eq .Kind "taxonomy") (eq .Data.Plural "tags") }}
+{{ partial "lists/tags.html" . }}
+{{- else if or (eq .Section "posts") (eq .Kind "term") }}
 {{ partial "lists/posts.html" . }}
 {{- else if eq .Section "projects" }}
 {{ partial "lists/projects.html" . }}

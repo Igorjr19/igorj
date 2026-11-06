@@ -21,6 +21,15 @@ const index: PickIndex = {
     projects: [{ title: 'Fixture project', facts: 'hugo', url: '/en/projects/fixture-project/' }],
   },
   categories: [{ slug: 'notes', name: 'Notes', url: '/en/categories/notes/', count: 2 }],
+  tags: [
+    {
+      slug: 'machine-learning',
+      name: 'machine learning',
+      names: ['machine learning', 'aprendizado de máquina'],
+      count: 1,
+      url: '/en/tags/machine-learning/',
+    },
+  ],
   postsUrl: '/en/posts/',
   accents: ['mauve', 'peach'],
   themeIndex: {
@@ -64,7 +73,7 @@ Deno.test('highlight splits the text into matched and plain runs', () => {
 Deno.test('the palette lists panes, items and categories, and ranks them by the query', () => {
   const labels = rank(placeEntries(index), 'fix pro').map((ranked) => ranked.entry.label);
   assertEquals(labels[0], 'Fixture project');
-  assertEquals(placeEntries(index).length, 5);
+  assertEquals(placeEntries(index).length, 6);
 });
 
 Deno.test('commands start with >, show only what fits the page, and complete the best one', () => {
@@ -96,4 +105,9 @@ Deno.test('the theme list offers each family following the system, then its them
       ['theme:c-night', true],
     ],
   );
+});
+
+Deno.test('a tag is found by its name in the other language too', () => {
+  const [best] = rank(placeEntries(index), 'aprendizado');
+  assertEquals(best?.entry.id, 'tag:machine-learning');
 });
