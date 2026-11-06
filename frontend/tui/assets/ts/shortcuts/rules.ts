@@ -17,6 +17,8 @@ export type ShortcutAction =
   | { readonly kind: 'zoom' }
   | { readonly kind: 'theme' }
   | { readonly kind: 'terminal' }
+  | { readonly kind: 'palette' }
+  | { readonly kind: 'filter' }
   | { readonly kind: 'help' };
 
 /** Single-key shortcuts must never fire while someone types or uses a browser or system combination. */
@@ -44,6 +46,8 @@ const KEY_ACTIONS: ReadonlyMap<string, ShortcutAction> = new Map([
   ['z', { kind: 'zoom' }],
   ['t', { kind: 'theme' }],
   [':', { kind: 'terminal' }],
+  ['f', { kind: 'palette' }],
+  ['#', { kind: 'filter' }],
   ['`', { kind: 'terminal' }],
   ['?', { kind: 'help' }],
 ]);

@@ -1,0 +1,12 @@
+{{- /* What the status line needs to name the theme in effect: each family's system themes, every theme's name and the accents. */ -}}
+{{- $out := dict }}
+{{- with hugo.Data.generated.themes }}
+{{- $system := dict }}{{ $names := dict }}
+{{- range .families }}
+{{- $system = merge $system (dict .name (slice .system.light .system.dark)) }}
+{{- range .themes }}{{ $names = merge $names (dict .id .name) }}{{ end }}
+{{- end }}
+{{- $accents := "" }}{{ with .accents }}{{ $accents = dict "family" .family "default" .default }}{{ end }}
+{{- $out = dict "defaultFamily" .defaultFamily "system" $system "names" $names "accents" $accents }}
+{{- end }}
+{{- return jsonify $out }}

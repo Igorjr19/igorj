@@ -3,7 +3,7 @@
 <div class="items__bar">
   {{- if $blog }}
 {{- with site.Taxonomies.categories.Alphabetical }}
-<nav class="filter" aria-label="{{ i18n "filterLabel" }}">
+<nav class="filter" aria-label="{{ i18n "filterLabel" }}" data-no-script>
   <ul>
     <li><a href="{{ (site.GetPage "/posts").RelPermalink }}"{{ if eq $.page.Kind "section" }} aria-current="page"{{ end }}>{{ i18n "filterAll" }}</a></li>
     {{- range . }}
@@ -12,6 +12,10 @@
   </ul>
 </nav>
 {{- end }}
+  {{- end }}
+  {{- if $blog }}
+  {{- $current := i18n "pickAll" }}{{ if eq .page.Kind "term" }}{{ $current = partial "category-label.html" .page }}{{ end }}
+  <button type="button" class="items__filter" data-action="filter" data-script-only hidden>{{ partial "icon.html" "filter" }}{{ i18n "keyFilter" }}: <span class="items__filter-current">{{ $current | lower }}</span> <kbd>#</kbd></button>
   {{- end }}
   <div class="items__tools">
     <span class="view-switch" role="group" aria-label="{{ i18n "viewLabel" }}" data-script-only hidden>

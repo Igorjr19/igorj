@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 import { LANGUAGE_STORAGE_KEY, siteLanguageOf } from '../language/choice.ts';
 import { browserStorage } from '../shared/storage.ts';
-import { openThemePicker, renderThemeStatus } from '../theme/picker.ts';
+import { renderThemeStatus } from '../theme/status.ts';
 import { readShortcutsEnabled, saveShortcutsEnabled } from './preference.ts';
 import { actionForKey, isShortcutCandidate, type NavigationTarget, type ShortcutAction, stepIndex } from './rules.ts';
 
@@ -42,16 +42,20 @@ function move(step: 1 | -1): boolean {
   return target !== undefined;
 }
 
-let terminalLoaded = false;
+const loaded = new Set<string>();
 
-/** The first time, loads the terminal, which opens itself; later, asks it to open or close. */
-function toggleTerminal(): void {
-  const { script: src = '', integrity = '' } =
-    document.querySelector<HTMLTemplateElement>('template[data-terminal]')?.dataset ?? {};
-  if (terminalLoaded) {
-    document.dispatchEvent(new Event('terminal:open'));
-  } else if (src) {
-    terminalLoaded = true;
+/**
+ * The terminal and the quick-pick box load on first use and open themselves in the mode asked for,
+ * which waits on their template; later they are asked to open with an event.
+ */
+function openLazy(name: 'terminal' | 'pick', mode = ''): void {
+  const source = document.querySelector<HTMLTemplateElement>(`template[data-lazy="${name}"]`);
+  const { script: src = '', integrity = '' } = source?.dataset ?? {};
+  if (loaded.has(name)) {
+    document.dispatchEvent(new CustomEvent(`${name}:open`, { detail: mode }));
+  } else if (source && src) {
+    loaded.add(name);
+    source.dataset['mode'] = mode;
     document.body.append(Object.assign(document.createElement('script'), { src, integrity }));
   }
 }
@@ -83,10 +87,12 @@ function perform(action: ShortcutAction): boolean {
       toggleSide();
       return true;
     case 'theme':
-      openThemePicker();
+    case 'palette':
+    case 'filter':
+      openLazy('pick', action.kind);
       return true;
     case 'terminal':
-      toggleTerminal();
+      openLazy('terminal');
       return true;
     case 'help':
       openHelp();
@@ -161,10 +167,12 @@ function onClick(event: MouseEvent): void {
       print();
       break;
     case 'theme':
-      openThemePicker();
+    case 'palette':
+    case 'filter':
+      openLazy('pick', control.dataset['action']);
       break;
     case 'terminal':
-      toggleTerminal();
+      openLazy('terminal');
       break;
     case 'zoom':
       toggleSide();
@@ -189,6 +197,9 @@ renderThemeStatus();
 toggleSide(document.body.classList.contains('is-zoomed'));
 for (const element of document.querySelectorAll('[data-script-only]')) {
   element.removeAttribute('hidden');
+}
+for (const element of document.querySelectorAll<HTMLElement>('[data-no-script]')) {
+  element.hidden = true;
 }
 document.addEventListener('keydown', onKeydown);
 document.addEventListener('click', onClick);
