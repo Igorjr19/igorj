@@ -1,0 +1,5 @@
+{{- /* Each code block with a copy button, which only shows once the reading script is there to make it work. */ -}}
+<div class="code-block">
+  {{- (transform.HighlightCodeBlock .).Wrapped }}
+  <button type="button" class="code-block__copy" data-copy data-copied="{{ i18n "codeCopied" }}" aria-live="polite" hidden>{{ i18n "codeCopy" }}</button>
+</div>

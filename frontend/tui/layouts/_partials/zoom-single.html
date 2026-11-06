@@ -45,6 +45,7 @@
   {{ partial "tags.html" . }}
 </div>
 {{- end }}{{ end }}
+{{- if eq .Section "posts" }}{{ partial "toc.html" . }}{{ end }}
 {{ .Content }}
 {{- if eq .Section "posts" }}
 <nav class="pager" aria-label="{{ i18n "pagerLabel" }}">

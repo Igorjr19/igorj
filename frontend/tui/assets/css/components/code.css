@@ -31,4 +31,56 @@
     color: var(--color-syntax-comment);
     font-style: italic;
   }
+
+  /* The copy button sits in the top corner of the block, over the code. */
+  .code-block {
+    position: relative;
+  }
+
+  .code-block__copy {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    padding: 0 var(--cell-width);
+    border: 0;
+    border-inline-start: var(--line);
+    border-block-end: var(--line);
+    background-color: var(--color-surface-1);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: var(--font-size-label);
+    cursor: pointer;
+  }
+
+  .code-block__copy:is(:hover, :focus-visible) {
+    color: var(--color-text);
+  }
+
+  /* The list of sections of a long post, folded or open. */
+  .toc {
+    margin-block: var(--cell-height);
+    padding: 0 var(--cell-width);
+    border-inline-start: var(--line);
+  }
+
+  .toc summary {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .toc ul {
+    margin: 0;
+    padding-inline-start: calc(2 * var(--cell-width));
+  }
+
+  .not-found__art {
+    margin: 0 0 var(--cell-height);
+    overflow-x: auto;
+    line-height: 1;
+    color: var(--color-link);
+    font-weight: bold;
+  }
 }

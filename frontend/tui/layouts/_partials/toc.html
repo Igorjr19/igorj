@@ -1,0 +1,10 @@
+{{- /* Long posts, with three sections or more, open with a list of them that can be folded away. */ -}}
+{{- $sections := 0 }}
+{{- range .Fragments.HeadingsMap }}{{ if eq .Level 2 }}{{ $sections = add $sections 1 }}{{ end }}{{ end }}
+{{- if ge $sections 3 }}
+<details class="toc" open>
+  <summary>{{ i18n "tocTitle" }}</summary>
+  {{- /* Hugo's list is a nav of its own, so it gets a name to tell it from the others. */}}
+  {{ replace .TableOfContents `<nav id="TableOfContents">` (printf `<nav id="TableOfContents" aria-label="%s">` (i18n "tocTitle")) | safeHTML }}
+</details>
+{{- end }}

@@ -1,6 +1,17 @@
 {{ define "main" }}
-<article class="zoom" aria-labelledby="page-title">
-  <h1 class="zoom__title" id="page-title">404</h1>
+<article class="zoom not-found" aria-labelledby="page-title">
+  <h1 class="sr-only" id="page-title">404</h1>
+  <pre class="not-found__art" aria-hidden="true">
+      +@@@#     =#@@@@#=          +@@@#
+     +@@@@#    *@@*==*@@*        +@@@@#
+    +@@*@@#   =@@#    #@@=      +@@*@@#
+   +@@* @@#   #@@=   *@@@#     +@@* @@#
+  +@@*  @@#   #@@=  *@*@@#    +@@*  @@#
+ +@@*   @@#   #@@= *@* @@#   +@@*   @@#
+=@@@@@@@@@@=  #@@@*@*  @@#  =@@@@@@@@@@=
+        @@#   =@@#    #@@=          @@#
+        @@#    *@@*==*@@*           @@#
+        @@#     =#@@@@#=            @@#</pre>
   <p>{{ site.Params.shell }}: <span data-script-only hidden><span data-not-found-path></span>: </span>command not found</p>
   <p><a href="{{ site.Home.RelPermalink }}">~ {{ i18n "notFoundHome" }}</a></p>
 </article>

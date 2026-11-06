@@ -33,6 +33,20 @@ Deno.test('unknown addresses answer 404 with the command-not-found message of th
     await response.body?.cancel();
   });
 
+  await t.step('a big 404 drawn in characters stands over the message, hidden from screen readers', async () => {
+    const page = await session.open('/en/posts/nope/', { viewport: WIDE });
+    const art = await page.evaluate(() => {
+      const pre = document.querySelector('.not-found__art');
+      return {
+        rows: pre?.textContent?.split('\n').filter((line) => line.trim()).length ?? 0,
+        hidden: pre?.getAttribute('aria-hidden'),
+        heading: document.querySelector('h1')?.textContent,
+        similar: document.querySelectorAll('article li').length,
+      };
+    });
+    assertEquals(art, { rows: 10, hidden: 'true', heading: '404', similar: 0 });
+  });
+
   await t.step('without JavaScript the address is left out instead of showing an empty slot', async () => {
     const page = await session.open('/pt/nada/', { viewport: WIDE, javascript: false });
     const frame = await page.evaluate(readPage);
