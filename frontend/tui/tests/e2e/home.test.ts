@@ -186,8 +186,8 @@ Deno.test('with JavaScript the name is drawn in characters, and stays a heading 
     assertEquals((await page.evaluate(read)).drawn, still);
   });
 
-  await t.step('with motion reduced the drawing ignores the mouse', async () => {
-    const page = await session.open(HOME_EN, { viewport: WIDE, reducedMotion: true });
+  await t.step('with motion turned down on the site the drawing ignores the mouse', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE, savedStorage: { motion: 'reduced' } });
     await page.evaluate(() => document.fonts.ready);
     const still = (await page.evaluate(read)).drawn;
     await hover(page);
@@ -195,7 +195,7 @@ Deno.test('with JavaScript the name is drawn in characters, and stays a heading 
   });
 });
 
-Deno.test('the role ends in a block cursor one cell wide that blinks unless motion is reduced', async (t) => {
+Deno.test('the role ends in a block cursor one cell wide that blinks unless motion is turned down on the site', async (t) => {
   await using session = await Session.start();
 
   const read = () => {
@@ -219,9 +219,12 @@ Deno.test('the role ends in a block cursor one cell wide that blinks unless moti
     assertEquals(cursor.title, `${NAME} — Developer`);
   });
 
-  await t.step('still when the visitor asks for reduced motion', async () => {
-    const page = await session.open(HOME_EN, { viewport: WIDE, reducedMotion: true });
-    assertEquals((await page.evaluate(read)).animation, 'none');
+  await t.step('still when the visitor turns motion down on the site, but not for the system setting', async () => {
+    const reduced = await session.open(HOME_EN, { viewport: WIDE, savedStorage: { motion: 'reduced' } });
+    assertEquals((await reduced.evaluate(read)).animation, 'none');
+    await reduced.evaluate(() => localStorage.clear());
+    const system = await session.open(HOME_EN, { viewport: WIDE, reducedMotion: true });
+    assertEquals((await system.evaluate(read)).animation, 'cursor-blink');
   });
 });
 

@@ -14,9 +14,6 @@ Deno.test('pages outside the panes, and the same page, have no direction', () =>
   assertEquals(direction('/en/posts/', '/en/posts/'), null);
 });
 
-Deno.test('motion is reduced when chosen here or asked for by the system', () => {
-  assertEquals(
-    [motionReduced('reduced', false), motionReduced(null, true), motionReduced(null, false)],
-    [true, true, false],
-  );
+Deno.test('motion is reduced only by the choice made on the site, not by the system setting', () => {
+  assertEquals([motionReduced('reduced'), motionReduced(null), motionReduced('full')], [true, false, false]);
 });

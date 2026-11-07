@@ -1,4 +1,10 @@
 /** What the terminal knows: the page language's model as plain text, from `terminal.json`. */
+
+/** Who the terminal says the visitor is: a guest on the site's short name. */
+export function identity(data: Pick<TerminalData, 'host'>): { user: string; host: string } {
+  return { user: 'guest', host: data.host.split('.')[0] ?? data.host };
+}
+
 export interface TerminalItem {
   readonly name: string;
   readonly title: string;
@@ -239,8 +245,8 @@ function fetchSummary(data: TerminalData, themeName: string): Result {
   ];
   return {
     lines: [
-      line(['accent', 'igor'], ['plain', '@'], ['accent', data.host]),
-      line(['dim', '─'.repeat(data.host.length + 5)]),
+      line(['accent', identity(data).user], ['plain', '@'], ['accent', identity(data).host]),
+      line(['dim', '─'.repeat(`${identity(data).user}@${identity(data).host}`.length)]),
       ...rows.map(([key, value]) => line(['accent', `${key ?? ''}`.padEnd(12)], ['plain', value])),
     ],
   };
@@ -313,7 +319,7 @@ export function cowsay(text: string): Line[] {
 function secret(command: string, argument: string, data: TerminalData): Result | null {
   const s = data.strings;
   if (command === 'sudo') {
-    return error(format(s['termSudo'], 'igor'));
+    return error(format(s['termSudo'], identity(data).user));
   }
   if (command === 'rm') {
     return { lines: [[['ok', s['termRm'] ?? '']]] };

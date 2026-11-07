@@ -4,8 +4,7 @@ import { type ItemsView, otherView, readView, saveView } from './view.ts';
 
 /** The switch between list and grid is animated where the browser can, unless motion is reduced. */
 function animate(update: () => void): void {
-  const reduced =
-    document.documentElement.dataset['motion'] === 'reduced' || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = document.documentElement.dataset['motion'] === 'reduced';
   const start = (
     document as Document & { startViewTransition?: (options: { update: () => void; types: string[] }) => unknown }
   ).startViewTransition;

@@ -121,7 +121,7 @@ Deno.test('a few commands stay out of help and tab, for the curious', () => {
     ...context,
     data: { ...data, strings: { ...data.strings, termSudo: '%s is not in the sudoers file.', termRm: 'nice try' } },
   };
-  assertEquals(text(run('sudo ls', secrets).lines), ['igor is not in the sudoers file.']);
+  assertEquals(text(run('sudo ls', secrets).lines), ['guest is not in the sudoers file.']);
   assertEquals(text(run('rm -rf /', secrets).lines), ['nice try']);
   assertEquals(text(run('cowsay hi', secrets).lines).slice(0, 3), [' ____', '< hi >', ' ----']);
   assertEquals(complete('su', '', data), []);

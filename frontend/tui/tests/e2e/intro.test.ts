@@ -37,7 +37,7 @@ Deno.test('the opening plays in full on the first visit and gives way to the pag
   });
 });
 
-Deno.test('the short opening comes after a long absence, and none at all with motion reduced', async (t) => {
+Deno.test('the short opening comes after a long absence, and none at all with motion turned down on the site', async (t) => {
   await using session = await Session.start();
 
   await t.step('back after a long absence, the window draws itself without the name', async () => {
@@ -46,11 +46,13 @@ Deno.test('the short opening comes after a long absence, and none at all with mo
     assertEquals((await page.evaluate(read)).overlay, false);
   });
 
-  await t.step('with motion reduced by the system or by the site, nothing plays', async () => {
-    for (const options of [{ reducedMotion: true }, { savedStorage: { motion: 'reduced' } }]) {
-      const page = await session.open(HOME_EN, { viewport: WIDE, intro: true, ...options });
-      assertEquals(await page.evaluate(read), { intro: null, overlay: false, shown: '1' });
-    }
+  await t.step('with motion turned down on the site nothing plays; the system setting does not stop it', async () => {
+    const reduced = await session.open(HOME_EN, { viewport: WIDE, intro: true, savedStorage: { motion: 'reduced' } });
+    assertEquals(await reduced.evaluate(read), { intro: null, overlay: false, shown: '1' });
+    const system = await session.open(HOME_EN, { viewport: WIDE, intro: true, reducedMotion: true });
+    await system.evaluate(() => localStorage.clear());
+    await system.reload();
+    assertEquals((await system.evaluate(read)).intro, 'full');
   });
 
   await t.step('without JavaScript the page is simply there', async () => {
