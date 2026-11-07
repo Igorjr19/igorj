@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { assert, assertEquals } from '@std/assert';
-import { findAccessibilityViolations } from './support/axe.ts';
+import { findAccessibilityViolations, settle } from './support/axe.ts';
 import { waitToLeave } from './support/navigation.ts';
 import { HOME_EN, POSTS_EN, PROFESSIONAL_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
@@ -50,7 +50,11 @@ Deno.test('f opens a palette that finds pages and runs commands', async (t) => {
     const page = await openPalette(session);
     await page.keyboard.type('>side');
     await page.keyboard.press('Enter');
-    assertEquals(await page.evaluate(() => document.querySelector('.side')?.checkVisibility()), false);
+    await settle(page);
+    assertEquals(
+      await page.evaluate(() => document.querySelector('.side')?.checkVisibility({ visibilityProperty: true })),
+      false,
+    );
   });
 
   await t.step('the search button opens it with the mouse, and a click on a row opens that page', async () => {

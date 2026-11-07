@@ -80,7 +80,8 @@ class Pick {
       empty: this.s['pickNothing'] ?? '',
       list: (raw) => {
         const query = parseQuery(raw);
-        const ranked = rank(query.commands ? commands : places, query.text);
+        // Without a query the list stays short: the panes and the newest items, or the first commands.
+        const ranked = rank(query.commands ? commands : places, query.text, query.text ? 30 : 12);
         const ghost = query.commands ? completion(query.text, ranked[0]?.entry) : '';
         return { ranked, ghost };
       },

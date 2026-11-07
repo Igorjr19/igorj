@@ -177,7 +177,6 @@ export function commandEntries(index: PickIndex, context: CommandContext): Entry
   });
   return [
     command('theme', s['cmdTheme']),
-    ...index.accents.map((accent) => command('accent', `${s['cmdAccent'] ?? 'accent'}: ${accent}`, accent)),
     ...(context.language ? [command('language', `${s['cmdLanguage']} ${context.language}`)] : []),
     command('side', s['cmdSide']),
     ...(context.hasList ? [command('view', s['cmdView'])] : []),
@@ -187,6 +186,8 @@ export function commandEntries(index: PickIndex, context: CommandContext): Entry
     command('shortcuts', s['cmdShortcuts']),
     command('motion', s['cmdMotion']),
     command('copy-link', s['cmdCopyLink']),
+    // The accents come last: there are many, and the theme box shows them all at once.
+    ...index.accents.map((accent) => command('accent', `${s['cmdAccent'] ?? 'accent'}: ${accent}`, accent)),
   ];
 }
 

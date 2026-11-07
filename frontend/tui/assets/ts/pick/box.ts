@@ -140,7 +140,11 @@ export class Box {
       }
     });
     this.dialog.addEventListener('cancel', () => this.options.onCancel?.());
-    this.dialog.addEventListener('close', () => this.dialog.remove());
+    // The box fades out before it leaves the page; without a running transition it leaves at once.
+    this.dialog.addEventListener('close', () => {
+      const leaving = this.dialog.getAnimations().map((animation) => animation.finished.catch(() => undefined));
+      Promise.all(leaving).then(() => this.dialog.remove());
+    });
     this.dialog.addEventListener('click', (event) => {
       if (event.target === this.dialog) {
         this.options.onCancel?.();

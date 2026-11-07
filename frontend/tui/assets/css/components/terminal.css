@@ -1,17 +1,23 @@
 @layer app.components {
   /* The terminal is a panel at the foot of the content column, growing upwards, like an editor's. */
+  /* The drawer is always laid out, so its row can grow and shrink with it inside; closed, it is hidden from the
+     keyboard and screen readers once the row has shut. */
   .drawer {
-    display: none;
+    display: grid;
     grid-template-rows: auto auto minmax(0, 1fr);
     grid-column: -2;
     min-block-size: 0;
+    overflow: hidden;
     border-block-start: 1px solid var(--color-accent);
     background-color: var(--color-background);
     font-size: 0.93em;
+    visibility: hidden;
+    transition: visibility 0s 240ms;
   }
 
   .drawer--open {
-    display: grid;
+    visibility: visible;
+    transition: visibility 0s;
   }
 
   /* The top edge is the grip for the height: a thin line that thickens under the pointer or the focus. */
@@ -119,6 +125,17 @@
       inset: auto 0 calc(round(up, 44px, var(--cell-height)) + env(safe-area-inset-bottom));
       z-index: 3;
       block-size: var(--terminal-height, 45%);
+      translate: 0 calc(100% + var(--cell-height));
+      transition:
+        translate var(--slide),
+        visibility 0s 240ms;
+    }
+
+    .drawer--open {
+      translate: 0;
+      transition:
+        translate var(--slide),
+        visibility 0s;
     }
 
     .drawer__keys {

@@ -98,17 +98,22 @@ Deno.test('single-key shortcuts change the view, zoom the pane and stay out of t
 
   await t.step('z hides the side column and brings it back', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
-    const side = () => document.querySelector('.side')?.checkVisibility();
+    const side = () => document.querySelector('.side')?.checkVisibility({ visibilityProperty: true });
     assertEquals(await page.evaluate(side), true);
     await page.keyboard.press('z');
+    await settle(page);
     assertEquals(await page.evaluate(side), false);
     await page.keyboard.press('z');
+    await settle(page);
     assertEquals(await page.evaluate(side), true);
   });
 
   await t.step('reading a post starts zoomed, without the side column', async () => {
     const page = await session.open(POST_EN, { viewport: WIDE });
-    assertEquals(await page.evaluate(() => document.querySelector('.side')?.checkVisibility()), false);
+    assertEquals(
+      await page.evaluate(() => document.querySelector('.side')?.checkVisibility({ visibilityProperty: true })),
+      false,
+    );
   });
 
   await t.step('shortcuts ignore modifier combinations and typing in a field', async () => {
@@ -191,12 +196,14 @@ Deno.test('every key has something to click', async (t) => {
   await t.step('the side switch hides and brings back the side column, and says which', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     const read = () => ({
-      side: document.querySelector('.side')?.checkVisibility(),
+      side: document.querySelector('.side')?.checkVisibility({ visibilityProperty: true }),
       pressed: document.querySelector('.win__side-toggle')?.getAttribute('aria-pressed'),
     });
     await page.locator('.win__side-toggle').click();
+    await settle(page);
     const hidden = await page.evaluate(read);
     await page.locator('.statusbar [data-action="zoom"]').click();
+    await settle(page);
     assertEquals(
       [hidden, await page.evaluate(read)],
       [

@@ -1,8 +1,8 @@
 @layer app.components {
   /* The quick-pick box: at the top of the window, one list for searching, filtering and themes. */
   .pick {
-    inline-size: min(calc(76 * var(--cell-width)), calc(100% - 2 * var(--cell-width)));
-    max-block-size: min(calc(28 * var(--cell-height)), calc(100dvh - 8 * var(--cell-height)));
+    inline-size: min(calc(64 * var(--cell-width)), calc(100% - 2 * var(--cell-width)));
+    max-block-size: min(calc(20 * var(--cell-height)), calc(100dvh - 8 * var(--cell-height)));
     margin: calc(6 * var(--cell-height)) auto auto;
     border: 0;
     background-color: var(--color-background);
@@ -70,7 +70,7 @@
 
   .pick__option {
     display: grid;
-    grid-template-columns: calc(12 * var(--cell-width)) minmax(0, 1fr) auto auto;
+    grid-template-columns: calc(9 * var(--cell-width)) minmax(0, 1fr) auto auto;
     align-items: baseline;
     gap: calc(2 * var(--cell-width));
     padding: calc(var(--cell-height) / 8) var(--cell-width);
@@ -106,7 +106,7 @@
 
   /* Long facts give way to the title: they stop at a third of the row and end with an ellipsis. */
   .pick__hint {
-    max-inline-size: calc(30 * var(--cell-width));
+    max-inline-size: calc(22 * var(--cell-width));
     overflow: hidden;
     color: var(--color-text-muted);
     font-size: var(--font-size-small);

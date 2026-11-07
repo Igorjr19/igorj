@@ -111,15 +111,23 @@
     display: flex;
     flex-direction: column;
     gap: calc(1.5 * var(--cell-height));
+    min-inline-size: 0;
     min-block-size: 0;
-    overflow-y: auto;
+    overflow: hidden auto;
     padding: calc(1.25 * var(--cell-height)) calc(2 * var(--cell-width));
     border-inline-end: var(--line);
+    transition: visibility 0s;
   }
 
-  /* Reading zooms the pane, like tmux: the side column steps aside and the text takes the window. */
+  /* The contents keep their width while the column narrows, so they slide out of view instead of squeezing. */
+  .side > * {
+    min-inline-size: calc(26 * var(--cell-width));
+  }
+
+  /* Once the column has slid aside, it leaves the tab order and screen readers too. */
   .is-zoomed .side {
-    display: none;
+    visibility: hidden;
+    transition: visibility 0s 240ms;
   }
 
   .side__who {

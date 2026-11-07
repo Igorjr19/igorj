@@ -14,11 +14,13 @@
     }
   }
 
+  /* Below the hero, the boxes of both columns share their top border, and the last box on the right stretches
+     so both columns also end on the same line. */
   .home {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
     gap: calc(2 * var(--cell-height)) calc(3 * var(--cell-width));
-    align-items: start;
+    align-items: stretch;
   }
 
   .hero {
@@ -81,11 +83,19 @@
     font-size: var(--font-size-small);
   }
 
+  /* The rows reach the box's sides, so their text lines up with the facts in the boxes beside it. */
+  .recent {
+    padding-inline: calc(var(--cell-width) / 2);
+  }
+
   .recent__list {
     margin: 0;
     padding: 0;
     list-style: none;
-    border-block-start: var(--line);
+  }
+
+  .recent__list li:last-child .recent__row {
+    border-block-end: 0;
   }
 
   .recent__list li::before {
@@ -122,11 +132,11 @@
     font-style: italic;
   }
 
-  /* The boxes start level with the recent list's label, and their facts share one column of names. */
+  /* The boxes on the right share one column of names in their facts. */
   .home__widgets {
     display: grid;
+    grid-template-rows: auto auto 1fr;
     gap: calc(1.5 * var(--cell-height));
-    padding-block-start: calc(var(--cell-height) / 2);
   }
 
   .widget .facts {
