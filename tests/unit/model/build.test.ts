@@ -1,6 +1,15 @@
 import { assertEquals } from '@std/assert';
 import type { ContentItem, RawContent } from '../../../tools/content/types.ts';
-import { buildModel, cvFor, postsFor, projectsFor, researchFor, tagFor, tagSlug } from '../../../tools/model/build.ts';
+import {
+  buildModel,
+  cvFor,
+  postsFor,
+  projectsFor,
+  researchFor,
+  sectionsFor,
+  tagFor,
+  tagSlug,
+} from '../../../tools/model/build.ts';
 
 function item<T>(folder: string, language: string, data: T, media: string[] = []): ContentItem<T> {
   return { path: `items/${folder}/index.${language}.md`, folder, language, data, body: `Body of ${folder}.`, media };
@@ -183,5 +192,25 @@ Deno.test('the model sums the tags of the language, most used first', () => {
       ['go', 3],
       ['machine-learning', 1],
     ],
+  );
+});
+
+Deno.test('every section is on unless the site settings turn it off', () => {
+  assertEquals(sectionsFor(RAW), { projects: true, posts: true, research: true, cv: true, shelf: true });
+  const off = { ...RAW, site: { ...RAW.site, sections: { research: false, shelf: false } } };
+  assertEquals(sectionsFor(off), { projects: true, posts: true, research: false, cv: true, shelf: false });
+});
+
+Deno.test('a section turned off leaves its items and their tags out, but the CV still lists the research', () => {
+  const off = { ...RAW, site: { ...RAW.site, sections: { research: false, posts: false } } };
+  const model = buildModel(off, 'en');
+  assertEquals([model.research, model.posts], [[], []]);
+  assertEquals(model.sections.research, false);
+  assertEquals(model.cv?.publications, buildModel(RAW, 'en').cv?.publications);
+  assertEquals(
+    model.tags.map((tag) => tag.slug),
+    buildModel(off, 'en')
+      .projects.flatMap((project) => project.tags.map((tag) => tag.slug))
+      .filter((slug, index, all) => all.indexOf(slug) === index),
   );
 });

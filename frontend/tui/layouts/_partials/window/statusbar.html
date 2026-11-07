@@ -19,7 +19,7 @@
     <span class="statusbar__key"><kbd>enter</kbd> {{ i18n "keyOpen" }}</span>
     <button type="button" class="statusbar__key" data-action="view"><kbd>v</kbd> {{ i18n "keyView" }}</button>
     {{- else if not .IsPage }}
-    <span class="statusbar__key"><kbd>1</kbd>–<kbd>6</kbd> {{ i18n "keyPanels" }}</span>
+    <span class="statusbar__key"><kbd>1</kbd>–<kbd>{{ len (partial "window/panes.html" .) }}</kbd> {{ i18n "keyPanels" }}</span>
     {{- end }}
     <button type="button" class="statusbar__key" data-action="zoom"><kbd>z</kbd> {{ i18n "keySide" }}</button>
   </span>

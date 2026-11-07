@@ -1,4 +1,4 @@
-import type { Cv, Post, Project, Research } from '../content/schema.ts';
+import { type Cv, type Post, type Project, type Research, SECTIONS } from '../content/schema.ts';
 import type { ContentItem, RawContent } from '../content/types.ts';
 import type {
   CategoryModel,
@@ -8,6 +8,7 @@ import type {
   ProfileModel,
   ProjectModel,
   ResearchModel,
+  SectionKey,
   SiteModel,
   TagModel,
   TagSummaryModel,
@@ -195,15 +196,24 @@ export function profileFor(raw: RawContent, language: string): ProfileModel | nu
   };
 }
 
+/** Every section is on unless the site settings turn it off. */
+export function sectionsFor(raw: RawContent): Record<SectionKey, boolean> {
+  const chosen = raw.site.sections ?? {};
+  return Object.fromEntries(SECTIONS.map((key) => [key, chosen[key] !== false])) as Record<SectionKey, boolean>;
+}
+
 /** Applies every content rule for one language. */
 export function buildModel(raw: RawContent, language: string): SiteModel {
-  const research = researchFor(raw, language);
-  const posts = postsFor(raw, language);
-  const projects = projectsFor(raw, language);
+  const sections = sectionsFor(raw);
+  const allResearch = researchFor(raw, language);
+  const research = sections.research ? allResearch : [];
+  const posts = sections.posts ? postsFor(raw, language) : [];
+  const projects = sections.projects ? projectsFor(raw, language) : [];
   const email = raw.contact?.email[language as keyof typeof raw.contact.email];
   return {
     language,
     languages: raw.site.languages,
+    sections,
     profile: profileFor(raw, language),
     contact:
       raw.contact && email ? { email, professional: raw.contact.professional, personal: raw.contact.personal } : null,
@@ -212,7 +222,8 @@ export function buildModel(raw: RawContent, language: string): SiteModel {
     posts,
     projects,
     research,
-    cv: cvFor(raw, language, research),
+    // The CV still lists the research when its section is off; it just has no pages to link to.
+    cv: sections.cv ? cvFor(raw, language, allResearch) : null,
     reading: raw.reading?.items ?? [],
     music: raw.music && { updated: day(raw.music.updated), period: raw.music.period, artists: raw.music.artists },
     films: raw.films && { updated: day(raw.films.updated), films: raw.films.films },

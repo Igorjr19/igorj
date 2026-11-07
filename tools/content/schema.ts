@@ -52,10 +52,14 @@ const ResearchSchema = v.strictObject({
 
 const LanguageCode = v.pipe(v.string(), v.regex(/^[a-z]{2}$/, 'Expected a two-letter language code such as pt'));
 
+/** Sections of the site that can be turned off; a section left out stays on. */
+export const SECTIONS = ['projects', 'posts', 'research', 'cv', 'shelf'] as const;
+
 const SiteSchema = v.strictObject({
   example: Example,
   author: Text,
   languages: v.pipe(v.array(LanguageCode), v.nonEmpty()),
+  sections: v.optional(v.strictObject(Object.fromEntries(SECTIONS.map((key) => [key, v.optional(v.boolean())])))),
 });
 
 const CategoriesSchema = v.strictObject({

@@ -2,9 +2,13 @@
  * What a frontend receives for one language. Every rule about the content is already applied;
  * dates stay as the content gives them (YYYY-MM-DD), since anything relative to today is the frontend's.
  */
+export type SectionKey = 'projects' | 'posts' | 'research' | 'cv' | 'shelf';
+
 export interface SiteModel {
   readonly language: string;
   readonly languages: readonly string[];
+  /** Which sections the site shows; a section turned off has no pages, and its items are left out. */
+  readonly sections: Readonly<Record<SectionKey, boolean>>;
   readonly profile: ProfileModel | null;
   readonly contact: ContactModel | null;
   readonly categories: readonly CategoryModel[];
