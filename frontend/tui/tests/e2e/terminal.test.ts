@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { assert, assertEquals } from '@std/assert';
-import { findAccessibilityViolations } from './support/axe.ts';
+import { findAccessibilityViolations, settle } from './support/axe.ts';
 import { waitToLeave } from './support/navigation.ts';
 import { HOME_EN, POSTS_EN } from './support/paths.ts';
 import { Session } from './support/session.ts';
@@ -18,15 +18,8 @@ async function openTerminal(session: Session, path = HOME_EN) {
   const page = await session.open(path, { viewport: WIDE });
   await page.keyboard.press(':');
   await page.waitForFunction(() => document.querySelector('.drawer--open') !== null);
-  // The drawer slides in; checks wait until it has settled.
-  await page.evaluate(() =>
-    Promise.all(
-      document
-        .querySelector('.drawer')
-        ?.getAnimations()
-        .map((animation) => animation.finished) ?? [],
-    ),
-  );
+  // The panel slides up as it opens; clicks and measurements wait until it is in place.
+  await settle(page);
   return page;
 }
 
