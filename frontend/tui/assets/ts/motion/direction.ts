@@ -33,7 +33,10 @@ export function direction(from: string, to: string): 'forward' | 'backward' | nu
 
 export const MOTION_STORAGE_KEY = 'motion';
 
-/** Motion is reduced when the visitor chose it here, or when the system asks for it. */
-export function motionReduced(saved: string | null, systemReduced: boolean): boolean {
-  return saved === 'reduced' || systemReduced;
+/**
+ * Motion is reduced only when the visitor chose it here. The movements are light, so the system's request for
+ * less motion does not turn them off; the site's own switch does.
+ */
+export function motionReduced(saved: string | null): boolean {
+  return saved === 'reduced';
 }

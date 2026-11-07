@@ -33,12 +33,6 @@
     grid-row: 1 / -1;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .win__body {
-      transition: none;
-    }
-  }
-
   .pane {
     min-block-size: 0;
     overflow-y: auto;

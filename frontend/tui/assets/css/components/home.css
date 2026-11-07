@@ -8,12 +8,6 @@
     animation: cursor-blink 1s steps(1) infinite;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .cursor {
-      animation: none;
-    }
-  }
-
   @keyframes cursor-blink {
     50% {
       visibility: hidden;

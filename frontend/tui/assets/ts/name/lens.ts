@@ -7,8 +7,7 @@ import { measure } from './measure.ts';
 /** A pointer that moved this recently still scrambles the characters near it. */
 const MOVING_MS = 120;
 
-const reduced = (): boolean =>
-  document.documentElement.dataset['motion'] === 'reduced' || matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduced = (): boolean => document.documentElement.dataset['motion'] === 'reduced';
 
 function follow(pre: HTMLElement, name: string): void {
   const lines = nameLines(name);

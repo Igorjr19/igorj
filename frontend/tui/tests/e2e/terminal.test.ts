@@ -53,6 +53,19 @@ Deno.test('the terminal opens with : and answers from the content of the page la
     assertEquals([state.open, state.focused, state.mode], [true, 'terminal-input', 'TERMINAL']);
   });
 
+  await t.step('the visitor is a guest, and a click anywhere in the panel goes back to the prompt', async () => {
+    const page = await openTerminal(session);
+    await type(page, 'help');
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+    await page.locator('.term__log').click();
+    const state = await page.evaluate(() => ({
+      prompt: document.querySelector('.term__prompt')?.textContent,
+      title: document.querySelector('.drawer__title')?.textContent,
+      focused: document.activeElement?.id,
+    }));
+    assertEquals(state, { prompt: 'guest@igorj:~$', title: 'terminal · guest@igorj', focused: 'terminal-input' });
+  });
+
   await t.step('ls, cd and cat walk the site as folders and files', async () => {
     const page = await openTerminal(session);
     await type(page, 'ls');

@@ -2,7 +2,7 @@
 import { browserStorage } from '../shared/storage.ts';
 import { renderThemeStatus } from '../theme/status.ts';
 import { applyThemeChoice, saveTheme } from '../theme/storage.ts';
-import { commonPrefix, complete, type Line, type Result, run, type TerminalData } from './commands.ts';
+import { commonPrefix, complete, identity, type Line, type Result, run, type TerminalData } from './commands.ts';
 
 const OPEN_EVENT = 'terminal:open';
 const HEIGHT_KEY = 'terminal-height';
@@ -73,6 +73,14 @@ class Terminal {
     this.input.addEventListener('input', () => this.showSuggestions());
     this.input.addEventListener('keydown', (event) => this.onKey(event));
     this.drawer.querySelector('form')?.addEventListener('submit', (event) => this.submit(event));
+    // A click anywhere in the panel goes to the prompt, as in a terminal, unless it lands on a control or
+    // ends a selection of text to copy.
+    this.drawer.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!(target?.closest('a, button, input, [role="separator"]') || getSelection()?.toString())) {
+        this.input.focus();
+      }
+    });
     document.addEventListener(OPEN_EVENT, () => this.toggle());
     this.showPrompt();
     const welcome = ` · ${data.profile.role} · ${data.strings['termWelcome'] ?? ''}`;
@@ -89,7 +97,8 @@ class Terminal {
     this.drawer.setAttribute('aria-label', 'Terminal');
     const bar = element('div', 'drawer__bar');
     const title = element('span', 'drawer__title');
-    title.textContent = `terminal · igor@${this.data.host}`;
+    const { user, host } = identity(this.data);
+    title.textContent = `terminal · ${user}@${host}`;
     const keys = element('span', 'drawer__keys');
     keys.textContent = this.data.strings['termKeys'] ?? '';
     bar.append(title, keys);
@@ -165,7 +174,8 @@ class Terminal {
   }
 
   showPrompt(): void {
-    this.prompt.textContent = `igor@${this.data.host}:~${this.cwd ? `/${this.cwd}` : ''}$`;
+    const { user, host } = identity(this.data);
+    this.prompt.textContent = `${user}@${host}:~${this.cwd ? `/${this.cwd}` : ''}$`;
   }
 
   open(): void {

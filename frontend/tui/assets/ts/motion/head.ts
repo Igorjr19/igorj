@@ -18,11 +18,7 @@ if (saved === 'reduced') {
 // page, so it does not play at all.
 const root = document.documentElement;
 try {
-  const stage = introStage(
-    localStorage.getItem(INTRO_STORAGE_KEY),
-    Date.now(),
-    motionReduced(saved, matchMedia('(prefers-reduced-motion: reduce)').matches),
-  );
+  const stage = introStage(localStorage.getItem(INTRO_STORAGE_KEY), Date.now(), motionReduced(saved));
   localStorage.setItem(INTRO_STORAGE_KEY, String(Date.now()));
   if (stage) {
     root.dataset['intro'] = stage;
@@ -44,7 +40,7 @@ addEventListener('pagereveal', (event) => {
   if (!transition) {
     return;
   }
-  if (motionReduced(saved, matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+  if (motionReduced(saved)) {
     // A skipped transition rejects its ready promise; that is the point here, not an error.
     transition.ready.catch(() => undefined);
     transition.skipTransition();
