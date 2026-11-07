@@ -32,19 +32,6 @@ homepage = "https://github.com/mbadolato/iTerm2-Color-Schemes"
 text = { url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/LICENSE", sha256 = "2373168614b527494dff99eb393024608216db79f687d58bad420f6c1e0ad192" }
 
 [[entries]]
-name = "One palette (Atom One)"
-license = "MIT"
-homepage = "https://github.com/atom/atom"
-text = { url = "https://raw.githubusercontent.com/atom/atom/1c3bd35ce238dc0491def9e1780d04748d8e18af/LICENSE.md", sha256 = "c12bd50daf08ccccc2f5471d396b576f10ffa263288506e3217e9e3c7a20e41b" }
-
-# The author publishes no license file; the package manifest is where Gruvbox declares MIT.
-[[entries]]
-name = "Gruvbox palette"
-license = "MIT"
-homepage = "https://github.com/morhetz/gruvbox"
-text = { url = "https://raw.githubusercontent.com/morhetz/gruvbox/ef8864bb42bf244f0295d1c5a403b27e3d139695/package.json", sha256 = "394c454f753fd4d1dbfe20248bdc56aeb1e9edd9866f6f5e7b786de4b1b2b958" }
-
-[[entries]]
 name = "Font Awesome Free (icons)"
 license = "CC-BY-4.0"
 homepage = "https://fontawesome.com"
