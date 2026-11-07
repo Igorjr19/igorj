@@ -214,3 +214,16 @@ Deno.test('a section turned off leaves its items and their tags out, but the CV 
       .filter((slug, index, all) => all.indexOf(slug) === index),
   );
 });
+
+Deno.test('an archived post, project or research work stays in the content but leaves the site', () => {
+  const archived = {
+    ...RAW,
+    posts: [...RAW.posts, item('old-post', 'en', post('Old post', '2026-05-01', { archived: true }))],
+    projects: [...RAW.projects, item('old-project', 'en', { title: 'Old', summary: 'O.', archived: true })],
+    research: RAW.research.map((work) => ({ ...work, data: { ...work.data, archived: true } })),
+  };
+  const titles = (list: readonly { title: string }[]) => list.map(({ title }) => title);
+  assertEquals(titles(postsFor(archived, 'en')), titles(postsFor(RAW, 'en')));
+  assertEquals(titles(projectsFor(archived, 'en')), titles(projectsFor(RAW, 'en')));
+  assertEquals(researchFor(archived, 'en'), []);
+});

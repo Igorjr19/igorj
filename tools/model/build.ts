@@ -80,9 +80,14 @@ export function categoryName(raw: RawContent, slug: string, language: string): C
   return { slug, name: category?.name[language] ?? slug };
 }
 
-/** Posts of the language, plus those that exist only in another one, newest first; drafts never appear. */
+/** Whether an item is on the site: drafts and archived items are not. */
+function shown(item: ContentItem<{ draft?: boolean | undefined; archived?: boolean | undefined }>): boolean {
+  return !(item.data.draft || item.data.archived);
+}
+
+/** Posts of the language, plus those that exist only in another one, newest first; drafts and archived posts never appear. */
 export function postsFor(raw: RawContent, language: string): PostModel[] {
-  const published = raw.posts.filter((post) => !post.data.draft);
+  const published = raw.posts.filter(shown);
   const translations = translationsOf(published);
   return published
     .filter((post) => post.language === language || !translations.get(post.folder)?.includes(language))
@@ -108,11 +113,12 @@ function postModel(
   };
 }
 
-/** Projects of the language: a lower weight first, those without one after, then by title. */
+/** Projects of the language: a lower weight first, those without one after, then by title; archived ones never appear. */
 export function projectsFor(raw: RawContent, language: string): ProjectModel[] {
-  const translations = translationsOf(raw.projects);
+  const current = raw.projects.filter(shown);
+  const translations = translationsOf(current);
   const weight = (project: ContentItem<Project>) => project.data.weight ?? Number.POSITIVE_INFINITY;
-  return raw.projects
+  return current
     .filter((project) => project.language === language)
     .sort((a, b) => weight(a) - weight(b) || a.data.title.localeCompare(b.data.title))
     .map(
@@ -125,9 +131,9 @@ export function projectsFor(raw: RawContent, language: string): ProjectModel[] {
     );
 }
 
-/** Research of the language, newest year first; drafts never appear. */
+/** Research of the language, newest year first; drafts and archived works never appear. */
 export function researchFor(raw: RawContent, language: string): ResearchModel[] {
-  const published = raw.research.filter((item) => !item.data.draft);
+  const published = raw.research.filter(shown);
   const translations = translationsOf(published);
   return published
     .filter((item) => item.language === language)
