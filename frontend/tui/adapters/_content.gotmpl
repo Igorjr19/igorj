@@ -1,0 +1,10 @@
+{{- /* The section pages, one per section the site settings leave on; a section turned off has no page, so its pane, number key and links go with it. */ -}}
+{{- .EnableAllLanguages }}
+{{- $sections := (index hugo.Data.model .Site.Language.Lang).sections }}
+{{- range $key := slice "projects" "posts" "research" "cv" "shelf" }}
+  {{- if index $sections $key }}
+    {{- $page := dict "path" $key "kind" "section" "title" (title $key) }}
+    {{- if eq $key "shelf" }}{{ $page = merge $page (dict "aliases" (slice "/listening/")) }}{{ end }}
+    {{- $.AddPage $page }}
+  {{- end }}
+{{- end }}

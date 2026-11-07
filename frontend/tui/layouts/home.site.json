@@ -3,6 +3,7 @@
 {{- $entry := dict }}
 {{- $items := dict }}
 {{- range $section := slice "posts" "projects" "research" }}
+{{- if not (index $model.sections $section) }}{{ continue }}{{ end }}
 {{- $list := slice }}
 {{- range index $model $section }}
 {{- $item := . }}
@@ -30,7 +31,9 @@
 {{- range slice "termWelcome" "termNotFound" "termNotDir" "termNeedFile" "termUnknown" "termOpening" "termThemeSet" "termThemeUnknown" "termAccents" "termNoManual" "termHelpLs" "termHelpCd" "termHelpCat" "termHelpOpen" "termHelpTree" "termHelpFetch" "termHelpTheme" "termHelpMan" "termHelpRest" "termRole" "termLocation" "termContent" "termListening" "termWatched" "termThemeLabel" "termBuild" "termShell" "termShellValue" "termKeys" "termResize" "termSudo" "termRm" "termName" "termSynopsis" "termDescription" "termNow" "termSeeAlso" "termContact" "termPlays" "nowWork" "nowMasters" "nowStudying" "modeTerminal" "pickPalette" "pickFilter" "pickTheme" "pickPlaceholder" "pickCommands" "pickNothing" "pickKeysList" "pickKeysTheme" "pickAll" "pickKindPane" "pickKindPost" "pickKindProject" "pickKindResearch" "pickKindCategory" "pickKindTag" "pickKindCommand" "pickFollowSystem" "pickAccent" "cmdTheme" "cmdAccent" "cmdLanguage" "cmdSide" "cmdView" "cmdTerminal" "cmdHelp" "cmdShortcuts" "cmdMotion" "cmdCopyLink" "cmdFilter" "pickCopied" }}
 {{- $strings = merge $strings (dict . (i18n .)) }}
 {{- end }}
-{{- $strings = merge $strings (dict "contentSummary" (printf "%s · %s · %s" (i18n "countPosts" (len $model.posts)) (i18n "countProjects" (len $model.projects)) (i18n "countResearch" (len $model.research)))) }}
+{{- $strings = merge $strings (dict "contentSummary" (partial "content-summary.html" .)) }}
+{{- $postsUrl := "" }}
+{{- with site.GetPage "/posts" }}{{ $postsUrl = .RelPermalink }}{{ end }}
 {{- $commit := substr (hugo.Data.generated.build.commit | default "") 0 7 }}
 {{- jsonify (dict
   "profile" $model.profile
@@ -42,7 +45,7 @@
   "panes" $panes
   "categories" $categories
   "tags" $tags
-  "postsUrl" (site.GetPage "/posts").RelPermalink
+  "postsUrl" $postsUrl
   "themeIndex" hugo.Data.generated.themes
   "themes" $themes
   "accents" $accents

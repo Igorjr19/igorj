@@ -2,7 +2,7 @@
 <dialog class="panel help" box-="square" aria-labelledby="help-title">
   <h2 class="panel__title" id="help-title">{{ i18n "helpTitle" }}</h2>
   <dl class="facts">
-    <dt><kbd>1</kbd>–<kbd>6</kbd></dt>
+    <dt><kbd>1</kbd>–<kbd>{{ len (partial "window/panes.html" .) }}</kbd></dt>
     <dd>{{ i18n "helpPanels" }}</dd>
     <dt><kbd>j</kbd> <kbd>k</kbd> <kbd>↓</kbd> <kbd>↑</kbd></dt>
     <dd>{{ i18n "helpMove" }}</dd>

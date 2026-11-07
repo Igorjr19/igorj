@@ -1,0 +1,7 @@
+{{- /* How much there is to read, counting only the sections the site shows: "4 posts · 2 projects". */ -}}
+{{- $model := partial "model.html" . }}
+{{- $parts := slice }}
+{{- if $model.sections.posts }}{{ $parts = $parts | append (i18n "countPosts" (len $model.posts)) }}{{ end }}
+{{- if $model.sections.projects }}{{ $parts = $parts | append (i18n "countProjects" (len $model.projects)) }}{{ end }}
+{{- if $model.sections.research }}{{ $parts = $parts | append (i18n "countResearch" (len $model.research)) }}{{ end }}
+{{- return delimit $parts " · " }}

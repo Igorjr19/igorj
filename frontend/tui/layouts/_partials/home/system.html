@@ -10,7 +10,7 @@
     <dt>{{ i18n "systemBuilt" }}</dt>
     <dd><time datetime="{{ now.Format "2006-01-02" }}">{{ now.Format "2006-01-02" }}</time></dd>
     <dt>{{ i18n "systemContent" }}</dt>
-    <dd>{{ i18n "countPosts" (len $model.posts) }} · {{ i18n "countProjects" (len $model.projects) }} · {{ i18n "countResearch" (len $model.research) }}</dd>
+    <dd>{{ partial "content-summary.html" . }}</dd>
     {{- with $model.music }}
     <dt>{{ i18n "systemData" }}</dt>
     <dd>Last.fm · Letterboxd · <time datetime="{{ .updated }}">{{ .updated }}</time></dd>
