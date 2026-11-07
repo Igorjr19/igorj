@@ -55,12 +55,6 @@ Deno.test('t opens the theme box with every family and previews while moving', a
         'Catppuccin Frappé',
         'Catppuccin Macchiato',
         'Catppuccin Mocha',
-        'Gruvbox · follows the system',
-        'Gruvbox Light',
-        'Gruvbox Dark',
-        'One · follows the system',
-        'One Light',
-        'One Dark',
       ],
     );
     assertEquals(new Set(options.map(([, colors]) => colors)), new Set([5]));
@@ -76,20 +70,23 @@ Deno.test('t opens the theme box with every family and previews while moving', a
     const page = await session.open(HOME_EN, { viewport: WIDE, colorScheme: 'dark' });
     const initial = await page.evaluate(state);
     await openThemes(page);
-    for (let step = 0; step < 7; step++) {
+    for (let step = 0; step < 3; step++) {
       await page.keyboard.press(step % 2 ? 'j' : 'ArrowDown');
     }
     const previewed = await page.evaluate(state);
-    assertEquals([previewed.theme, previewed.saved], ['gruvbox-dark', null]);
+    assertEquals([previewed.theme, previewed.saved], ['catppuccin-macchiato', null]);
     assertEquals(previewed.background !== initial.background, true);
   });
 
   await t.step('the mouse previews too, and a click applies', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await openThemes(page);
-    await page.locator('.pick__option:nth-child(11)').click();
+    await page.locator('.pick__option:nth-child(3)').click();
     const applied = await page.evaluate(state);
-    assertEquals([applied.open, applied.theme, applied.saved], [false, 'one-dark', '{"theme":"one-dark"}']);
+    assertEquals(
+      [applied.open, applied.theme, applied.saved],
+      [false, 'catppuccin-frappe', '{"theme":"catppuccin-frappe"}'],
+    );
     await page.evaluate(() => localStorage.clear());
   });
 });
@@ -110,26 +107,29 @@ Deno.test('the theme box keeps only what is applied', async (t) => {
   await t.step('Enter saves the theme, which survives a reload before the first paint', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await openThemes(page);
-    for (let step = 0; step < 7; step++) {
+    for (let step = 0; step < 1; step++) {
       await page.keyboard.press('ArrowDown');
     }
     await page.keyboard.press('Enter');
     const applied = await page.evaluate(state);
-    assertEquals([applied.open, applied.theme, applied.saved], [false, 'gruvbox-dark', '{"theme":"gruvbox-dark"}']);
+    assertEquals(
+      [applied.open, applied.theme, applied.saved],
+      [false, 'catppuccin-latte', '{"theme":"catppuccin-latte"}'],
+    );
     await page.reload();
-    assertEquals((await page.evaluate(state)).theme, 'gruvbox-dark');
+    assertEquals((await page.evaluate(state)).theme, 'catppuccin-latte');
     await page.evaluate(() => localStorage.clear());
   });
 
   await t.step('choosing a family follows the system again and clears an earlier theme', async () => {
-    const page = await openSaved(session, HOME_EN, '{"theme":"one-dark"}');
+    const page = await openSaved(session, HOME_EN, '{"theme":"catppuccin-frappe"}');
     await openThemes(page);
-    assertEquals(await page.evaluate(selected), 'One Dark');
+    assertEquals(await page.evaluate(selected), 'Catppuccin Frappé');
     await page.keyboard.press('ArrowUp');
     await page.keyboard.press('ArrowUp');
     await page.keyboard.press('Enter');
     const applied = await page.evaluate(state);
-    assertEquals([applied.family, applied.theme, applied.saved], ['one', null, '{"family":"one"}']);
+    assertEquals([applied.family, applied.theme, applied.saved], ['catppuccin', null, '{"family":"catppuccin"}']);
     await page.evaluate(() => localStorage.clear());
   });
 });
@@ -137,9 +137,9 @@ Deno.test('the theme box keeps only what is applied', async (t) => {
 Deno.test('the open theme box is accessible in every theme', async (t) => {
   await using session = await Session.start();
 
-  await t.step('it passes the accessibility checks in both color schemes of each family', async () => {
+  await t.step('it passes the accessibility checks in both color schemes', async () => {
     for (const colorScheme of ['light', 'dark'] as const) {
-      for (const family of ['catppuccin', 'gruvbox', 'one']) {
+      for (const family of ['catppuccin']) {
         const page = await openSaved(session, POST_EN, JSON.stringify({ family }), colorScheme);
         await openThemes(page);
         assertEquals(await findAccessibilityViolations(page), []);

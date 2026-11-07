@@ -9,7 +9,7 @@ Think of a tmux session or btop: a grid of bordered panels, each with a title an
 The home shows eight panels at once: about, now, projects, writing, reading, listening, watched and system. The professional ones are larger and on top; music, films and reading are smaller summaries underneath. Every project, post and research item opens as a single full-screen panel, the way tmux zooms into a pane, with the path at the top and a status line at the bottom (file, language, reading time, how much is read).
 
 - **Keyboard first, never keyboard only.** `Tab` works as in any page; single-key shortcuts are an alternative, can be turned off, and stay quiet while you type.
-- **Terminal color schemes.** Catppuccin, One and Gruvbox, each in a light and a dark variant, following the system preference until you pick one with `t`. Every theme passes a contrast audit at build time.
+- **Terminal color schemes.** Catppuccin in its four flavors and fourteen accents, following the system's light or dark preference until you pick one with `t`. Every theme passes a contrast audit at build time.
 - **Images in two-color dithering**, inked with the theme's text color, so the photo and screenshots change color with the theme.
 - **Portuguese and English**, at `/pt/` and `/en/`. The root picks one from the browser; a post written in only one language still shows up in the other's list, labeled.
 - **Real data only.** Listening comes from Last.fm and films from Letterboxd, as weekly summaries without times or dates. No chart or number without a source.
@@ -132,7 +132,7 @@ Required repository settings: secrets `CONTENT_TOKEN`, `CLOUDFLARE_API_TOKEN`, `
 
 ## Third-party material
 
-No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`, tools in `mise.toml` and actions by commit; updates are made by hand, and the weekly `deno audit` flags known vulnerabilities. The build publishes every license text at `/third-party-licenses.txt`, listed in `frontend/tui/data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: Catppuccin, One and Gruvbox (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT). Brand icons: [Font Awesome Free](https://fontawesome.com) (CC BY 4.0).
+No third-party files are versioned. Packages are pinned in `deno.json` and `deno.lock`, tools in `mise.toml` and actions by commit; updates are made by hand, and the weekly `deno audit` flags known vulnerabilities. The build publishes every license text at `/third-party-licenses.txt`, listed in `frontend/tui/data/third-party.toml`. The interface builds on [WebTUI](https://github.com/webtui/webtui) (MIT) without changes; adjustments live in the site's own layers. Fonts: [Fira Code](https://github.com/tonsky/FiraCode) and [Fira Sans](https://github.com/mozilla/Fira) (SIL OFL 1.1) via Fontsource. Palettes: Catppuccin (MIT), fetched from [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) (MIT). Brand icons: [Font Awesome Free](https://fontawesome.com) (CC BY 4.0).
 
 ## License
 

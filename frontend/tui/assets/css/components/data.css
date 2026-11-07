@@ -68,7 +68,7 @@
     display: inline-block;
     inline-size: 5.5em;
     block-size: 1em;
-    background: linear-gradient(90deg, var(--color-warning) calc(var(--rating) / 5 * 100%), var(--color-surface-3) 0);
+    background: linear-gradient(90deg, var(--color-accent) calc(var(--rating) / 5 * 100%), var(--color-surface-3) 0);
     mask: var(--star) 0 50% / 1.1em 0.9em repeat-x;
   }
 

@@ -1,6 +1,6 @@
 {{- /* An interface icon, inline so it takes the color of the text around it; the text beside it, or the control's label, names it. */}}
 {{- with resources.Get (printf "icons/solid/%s.svg" .) }}
 {{- $svg := replaceRE `<!--[\s\S]*?-->` "" .Content }}
-{{- replace $svg "<svg " `<svg class="icon icon--ui" aria-hidden="true" focusable="false" ` | safeHTML }}
+{{- replace $svg "<svg " `<svg class="icon icon--ui" aria-hidden="true" focusable="false" preserveAspectRatio="xMinYMid meet" ` | safeHTML }}
 {{- end }}
 {{- /**/ -}}
