@@ -11,6 +11,8 @@ const Day = v.union([v.date(), v.pipe(v.string(), v.isoDate(DAY_FORMAT))], DAY_F
 const Example = v.optional(v.boolean());
 // Tags are written as they should read ("Go", "machine learning"); the address comes from the text.
 const Tags = v.optional(v.array(Text));
+// An archived item stays in the content but leaves the site.
+const Archived = v.optional(v.boolean());
 
 const PostSchema = v.strictObject({
   example: Example,
@@ -21,6 +23,7 @@ const PostSchema = v.strictObject({
   categories: v.pipe(v.array(Slug), v.length(1, 'A post has exactly one category')),
   tags: Tags,
   draft: v.optional(v.boolean()),
+  archived: Archived,
   slug: v.optional(Slug),
 });
 
@@ -33,6 +36,7 @@ const ProjectSchema = v.strictObject({
   featured: v.optional(v.boolean()),
   // Projects carry no dates, so Hugo's weight is the only way to put one before another.
   weight: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
+  archived: Archived,
   slug: v.optional(Slug),
 });
 
@@ -47,6 +51,7 @@ const ResearchSchema = v.strictObject({
   doi: v.optional(v.pipe(v.string(), v.regex(/^10\.\d{4,9}\/\S+$/, 'Expected a DOI such as 10.1000/xyz'))),
   tags: Tags,
   draft: v.optional(v.boolean()),
+  archived: Archived,
   slug: v.optional(Slug),
 });
 
