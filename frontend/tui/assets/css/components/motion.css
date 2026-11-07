@@ -73,18 +73,50 @@
     }
   }
 
-  /* The boxes rise into place as they open. */
+  /* The boxes drop into place as they open and fade back out as they close, with their backdrop. */
+  .pick,
+  .help {
+    opacity: 0;
+    translate: 0 calc(-1 * var(--cell-height) / 2);
+    scale: 0.98;
+    transition:
+      opacity 160ms ease-in,
+      translate 160ms ease-in,
+      scale 160ms ease-in,
+      display 160ms allow-discrete,
+      overlay 160ms allow-discrete;
+  }
+
   .pick[open],
   .help[open] {
-    transition:
-      opacity 140ms ease-out,
-      transform 140ms ease-out,
-      display 140ms allow-discrete,
-      overlay 140ms allow-discrete;
+    opacity: 1;
+    translate: 0;
+    scale: 1;
+    transition-duration: 220ms;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 
     @starting-style {
       opacity: 0;
-      transform: translateY(calc(-1 * var(--cell-height) / 2));
+      translate: 0 calc(-1 * var(--cell-height) / 2);
+      scale: 0.98;
+    }
+  }
+
+  .pick::backdrop,
+  .help::backdrop {
+    opacity: 0;
+    transition:
+      opacity 160ms ease-in,
+      display 160ms allow-discrete,
+      overlay 160ms allow-discrete;
+  }
+
+  .pick[open]::backdrop,
+  .help[open]::backdrop {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
     }
   }
 

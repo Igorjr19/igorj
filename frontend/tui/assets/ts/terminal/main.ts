@@ -159,9 +159,11 @@ class Terminal {
       return;
     }
     this.handle.setPointerCapture(start.pointerId);
+    document.body.classList.add('is-resizing');
     const move = (event: PointerEvent): void => this.setHeight((column.bottom - event.clientY) / column.height);
     const stop = (): void => {
       this.handle.removeEventListener('pointermove', move);
+      document.body.classList.remove('is-resizing');
       this.setHeight(this.height, true);
     };
     this.handle.addEventListener('pointermove', move);

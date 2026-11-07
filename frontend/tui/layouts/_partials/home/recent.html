@@ -1,7 +1,7 @@
 {{- /* The latest posts and the featured projects, as one list of rows. */ -}}
 {{- $model := partial "model.html" . }}
-<section class="recent" aria-labelledby="recent-title" id="recent">
-  <h2 class="label" id="recent-title">{{ i18n "recent" }}</h2>
+<section class="panel recent" box-="square" aria-labelledby="recent-title" id="recent">
+  <h2 class="panel__title" id="recent-title">{{ i18n "recent" | lower }}</h2>
   {{- $rows := 0 }}
   <ul class="recent__list">
     {{- range first 3 $model.posts }}
