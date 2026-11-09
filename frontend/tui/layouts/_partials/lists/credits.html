@@ -1,9 +1,21 @@
 <p>{{ i18n "creditsRights" (dict "Author" (partial "author.html" .) "Repository" site.Params.repository) | safeHTML }}</p>
 <p>{{ i18n "creditsIntro" }}</p>
-<dl class="facts credits">
+<dl class="facts credits credits--material">
   {{- range index hugo.Data "third-party" "entries" }}
   <dt>{{ .name }}</dt>
   <dd><a href="{{ .homepage }}">{{ .homepage }}</a> <span class="panel__meta">{{ .license }}</span></dd>
   {{- end }}
 </dl>
 <p><a href="/third-party-licenses.txt">{{ i18n "creditsTexts" }}</a></p>
+{{- $model := partial "model.html" . }}
+{{- $sources := slice }}
+{{- range hugo.Data.sources.sources }}{{ if index $model .model }}{{ $sources = $sources | append . }}{{ end }}{{ end }}
+{{- with $sources }}
+<p>{{ i18n "creditsData" }}</p>
+<dl class="facts credits credits--data">
+  {{- range . }}
+  <dt>{{ .name }}</dt>
+  <dd><a href="{{ .homepage }}">{{ .homepage }}</a> <span class="panel__meta">{{ i18n .what }}</span></dd>
+  {{- end }}
+</dl>
+{{- end }}

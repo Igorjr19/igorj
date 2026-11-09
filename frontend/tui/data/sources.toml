@@ -1,0 +1,25 @@
+# Services the daily job of the content repository reads. The site never calls them: it shows the saved data,
+# names each source in the system box and credits it on the credits page, only when the model has its data.
+[[sources]]
+name = "Last.fm"
+homepage = "https://www.last.fm"
+model = "music"
+what = "sourceMusic"
+
+[[sources]]
+name = "Letterboxd"
+homepage = "https://letterboxd.com"
+model = "films"
+what = "sourceFilms"
+
+[[sources]]
+name = "GitHub"
+homepage = "https://github.com"
+model = "github"
+what = "sourceGithub"
+
+[[sources]]
+name = "CodeTime"
+homepage = "https://codetime.dev"
+model = "codetime"
+what = "sourceCodetime"

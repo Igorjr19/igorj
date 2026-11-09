@@ -13,8 +13,8 @@
     <dd>{{ partial "content-summary.html" . }}</dd>
     {{- $sources := slice }}
     {{- $updated := "" }}
-    {{- range $source := slice (dict "name" "Last.fm" "data" $model.music) (dict "name" "Letterboxd" "data" $model.films) (dict "name" "GitHub" "data" $model.github) (dict "name" "CodeTime" "data" $model.codetime) }}
-    {{- with .data }}{{ $sources = $sources | append $source.name }}{{ if gt .updated $updated }}{{ $updated = .updated }}{{ end }}{{ end }}
+    {{- range $source := hugo.Data.sources.sources }}
+    {{- with index $model .model }}{{ $sources = $sources | append $source.name }}{{ if gt .updated $updated }}{{ $updated = .updated }}{{ end }}{{ end }}
     {{- end }}
     {{- with $sources }}
     <dt>{{ i18n "systemData" }}</dt>
