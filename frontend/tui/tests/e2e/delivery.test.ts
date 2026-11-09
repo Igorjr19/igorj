@@ -50,3 +50,16 @@ Deno.test('assets are cached as long as their names allow, and the next page loa
     },
   );
 });
+
+Deno.test('every page points to one favicon, drawn in the colors of the default dark theme', async () => {
+  for (const file of ['en/index.html', 'pt/posts/index.html', '404.html', 'index.html']) {
+    const html = await Deno.readTextFile(`${SITE}/${file}`);
+    assert(/<link rel=(?:"icon"|icon) href=(?:"\/icons\/favicon\.svg"|\/icons\/favicon\.svg)/.test(html), file);
+  }
+  const icon = await Deno.readTextFile(`${SITE}/icons/favicon.svg`);
+  const themes = JSON.parse(await Deno.readTextFile('generated/data/themes.json'));
+  const family = themes.families.find((each: { name: string }) => each.name === themes.defaultFamily);
+  const dark = family.themes.find((theme: { id: string }) => theme.id === family.system.dark);
+  assert(icon.includes(`fill="${dark.swatch[0]}"`), 'the background is the dark theme background');
+  assert(!icon.includes('{{'), 'the template was filled in');
+});

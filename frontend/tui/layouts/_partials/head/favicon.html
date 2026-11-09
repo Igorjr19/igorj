@@ -1,0 +1,5 @@
+{{- /* A prompt with the block cursor of the header, in the colors of the default dark theme, at a fixed address so
+   pages without the site's head (the bare 404) can point to it too. */ -}}
+{{- with resources.Get "icons/favicon.svg" | resources.ExecuteAsTemplate "icons/favicon.svg" (merge (partial "default-colors.html" .) (dict "title" (urls.Parse site.BaseURL).Host)) }}
+<link rel="icon" href="{{ .RelPermalink }}" type="image/svg+xml">
+{{- end }}

@@ -1,0 +1,9 @@
+{{- /* The background, text and accent of the default dark theme, for pictures made at build time. */ -}}
+{{- $themes := hugo.Data.generated.themes }}
+{{- $family := index (where $themes.families "name" $themes.defaultFamily) 0 }}
+{{- $theme := index (where $family.themes "id" $family.system.dark) 0 }}
+{{- $background := index $theme.swatch 0 }}
+{{- $text := index $theme.swatch 1 }}
+{{- $accent := $text }}
+{{- with $themes.accents }}{{ $default := .default }}{{ range .options }}{{ if eq .name $default }}{{ with index .colors $theme.id }}{{ $accent = . }}{{ end }}{{ end }}{{ end }}{{ end }}
+{{- return dict "background" $background "text" $text "accent" $accent }}

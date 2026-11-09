@@ -5,6 +5,7 @@
   <title>{{ partial "site-title.html" . }}</title>
   <link rel="canonical" href="{{ .Permalink }}">
   <meta name="robots" content="noindex">
+  {{ partial "head/favicon.html" . }}
   {{- with resources.Get "ts/language/redirect.ts" | js.Build (dict "minify" true) }}
   <script>{{ .Content | safeJS }}</script>
   {{- end }}

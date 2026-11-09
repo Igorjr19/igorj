@@ -3,13 +3,10 @@
   project or a research work) and its title in Fira Code, the author's name, and the dithered photo on the right.
   Pages that are not one item show the name and the role. Returns the image, made once per page at build time.
 */ -}}
-{{- $themes := hugo.Data.generated.themes }}
-{{- $family := index (where $themes.families "name" $themes.defaultFamily) 0 }}
-{{- $theme := index (where $family.themes "id" $family.system.dark) 0 }}
-{{- $background := index $theme.swatch 0 }}
-{{- $text := index $theme.swatch 1 }}
-{{- $accent := $text }}
-{{- with $themes.accents }}{{ $default := .default }}{{ range .options }}{{ if eq .name $default }}{{ with index .colors $theme.id }}{{ $accent = . }}{{ end }}{{ end }}{{ end }}{{ end }}
+{{- $colors := partial "default-colors.html" . }}
+{{- $background := $colors.background }}
+{{- $text := $colors.text }}
+{{- $accent := $colors.accent }}
 {{- $profile := (partial "model.html" .).profile }}
 {{- $author := partial "author.html" . }}
 {{- $host := urls.Parse site.BaseURL }}
