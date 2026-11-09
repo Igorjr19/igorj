@@ -55,6 +55,39 @@ Deno.test('the window keeps the side column beside the pane on wide screens and 
   });
 });
 
+Deno.test('the pane shows where it is scrolled on a thin rail instead of a browser bar', async (t) => {
+  await using session = await Session.start();
+
+  const read = async () => {
+    const frame = () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    await frame();
+    const rail = document.querySelector('.scroll') as HTMLElement;
+    const thumb = (document.querySelector('.scroll__thumb') as HTMLElement).getBoundingClientRect();
+    const box = rail.getBoundingClientRect();
+    return {
+      shown: getComputedStyle(rail).opacity === '1',
+      bar: getComputedStyle(document.querySelector('.pane') as HTMLElement).scrollbarWidth,
+      atTop: Math.abs(thumb.top - box.top) < 1,
+      atBottom: Math.abs(thumb.bottom - box.bottom) < 1,
+    };
+  };
+
+  await t.step('a pane taller than the window shows the rail, with the thumb following the scroll', async () => {
+    const page = await session.open(HOME_EN, { viewport: { width: 1440, height: 600 } });
+    assertEquals(await page.evaluate(read), { shown: true, bar: 'none', atTop: true, atBottom: false });
+    await page.evaluate(() => {
+      const pane = document.querySelector('.pane') as HTMLElement;
+      pane.scrollTop = pane.scrollHeight;
+    });
+    assertEquals(await page.evaluate(read), { shown: true, bar: 'none', atTop: false, atBottom: true });
+  });
+
+  await t.step('a pane that fits has nothing to show', async () => {
+    const page = await session.open(HOME_EN, { viewport: { width: 1440, height: 4000 } });
+    assertEquals((await page.evaluate(read)).shown, false);
+  });
+});
+
 Deno.test('prose keeps the character grid of the frame', async (t) => {
   await using session = await Session.start();
 

@@ -14,6 +14,7 @@
 @import './base/elements.css';
 @import './layout/window.css';
 @import './components/window.css';
+@import './components/scroll.css';
 @import './components/keybar.css';
 @import './components/status.css';
 @import './components/panel.css';
