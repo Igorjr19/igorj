@@ -34,7 +34,7 @@
   .bars__fill {
     display: block;
     block-size: 100%;
-    background-color: var(--color-category-entertainment);
+    background-color: var(--color-accent);
   }
 
   .bars__count,
