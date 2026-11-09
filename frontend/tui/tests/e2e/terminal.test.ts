@@ -124,6 +124,13 @@ Deno.test('the terminal acts on the window and steps aside', async (t) => {
     assertEquals((await page.evaluate(read)).open, true);
   });
 
+  await t.step('the close button next to the keys closes it as Esc does', async () => {
+    const page = await openTerminal(session);
+    await page.locator('.drawer__close').click();
+    const closed = await page.evaluate(read);
+    assertEquals([closed.open, closed.focused, closed.mode], [false, 'pane', 'NORMAL']);
+  });
+
   await t.step('the open terminal passes the accessibility checks', async () => {
     const page = await openTerminal(session);
     await type(page, 'help');

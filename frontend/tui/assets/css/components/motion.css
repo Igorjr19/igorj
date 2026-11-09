@@ -26,14 +26,15 @@
     animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
+  /* The old pane is gone before the new one comes in, so two pages never show through each other. */
   /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
   ::view-transition-old(pane) {
-    animation: 140ms ease-in both pane-out;
+    animation: 90ms ease-in both pane-out;
   }
 
   /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
   ::view-transition-new(pane) {
-    animation: 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both pane-in;
+    animation: 220ms cubic-bezier(0.2, 0.8, 0.2, 1) 90ms both pane-in;
   }
 
   /* biome-ignore lint/correctness/noUnknownTypeSelector: a view transition name, not an element */
