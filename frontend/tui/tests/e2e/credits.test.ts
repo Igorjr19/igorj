@@ -20,7 +20,7 @@ Deno.test('the credits page names every third-party item with its license and li
   await t.step('each entry of the manifest appears, so a new one cannot be left out', async () => {
     const page = await session.open('/en/credits/', { viewport: WIDE, javascript: false });
     const listed = await page.evaluate(() =>
-      [...document.querySelectorAll('.zoom__body .facts > dt')].map((term) => {
+      [...document.querySelectorAll('.credits--material > dt')].map((term) => {
         const description = term.nextElementSibling;
         return {
           name: term.textContent?.trim(),
@@ -37,9 +37,7 @@ Deno.test('the credits page names every third-party item with its license and li
 
   await t.step('it links the full license texts, which the build publishes', async () => {
     const page = await session.open('/en/credits/', { viewport: WIDE, javascript: false });
-    const href = await page.evaluate(() =>
-      document.querySelector('.zoom__body > p:last-child a')?.getAttribute('href'),
-    );
+    const href = await page.evaluate(() => document.querySelector('.zoom__body a[href$=".txt"]')?.getAttribute('href'));
     assertEquals(href, '/third-party-licenses.txt');
     const response = await fetch(`${session.url}${href}`);
     const text = await response.text();
@@ -76,4 +74,21 @@ Deno.test('the credits page names every third-party item with its license and li
       assertEquals(link, [label, target]);
     }
   });
+});
+
+Deno.test('the credits page names the data services the site shows, with what each provides', async () => {
+  await using session = await Session.start();
+  const page = await session.open('/en/credits/', { viewport: WIDE, javascript: false });
+  const sources = await page.evaluate(() =>
+    [...document.querySelectorAll('.credits--data > dt')].map((term) => [
+      term.textContent?.trim(),
+      term.nextElementSibling?.querySelector('a')?.getAttribute('href'),
+    ]),
+  );
+  assertEquals(sources, [
+    ['Last.fm', 'https://www.last.fm'],
+    ['Letterboxd', 'https://letterboxd.com'],
+    ['GitHub', 'https://github.com'],
+    ['CodeTime', 'https://codetime.dev'],
+  ]);
 });
