@@ -124,6 +124,17 @@ const CvSchema = v.strictObject({
       endDate: v.optional(Month),
     }),
   ),
+  /** Teaching assistantships, student groups and the like; only the year is kept. */
+  academic: v.optional(
+    v.array(
+      v.strictObject({
+        title: Text,
+        institution: Text,
+        year: v.pipe(v.number(), v.integer(), v.minValue(1900), v.maxValue(2100)),
+        summary: v.optional(Text),
+      }),
+    ),
+  ),
   skills: v.array(v.strictObject({ name: Text, keywords: v.array(Text) })),
   languages: v.array(v.strictObject({ language: Text, fluency: Text })),
   publications: v.optional(v.array(v.strictObject({ research: Slug }))),

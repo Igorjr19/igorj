@@ -152,6 +152,10 @@ Deno.test('cvFor falls back to another language in the declared order and says s
   assertEquals([fallback?.language, fallback?.fallback, fallback?.basics.label], ['en', true, 'English CV']);
 });
 
+Deno.test('cvFor gives an empty list of academic experience when the CV has none, so templates need no check', () => {
+  assertEquals(cvFor(RAW, 'en', researchFor(RAW, 'en'))?.academic, []);
+});
+
 Deno.test('cvFor lists only the publications that exist in the language shown', () => {
   assertEquals(cvFor(RAW, 'en', researchFor(RAW, 'en'))?.publications, [
     { id: 'thesis', slug: 'thesis', title: 'Thesis', year: 2025 },

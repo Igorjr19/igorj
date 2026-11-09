@@ -138,6 +138,12 @@ export interface CvModel {
     readonly startDate?: string | undefined;
     readonly endDate?: string | undefined;
   }[];
+  readonly academic: readonly {
+    readonly title: string;
+    readonly institution: string;
+    readonly year: number;
+    readonly summary?: string | undefined;
+  }[];
   readonly skills: readonly { readonly name: string; readonly keywords: readonly string[] }[];
   readonly languages: readonly { readonly language: string; readonly fluency: string }[];
   /** Research items of this language the CV lists; ones missing here are left out. */
