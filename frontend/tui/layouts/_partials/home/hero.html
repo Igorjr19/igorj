@@ -8,13 +8,15 @@
   {{- end }}{{ end }}
   <div class="hero__text">
     <h1 class="hero__name" id="hero-name" data-ascii-name>{{ partial "author.html" $ }}</h1>
-    <p class="hero__role">{{ partial "role.html" $ }}<span class="cursor" aria-hidden="true"></span></p>
+    <div class="hero__meta">
+      <p class="hero__role">{{ partial "role.html" $ }}<span class="cursor" aria-hidden="true"></span></p>
+      <p class="hero__location">{{ .location }}</p>
+    </div>
     <ul class="hero__lines">
       {{- range .lines }}
       <li>{{ . }}</li>
       {{- end }}
     </ul>
-    <p class="hero__location">{{ .location }}</p>
   </div>
 </section>
 {{- with resources.Get "ts/name/motion.ts" | js.Build (dict "minify" true) | fingerprint }}
