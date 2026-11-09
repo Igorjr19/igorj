@@ -23,6 +23,7 @@ Deno.test('the CV is a page of its own, built from the CV data', async (t) => {
       'CV',
       'Experience',
       'Education',
+      'Academic experience',
       'Skills',
       'Languages',
       'Publications',
@@ -35,6 +36,9 @@ Deno.test('the CV is a page of its own, built from the CV data', async (t) => {
       '2022-01 – 2023-12',
       'Bachelor · Computing',
       'Fixture University · 2020-01 – 2023-12',
+      'Fixture teaching assistant',
+      'Fixture University · 2022',
+      'Fixture assistantship summary.',
       'TypeScript · Go',
       'Fluent',
     ]) {

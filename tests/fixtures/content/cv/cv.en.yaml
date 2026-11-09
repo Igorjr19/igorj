@@ -26,6 +26,11 @@ education:
     area: Computing
     startDate: 2020-01
     endDate: 2023-12
+academic:
+  - title: Fixture teaching assistant
+    institution: Fixture University
+    year: 2022
+    summary: Fixture assistantship summary.
 skills:
   - name: Languages
     keywords: [TypeScript, Go]

@@ -176,6 +176,7 @@ function cvModel(cv: Cv, language: string, fallback: boolean, research: readonly
     basics: { label, summary, email, location, profiles },
     work: cv.work.map(({ highlights, ...entry }) => ({ ...entry, highlights: highlights ?? [] })),
     education: cv.education,
+    academic: cv.academic ?? [],
     skills: cv.skills,
     languages: cv.languages,
     publications: (cv.publications ?? []).flatMap(({ research: id }) =>

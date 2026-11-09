@@ -42,6 +42,20 @@
   {{- end }}
 </section>
 {{- end }}
+{{- with .academic }}
+<section>
+  <h2>{{ i18n "cvAcademic" }}</h2>
+  {{- range . }}
+  <article>
+    <h3>{{ .title }}</h3>
+    <p class="panel__meta">{{ .institution }} · {{ .year }}</p>
+    {{- with .summary }}
+    <p>{{ . }}</p>
+    {{- end }}
+  </article>
+  {{- end }}
+</section>
+{{- end }}
 {{- with .skills }}
 <section>
   <h2>{{ i18n "cvSkills" }}</h2>
