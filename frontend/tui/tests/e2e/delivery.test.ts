@@ -51,15 +51,20 @@ Deno.test('assets are cached as long as their names allow, and the next page loa
   );
 });
 
-Deno.test('every page points to one favicon, drawn in the colors of the default dark theme', async () => {
+Deno.test('every page points to the favicon, a PNG in the two sizes browsers and phones ask for', async () => {
   for (const file of ['en/index.html', 'pt/posts/index.html', '404.html', 'index.html']) {
     const html = await Deno.readTextFile(`${SITE}/${file}`);
-    assert(/<link rel=(?:"icon"|icon) href=(?:"\/icons\/favicon\.svg"|\/icons\/favicon\.svg)/.test(html), file);
+    assert(/<link rel=(?:"icon"|icon) href=(?:"\/icons\/favicon-32\.png"|\/icons\/favicon-32\.png)/.test(html), file);
   }
-  const icon = await Deno.readTextFile(`${SITE}/icons/favicon.svg`);
-  const themes = JSON.parse(await Deno.readTextFile('generated/data/themes.json'));
-  const family = themes.families.find((each: { name: string }) => each.name === themes.defaultFamily);
-  const dark = family.themes.find((theme: { id: string }) => theme.id === family.system.dark);
-  assert(icon.includes(`fill="${dark.swatch[0]}"`), 'the background is the dark theme background');
-  assert(!icon.includes('{{'), 'the template was filled in');
+  for (const [file, size] of [
+    ['favicon-32.png', 32],
+    ['favicon-180.png', 180],
+  ] as const) {
+    const png = await Deno.readFile(`${SITE}/icons/${file}`);
+    const view = new DataView(png.buffer);
+    assertEquals(
+      [png.subarray(1, 4), view.getUint32(16), view.getUint32(20)],
+      [new TextEncoder().encode('PNG'), size, size],
+    );
+  }
 });
