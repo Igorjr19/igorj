@@ -1,0 +1,7 @@
+{{- /*
+  The photo of the author made ready for one-bit dithering: cropped to the given size around the centre, in grays,
+  sharpened a little and brightened in the middle tones, so the background goes clean and the face keeps its lines.
+  Expects image, width and height; returns a PNG, since dots dithered into a JPEG would blur.
+*/ -}}
+{{- $sized := (.image.Process "png").Fill (printf "%dx%d Center" .width .height) }}
+{{- return $sized.Filter images.Grayscale (images.UnsharpMask 1.2 1 0) (images.Brightness 12) (images.Sigmoid 0.45 5) }}

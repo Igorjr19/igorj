@@ -1,5 +1,5 @@
 {{- /* Two-color dithering inked with the theme text: ink goes where the image is bright on dark themes and where it is dark on light ones, so it reads the right way round. */}}
-{{- $dithered := (.image.Resize (printf "%dx" .width)).Filter (images.Dither (dict "colors" (slice "#000000" "#ffffff"))) }}
+{{- $dithered := (.image.Resize (printf "%dx" .width)).Filter (images.Dither (dict "colors" (slice "#000000" "#ffffff") "method" (.method | default "FloydSteinberg"))) }}
 {{- $inverted := $dithered.Filter images.Invert }}
 <span class="dither {{ .class }}"{{ with .alt }} role="img" aria-label="{{ . }}"{{ else }} aria-hidden="true"{{ end }} style="{{ with .ink }}--dither-ink: {{ . | safeCSS }}; {{ end }}--dither: url('{{ $dithered.RelPermalink }}'); --dither-inverted: url('{{ $inverted.RelPermalink }}'); aspect-ratio: {{ $dithered.Width }} / {{ $dithered.Height }}; max-inline-size: {{ $dithered.Width }}px">
   <span class="dither__ink dither__ink--on-bright"></span>

@@ -3,7 +3,8 @@
 {{- $profile := . }}
 <section class="hero" aria-labelledby="hero-name">
   {{- with .photo }}{{ with resources.Get (printf "media/%s" .) }}
-  {{ partial "dither.html" (dict "image" . "alt" $profile.photoAlt "class" "hero__photo" "width" 480 "ink" "var(--color-accent)") }}
+  {{- $portrait := partial "portrait.html" (dict "image" . "width" 320 "height" 320) }}
+  {{ partial "dither.html" (dict "image" $portrait "alt" $profile.photoAlt "class" "hero__photo" "width" 320 "method" "Atkinson" "ink" "var(--color-accent)") }}
   {{- end }}{{ end }}
   <div class="hero__text">
     <h1 class="hero__name" id="hero-name" data-ascii-name>{{ partial "author.html" $ }}</h1>

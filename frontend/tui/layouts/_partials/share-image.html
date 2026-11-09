@@ -29,7 +29,8 @@
   (images.Overlay $titleLayer 72 150)
   (images.Text $footer (dict "color" $text "size" 28 "x" 72 "y" 528 "font" $regular)) }}
 {{- with and $profile $profile.photo }}{{ with resources.Get (printf "media/%s" .) }}
-  {{- $photo := (.Resize "x486").Filter (images.Dither (dict "colors" (slice $background $accent))) }}
+  {{- $portrait := partial "portrait.html" (dict "image" . "width" 364 "height" 486) }}
+  {{- $photo := $portrait.Filter (images.Dither (dict "colors" (slice $background $accent) "method" "Atkinson")) }}
   {{- $filters = $filters | append (images.Overlay $photo (sub 1128 $photo.Width) 72) }}
 {{- end }}{{ end }}
 {{- return $image.Filter $filters }}

@@ -40,8 +40,10 @@
 
   /* The dots of the photo catch a band of light that passes down now and then, and a light under the pointer.
      Both are painted on the inked layer, so only the dots light up; the other layer keeps them transparent. */
+  /* The portrait is drawn at a low resolution on purpose; its dots stay square instead of blurring when scaled. */
   .hero__photo .dither__ink {
     --lit: transparent;
+    image-rendering: pixelated;
     background-image:
       radial-gradient(circle at var(--light-x) var(--light-y), var(--lit) 0, transparent 30%),
       linear-gradient(transparent 40%, var(--band) 50%, transparent 60%);
