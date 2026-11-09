@@ -101,7 +101,14 @@ class Terminal {
     title.textContent = `terminal · ${user}@${host}`;
     const keys = element('span', 'drawer__keys');
     keys.textContent = this.data.strings['termKeys'] ?? '';
-    bar.append(title, keys);
+    const close = element('button', 'drawer__close');
+    close.type = 'button';
+    close.textContent = this.data.strings['termClose'] ?? 'close';
+    close.setAttribute('aria-label', this.data.strings['termCloseLabel'] ?? 'Close the terminal');
+    close.addEventListener('click', () => this.close());
+    const end = element('span', 'drawer__end');
+    end.append(keys, close);
+    bar.append(title, end);
     this.log.setAttribute('role', 'log');
     this.log.setAttribute('aria-live', 'polite');
     this.prompt.htmlFor = 'terminal-input';
