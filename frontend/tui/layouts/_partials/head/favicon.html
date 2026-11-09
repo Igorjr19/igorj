@@ -1,5 +1,14 @@
-{{- /* A prompt with the block cursor of the header, in the colors of the default dark theme, at a fixed address so
-   pages without the site's head (the bare 404) can point to it too. */ -}}
-{{- with resources.Get "icons/favicon.svg" | resources.ExecuteAsTemplate "icons/favicon.svg" (merge (partial "default-colors.html" .) (dict "title" (urls.Parse site.BaseURL).Host)) }}
-<link rel="icon" href="{{ .RelPermalink }}" type="image/svg+xml">
-{{- end }}
+{{- /*
+  The initial of the author, an accented capital I in Fira Code Bold, drawn at build time in the accent on the
+  background of the default dark theme. A picture rather than SVG text, because a favicon cannot use the site's
+  fonts. Published at fixed addresses so pages without the site's head (the bare 404) can point to it too.
+*/ -}}
+{{- $colors := partial "default-colors.html" . }}
+{{- $font := resources.Get "share/fonts/FiraCode-Bold.ttf" }}
+{{- $canvas := (resources.Get "share/canvas.png").Process (printf "resize 180x180 png %s" $colors.background) }}
+{{- $letter := images.Text "Í" (dict "color" $colors.accent "size" 140 "x" 90 "y" 29 "alignx" "center" "font" $font) }}
+{{- $large := $canvas.Filter $letter | resources.Copy "icons/favicon-180.png" }}
+{{- $small := $large.Process "resize 32x32 png" | resources.Copy "icons/favicon-32.png" }}
+<link rel="icon" href="{{ $small.RelPermalink }}" sizes="32x32" type="image/png">
+<link rel="icon" href="{{ $large.RelPermalink }}" sizes="180x180" type="image/png">
+<link rel="apple-touch-icon" href="{{ $large.RelPermalink }}">
