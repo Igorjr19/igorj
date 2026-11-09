@@ -1,5 +1,14 @@
 import { assert, assertEquals } from '@std/assert';
-import { coverage, lensed, lensRadius, nameLines, RAMP, render, scrambled } from '../../../assets/ts/name/ascii.ts';
+import {
+  coverage,
+  lensed,
+  lensRadius,
+  nameLines,
+  RAMP,
+  render,
+  scrambled,
+  sweepLens,
+} from '../../../assets/ts/name/ascii.ts';
 
 Deno.test('coverage averages the alpha of each cell, so a cell half covered by the name reads 0.5', () => {
   // A 2x1 grid of 2x2 cells: the first is fully drawn, the second only in its top row.
@@ -52,4 +61,12 @@ Deno.test('scrambled only touches characters near the pointer, and never the spa
   assertEquals(lines[1]?.[0], RAMP[4]);
   assertEquals(lines[1]?.slice(1, 3), '  ');
   assertEquals(lines[0]?.slice(20), '#'.repeat(10));
+});
+
+Deno.test('sweepLens crosses the whole name along its middle, starting and ending out of sight', () => {
+  const grid = { cols: 100, rows: 9, cells: new Float32Array(900), aspect: 2 };
+  const radius = lensRadius(grid);
+  assertEquals(sweepLens(grid, 0), { col: -radius, row: 4 });
+  assertEquals(sweepLens(grid, 1), { col: 100 + radius, row: 4 });
+  assertEquals(sweepLens(grid, 0.5).col, 50);
 });

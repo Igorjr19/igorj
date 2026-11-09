@@ -137,6 +137,34 @@ Deno.test('the home boxes show live facts: the build, the week of music and the 
   });
 });
 
+Deno.test('the name and the photo move by themselves, and the photo catches the pointer', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('its movement loads by itself once the page is drawn, with no pointer needed', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    await page.waitForFunction(() => [...document.scripts].some((script) => script.src.includes('/name/motion.')));
+  });
+
+  await t.step('under the mouse a light follows the pointer over the photo, and goes when it leaves', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE });
+    await page.waitForFunction(() => [...document.scripts].some((script) => script.src.includes('/name/motion.')));
+    const box = await page.evaluate(() => {
+      const { left, top, width, height } = (document.querySelector('.hero__photo') as Element).getBoundingClientRect();
+      return { x: left + width / 2, y: top + height / 4 };
+    });
+    await page.mouse.move(box.x, box.y);
+    await page.mouse.move(box.x + 4, box.y + 4);
+    const lit = await page.evaluate(() =>
+      (document.querySelector('.hero__photo') as HTMLElement).classList.contains('is-lit'),
+    );
+    await page.mouse.move(5, 5);
+    const after = await page.evaluate(() =>
+      (document.querySelector('.hero__photo') as HTMLElement).classList.contains('is-lit'),
+    );
+    assertEquals([lit, after], [true, false]);
+  });
+});
+
 Deno.test('with JavaScript the name is drawn in characters, and stays a heading for screen readers', async (t) => {
   await using session = await Session.start();
 
@@ -165,7 +193,7 @@ Deno.test('with JavaScript the name is drawn in characters, and stays a heading 
     assert((name.drawn?.split('\n').length ?? 0) > 4, 'the drawing has several rows');
   });
 
-  await t.step('left alone, the drawing stays still: it is drawn once and does not change', async () => {
+  await t.step('between crossings the drawing stays still', async () => {
     const page = await session.open(HOME_EN, { viewport: WIDE });
     await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
     const first = (await page.evaluate(read)).drawn;
@@ -179,6 +207,7 @@ Deno.test('with JavaScript the name is drawn in characters, and stays a heading 
       const { left, top, width, height } = (document.querySelector('.hero__ascii') as Element).getBoundingClientRect();
       return { x: left + width / 4, y: top + height / 4 };
     });
+    await page.waitForFunction(() => [...document.scripts].some((script) => script.src.includes('/name/motion.')));
     await page.mouse.move(box.x, box.y);
     await page.mouse.move(box.x + 8, box.y + 4);
     await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 300)));

@@ -124,3 +124,9 @@ export function scrambled(text: string, grid: Grid, lens: Lens, random: () => nu
     )
     .join('\n');
 }
+
+/** Where a lens crossing the name on its own is, from just before the first column to just past the last. */
+export function sweepLens(grid: Grid, progress: number): Lens {
+  const radius = lensRadius(grid);
+  return { col: -radius + progress * (grid.cols + 2 * radius), row: (grid.rows - 1) / 2 };
+}
