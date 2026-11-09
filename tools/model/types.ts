@@ -21,6 +21,8 @@ export interface SiteModel {
   readonly reading: readonly ReadingModel[];
   readonly music: MusicModel | null;
   readonly films: FilmsModel | null;
+  readonly github: GithubModel | null;
+  readonly codetime: CodetimeModel | null;
 }
 
 export interface ProfileModel {
@@ -168,4 +170,33 @@ export interface FilmsModel {
     readonly rating?: number | undefined;
     readonly url?: string | undefined;
   }[];
+}
+
+/** Public GitHub activity: contributions per day in weeks that start on Sunday, oldest first. */
+export interface GithubModel {
+  readonly updated: string;
+  readonly login: string;
+  readonly url: string;
+  readonly total: number;
+  /** The day the first week starts. */
+  readonly start: string;
+  readonly weeks: readonly (readonly number[])[];
+  /** How busy each day is, from 0 (nothing) to 4 (among the busiest), in the same weeks. */
+  readonly levels: readonly (readonly number[])[];
+  readonly repositories: readonly {
+    readonly name: string;
+    readonly url: string;
+    readonly description?: string | undefined;
+    readonly language?: string | undefined;
+    readonly stars: number;
+    readonly pushed: string;
+  }[];
+}
+
+/** Coding time from CodeTime, in minutes. */
+export interface CodetimeModel {
+  readonly updated: string;
+  readonly weekMinutes: number;
+  readonly monthMinutes: number;
+  readonly languages: readonly { readonly name: string; readonly minutes: number }[];
 }

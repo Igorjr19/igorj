@@ -1,0 +1,4 @@
+{{- /* Minutes as hours and minutes, "12h 30m", or only minutes under an hour. */ -}}
+{{- $hours := div (int .) 60 }}
+{{- $minutes := mod (int .) 60 }}
+{{- return cond (gt $hours 0) (printf "%dh %02dm" $hours $minutes) (printf "%dm" $minutes) }}

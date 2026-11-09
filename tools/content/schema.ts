@@ -173,6 +173,41 @@ const FilmsSchema = v.strictObject({
   ),
 });
 
+const Count = v.pipe(v.number(), v.integer(), v.minValue(0));
+
+/** Public GitHub activity: contributions per day in weeks (Sunday first), and the repositories pushed to last. */
+const GithubSchema = v.strictObject({
+  example: Example,
+  updated: Day,
+  login: Text,
+  contributions: v.strictObject({
+    total: Count,
+    start: Day,
+    weeks: v.array(v.pipe(v.array(Count), v.minLength(1), v.maxLength(7))),
+  }),
+  repositories: v.array(
+    v.strictObject({
+      name: Text,
+      url: Url,
+      description: v.optional(Text),
+      language: v.optional(Text),
+      stars: Count,
+      pushed: Day,
+    }),
+  ),
+});
+
+/** Coding time from CodeTime, in minutes: the last seven days, the last thirty and their languages. */
+const CodetimeSchema = v.strictObject({
+  example: Example,
+  updated: Day,
+  week: v.strictObject({ minutes: Count }),
+  month: v.strictObject({
+    minutes: Count,
+    languages: v.array(v.strictObject({ name: Text, minutes: v.pipe(v.number(), v.integer(), v.minValue(1)) })),
+  }),
+});
+
 type ContentSchema = v.GenericSchema<unknown>;
 
 const LANGUAGE = '(?:pt|en)';
@@ -190,6 +225,8 @@ const SCHEMAS_BY_PATH: readonly (readonly [RegExp, ContentSchema])[] = [
   [/^reading\/reading\.yaml$/, ReadingSchema],
   [/^external\/music\.json$/, MusicSchema],
   [/^external\/films\.json$/, FilmsSchema],
+  [/^external\/github\.json$/, GithubSchema],
+  [/^external\/codetime\.json$/, CodetimeSchema],
 ];
 
 /** Picks the schema from the path relative to the content root, so a misplaced or misnamed file is reported too. */
@@ -215,3 +252,5 @@ export type Contact = v.InferOutput<typeof ContactSchema>;
 export type Reading = v.InferOutput<typeof ReadingSchema>;
 export type Music = v.InferOutput<typeof MusicSchema>;
 export type Films = v.InferOutput<typeof FilmsSchema>;
+export type Github = v.InferOutput<typeof GithubSchema>;
+export type Codetime = v.InferOutput<typeof CodetimeSchema>;

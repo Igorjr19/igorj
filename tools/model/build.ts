@@ -2,7 +2,9 @@ import { type Cv, type Post, type Project, type Research, SECTIONS } from '../co
 import type { ContentItem, RawContent } from '../content/types.ts';
 import type {
   CategoryModel,
+  CodetimeModel,
   CvModel,
+  GithubModel,
   ItemModel,
   PostModel,
   ProfileModel,
@@ -202,6 +204,42 @@ export function profileFor(raw: RawContent, language: string): ProfileModel | nu
   };
 }
 
+/** How busy a day is, from 0 for none to 4 for the busiest, relative to the busiest day shown. */
+export function activityLevel(count: number, busiest: number): number {
+  return count <= 0 || busiest <= 0 ? 0 : Math.min(4, Math.max(1, Math.ceil((4 * count) / busiest)));
+}
+
+export function githubFor(raw: RawContent): GithubModel | null {
+  const github = raw.github;
+  if (!github) {
+    return null;
+  }
+  const { weeks, total, start } = github.contributions;
+  const busiest = Math.max(0, ...weeks.flat());
+  return {
+    updated: day(github.updated),
+    login: github.login,
+    url: `https://github.com/${github.login}`,
+    total,
+    start: day(start),
+    weeks,
+    levels: weeks.map((week) => week.map((count) => activityLevel(count, busiest))),
+    repositories: github.repositories.map((repository) => ({ ...repository, pushed: day(repository.pushed) })),
+  };
+}
+
+export function codetimeFor(raw: RawContent): CodetimeModel | null {
+  const codetime = raw.codetime;
+  return (
+    codetime && {
+      updated: day(codetime.updated),
+      weekMinutes: codetime.week.minutes,
+      monthMinutes: codetime.month.minutes,
+      languages: [...codetime.month.languages].sort((a, b) => b.minutes - a.minutes),
+    }
+  );
+}
+
 /** Every section is on unless the site settings turn it off. */
 export function sectionsFor(raw: RawContent): Record<SectionKey, boolean> {
   const chosen = raw.site.sections ?? {};
@@ -233,5 +271,7 @@ export function buildModel(raw: RawContent, language: string): SiteModel {
     reading: raw.reading?.items ?? [],
     music: raw.music && { updated: day(raw.music.updated), period: raw.music.period, artists: raw.music.artists },
     films: raw.films && { updated: day(raw.films.updated), films: raw.films.films },
+    github: githubFor(raw),
+    codetime: codetimeFor(raw),
   };
 }

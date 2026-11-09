@@ -1,8 +1,11 @@
 import { assertEquals } from '@std/assert';
 import type { ContentItem, RawContent } from '../../../tools/content/types.ts';
 import {
+  activityLevel,
   buildModel,
+  codetimeFor,
   cvFor,
+  githubFor,
   postsFor,
   projectsFor,
   researchFor,
@@ -63,6 +66,8 @@ const RAW: RawContent = {
   reading: null,
   music: { updated: new Date('2026-01-01'), period: 'week', artists: [] },
   films: null,
+  github: null,
+  codetime: null,
   photo: 'about/photo.png',
   posts: [
     item('both', 'pt', post('Ambos', '2026-01-10')),
@@ -226,4 +231,57 @@ Deno.test('an archived post, project or research work stays in the content but l
   assertEquals(titles(postsFor(archived, 'en')), titles(postsFor(RAW, 'en')));
   assertEquals(titles(projectsFor(archived, 'en')), titles(projectsFor(RAW, 'en')));
   assertEquals(researchFor(archived, 'en'), []);
+});
+
+Deno.test('a day is as busy as its share of the busiest day shown, from 0 for none to 4', () => {
+  assertEquals(
+    [0, 1, 2, 3, 4, 8].map((count) => activityLevel(count, 8)),
+    [0, 1, 1, 2, 2, 4],
+  );
+  assertEquals(activityLevel(3, 0), 0);
+});
+
+Deno.test('the GitHub activity keeps its weeks, links the profile and rates each day', () => {
+  const github = {
+    updated: '2026-11-09',
+    login: 'someone',
+    contributions: { total: 6, start: '2026-11-01', weeks: [[0, 1, 0, 0, 0, 0, 2], [3]] },
+    repositories: [
+      {
+        name: 'site',
+        url: 'https://github.com/someone/site',
+        stars: 1,
+        pushed: new Date('2026-11-08'),
+      },
+    ],
+  };
+  const model = githubFor({ ...RAW, github });
+  assertEquals(
+    [model?.url, model?.total, model?.levels, model?.repositories[0]?.pushed],
+    ['https://github.com/someone', 6, [[0, 2, 0, 0, 0, 0, 3], [4]], '2026-11-08'],
+  );
+  assertEquals(githubFor(RAW), null);
+});
+
+Deno.test('the coding time lists the languages of the month, most used first', () => {
+  const codetime = {
+    updated: '2026-11-09',
+    week: { minutes: 90 },
+    month: {
+      minutes: 600,
+      languages: [
+        { name: 'go', minutes: 100 },
+        { name: 'typescript', minutes: 400 },
+      ],
+    },
+  };
+  assertEquals(codetimeFor({ ...RAW, codetime }), {
+    updated: '2026-11-09',
+    weekMinutes: 90,
+    monthMinutes: 600,
+    languages: [
+      { name: 'typescript', minutes: 400 },
+      { name: 'go', minutes: 100 },
+    ],
+  });
 });

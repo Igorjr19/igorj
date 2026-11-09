@@ -1,0 +1,28 @@
+{{- /* Code: the public GitHub contributions of the last months as a grid of days, and the coding time from CodeTime. */ -}}
+{{- $model := partial "model.html" . }}
+{{- if or $model.github $model.codetime }}
+<section class="panel widget" box-="square" id="code" aria-labelledby="code-title">
+  {{ partial "home/box-title.html" (dict "id" "code" "label" (i18n "panelCode") "network" "GitHub") }}
+  {{- with $model.github }}
+  {{- $label := i18n "contributionsYear" (dict "Count" .total) }}
+  <p class="panel__meta">{{ $label }}</p>
+  {{ partial "external-age.html" .updated }}
+  <div class="contributions" role="img" aria-label="{{ $label }}">
+    {{- range last 30 .levels }}<span class="contributions__week">{{ range . }}<i data-level="{{ . }}"></i>{{ end }}</span>{{ end }}
+  </div>
+  {{- end }}
+  {{- with $model.codetime }}
+  <dl class="facts">
+    <dt>{{ i18n "codeWeek" }}</dt>
+    <dd>{{ partial "duration.html" .weekMinutes }}</dd>
+    <dt>{{ i18n "codeMonth" }}</dt>
+    <dd>{{ partial "duration.html" .monthMinutes }}</dd>
+    {{- with first 3 .languages }}
+    <dt>{{ i18n "codeLanguages" }}</dt>
+    <dd>{{ delimit (apply . "index" "." "name") " · " }}</dd>
+    {{- end }}
+  </dl>
+  {{- if not $model.github }}{{ partial "external-age.html" .updated }}{{ end }}
+  {{- end }}
+</section>
+{{- end }}

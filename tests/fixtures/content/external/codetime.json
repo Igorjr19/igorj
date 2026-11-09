@@ -1,0 +1,23 @@
+{
+  "updated": "2026-01-01",
+  "week": {
+    "minutes": 754
+  },
+  "month": {
+    "minutes": 3125,
+    "languages": [
+      {
+        "name": "typescript",
+        "minutes": 1800
+      },
+      {
+        "name": "go",
+        "minutes": 900
+      },
+      {
+        "name": "markdown",
+        "minutes": 200
+      }
+    ]
+  }
+}
