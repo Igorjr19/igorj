@@ -100,6 +100,7 @@ Deno.test('the home boxes show live facts: the build, the week of music and the 
     );
     assertEquals(boxes, [
       ['system', 'system'],
+      ['code', 'code'],
       ['listening', 'listening'],
       ['watched', 'watched'],
     ]);
@@ -254,5 +255,35 @@ Deno.test('the shelf boxes lead to where their data comes from', async (t) => {
     const html = await Deno.readTextFile('generated/fixture-site/en/listening/index.html');
     assert(html.includes('<link rel=canonical href=https://igorj.dev/en/shelf/>'), 'canonical is the shelf');
     assert(html.includes('url=/en/shelf/'), 'refreshes to the shelf');
+  });
+});
+
+Deno.test('the code box shows public work: GitHub contributions and coding time', async (t) => {
+  await using session = await Session.start();
+
+  await t.step('the code box shows the GitHub days of the last months and the coding time from CodeTime', async () => {
+    const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
+    const code = await page.evaluate(() => ({
+      total: document.querySelector('#code .panel__meta')?.textContent?.trim(),
+      grid: document.querySelector('#code .contributions')?.getAttribute('aria-label'),
+      weeks: document.querySelectorAll('#code .contributions__week').length,
+      levels: [
+        ...new Set(
+          [...document.querySelectorAll('#code .contributions i')].map((day) => day.getAttribute('data-level')),
+        ),
+      ].sort(),
+      link: document.querySelector('#code-title a')?.getAttribute('href') ?? null,
+      facts: [...document.querySelectorAll('#code dd')].map((fact) => fact.textContent?.trim()),
+      sources: [...document.querySelectorAll('#system dd')].at(-1)?.textContent?.trim(),
+    }));
+    assertEquals(code, {
+      total: '466 contributions in the last year',
+      grid: '466 contributions in the last year',
+      weeks: 30,
+      levels: ['0', '1', '2', '3', '4'],
+      link: 'https://github.com/example',
+      facts: ['12h 34m', '52h 05m', 'typescript · go · markdown'],
+      sources: 'Last.fm · Letterboxd · GitHub · CodeTime · 2026-01-01',
+    });
   });
 });

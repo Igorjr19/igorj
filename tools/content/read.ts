@@ -75,6 +75,8 @@ export function readContent(files: readonly ContentFile[], paths: readonly strin
     reading: single(byPath, 'reading/reading.yaml'),
     music: single(byPath, 'external/music.json'),
     films: single(byPath, 'external/films.json'),
+    github: single(byPath, 'external/github.json'),
+    codetime: single(byPath, 'external/codetime.json'),
     photo: paths.find((path) => PHOTO.test(path)) ?? null,
     ...items,
   };

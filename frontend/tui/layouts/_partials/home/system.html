@@ -11,9 +11,14 @@
     <dd><time datetime="{{ now.Format "2006-01-02" }}">{{ now.Format "2006-01-02" }}</time></dd>
     <dt>{{ i18n "systemContent" }}</dt>
     <dd>{{ partial "content-summary.html" . }}</dd>
-    {{- with $model.music }}
+    {{- $sources := slice }}
+    {{- $updated := "" }}
+    {{- range $source := slice (dict "name" "Last.fm" "data" $model.music) (dict "name" "Letterboxd" "data" $model.films) (dict "name" "GitHub" "data" $model.github) (dict "name" "CodeTime" "data" $model.codetime) }}
+    {{- with .data }}{{ $sources = $sources | append $source.name }}{{ if gt .updated $updated }}{{ $updated = .updated }}{{ end }}{{ end }}
+    {{- end }}
+    {{- with $sources }}
     <dt>{{ i18n "systemData" }}</dt>
-    <dd>Last.fm · Letterboxd · <time datetime="{{ .updated }}">{{ .updated }}</time></dd>
+    <dd>{{ delimit . " · " }} · <time datetime="{{ $updated }}">{{ $updated }}</time></dd>
     {{- end }}
   </dl>
 </section>

@@ -1,9 +1,11 @@
 import type {
   About,
   Categories,
+  Codetime,
   Contact,
   Cv,
   Films,
+  Github,
   Music,
   Post,
   Project,
@@ -42,6 +44,8 @@ export interface RawContent {
   readonly reading: Reading | null;
   readonly music: Music | null;
   readonly films: Films | null;
+  readonly github: Github | null;
+  readonly codetime: Codetime | null;
   readonly photo: string | null;
   readonly posts: readonly ContentItem<Post>[];
   readonly projects: readonly ContentItem<Project>[];

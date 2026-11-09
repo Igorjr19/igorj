@@ -12,7 +12,7 @@ The home shows eight panels at once: about, now, projects, writing, reading, lis
 - **Terminal color schemes.** Catppuccin in its four flavors and fourteen accents, following the system's light or dark preference until you pick one with `t`. Every theme passes a contrast audit at build time.
 - **Images in two-color dithering**, inked with the theme's text color, so the photo and screenshots change color with the theme.
 - **Portuguese and English**, at `/pt/` and `/en/`. The root picks one from the browser; a post written in only one language still shows up in the other's list, labeled.
-- **Real data only.** Listening comes from Last.fm and films from Letterboxd, as weekly summaries without times or dates. No chart or number without a source.
+- **Real data only.** Listening comes from Last.fm and films from Letterboxd, as weekly summaries without times or dates; the public contributions come from GitHub and the coding time from CodeTime. No chart or number without a source.
 - **Static and light.** HTML built ahead of time, no framework, a few kilobytes of TypeScript, size budgets checked on every page. No cookies; the only analytics are Cloudflare's cookieless ones.
 - RSS for the whole blog and for each category, a printable CV, and a `command not found` 404.
 
