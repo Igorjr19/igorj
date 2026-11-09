@@ -112,7 +112,10 @@
     font-size: 1.15em;
   }
 
+  /* Each line may wrap; a half row between them keeps the three apart. */
   .hero__lines {
+    display: grid;
+    gap: calc(var(--cell-height) / 2);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -121,6 +124,14 @@
 
   .hero__lines li::before {
     content: none;
+  }
+
+  /* The location sits on the role's line, after it, as a quieter fact. */
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 calc(2 * var(--cell-width));
+    align-items: baseline;
   }
 
   .hero__location {
