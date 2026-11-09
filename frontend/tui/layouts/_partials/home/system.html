@@ -18,7 +18,9 @@
     {{- end }}
     {{- with $sources }}
     <dt>{{ i18n "systemData" }}</dt>
-    <dd>{{ delimit . " · " }} · <time datetime="{{ $updated }}">{{ $updated }}</time></dd>
+    <dd>{{ delimit . " · " }}</dd>
+    <dt>{{ i18n "systemUpdated" }}</dt>
+    <dd><time datetime="{{ $updated }}">{{ $updated }}</time></dd>
     {{- end }}
   </dl>
 </section>

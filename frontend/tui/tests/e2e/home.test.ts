@@ -110,6 +110,14 @@ Deno.test('the home boxes show live facts: the build, the week of music and the 
     const page = await session.open(HOME_EN, { viewport: WIDE, javascript: false });
     const listening = await page.evaluate(() => ({
       total: document.querySelector('#listening .panel__meta')?.textContent?.trim(),
+      inAccent: (() => {
+        const probe = document.body.appendChild(document.createElement('span'));
+        probe.style.backgroundColor = 'var(--color-accent)';
+        const accent = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        const fill = document.querySelector('#listening .bars__fill') as Element;
+        return getComputedStyle(fill).backgroundColor === accent;
+      })(),
       bars: [...document.querySelectorAll('#listening .bars__row')].map((row) => {
         const track = row.querySelector('.bars__track') as Element;
         const fill = row.querySelector('.bars__fill') as Element;
@@ -121,6 +129,7 @@ Deno.test('the home boxes show live facts: the build, the week of music and the 
       }),
     }));
     assertEquals(listening.total, '17 plays this week');
+    assert(listening.inAccent, 'bars follow the chosen accent');
     assertEquals(listening.bars, [
       ['Fixture Artist', 100, '12 plays'],
       ['Second Artist', 42, '5 plays'],
@@ -274,7 +283,12 @@ Deno.test('the code box shows public work: GitHub contributions and coding time'
       ].sort(),
       link: document.querySelector('#code-title a')?.getAttribute('href') ?? null,
       facts: [...document.querySelectorAll('#code dd')].map((fact) => fact.textContent?.trim()),
-      sources: [...document.querySelectorAll('#system dd')].at(-1)?.textContent?.trim(),
+      sources: [...document.querySelectorAll('#system dd')].slice(-2).map((fact) => fact.textContent?.trim()),
+      gridFillsBox:
+        Math.abs(
+          (document.querySelector('#code .contributions') as Element).getBoundingClientRect().right -
+            (document.querySelector('#code .facts') as Element).getBoundingClientRect().right,
+        ) < 1,
     }));
     assertEquals(code, {
       total: '466 contributions in the last year',
@@ -283,7 +297,8 @@ Deno.test('the code box shows public work: GitHub contributions and coding time'
       levels: ['0', '1', '2', '3', '4'],
       link: 'https://github.com/example',
       facts: ['12h 34m', '52h 05m', 'typescript · go · markdown'],
-      sources: 'Last.fm · Letterboxd · GitHub · CodeTime · 2026-01-01',
+      sources: ['Last.fm · Letterboxd · GitHub · CodeTime', '2026-01-01'],
+      gridFillsBox: true,
     });
   });
 });
