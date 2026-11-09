@@ -32,7 +32,51 @@
   }
 
   .hero__photo {
+    --light-x: 50%;
+    --light-y: 50%;
+    --glow: color-mix(in oklab, var(--color-accent), var(--color-text) 65%);
     inline-size: calc(38 * var(--cell-width));
+  }
+
+  /* The dots of the photo catch a band of light that passes down now and then, and a light under the pointer.
+     Both are painted on the inked layer, so only the dots light up; the other layer keeps them transparent. */
+  .hero__photo .dither__ink {
+    --lit: transparent;
+    background-image:
+      radial-gradient(circle at var(--light-x) var(--light-y), var(--lit) 0, transparent 30%),
+      linear-gradient(transparent 40%, var(--band) 50%, transparent 60%);
+    background-repeat: no-repeat;
+    background-size:
+      100% 100%,
+      100% 300%;
+    animation: photo-scan 8s linear infinite;
+  }
+
+  .hero__photo .dither__ink--on-bright {
+    --band: light-dark(transparent, var(--glow));
+  }
+
+  .hero__photo .dither__ink--on-dark {
+    --band: light-dark(var(--glow), transparent);
+  }
+
+  .hero__photo.is-lit .dither__ink {
+    --lit: var(--band);
+  }
+
+  @keyframes photo-scan {
+    from {
+      background-position:
+        0 0,
+        0 100%;
+    }
+
+    35%,
+    to {
+      background-position:
+        0 0,
+        0 0;
+    }
   }
 
   .hero__text {
