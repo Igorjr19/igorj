@@ -16,6 +16,8 @@ export async function settle(page: Page): Promise<void> {
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const finite = document
       .getAnimations()
+      // Scroll-linked animations follow the scroll position and never finish.
+      .filter((animation) => animation.timeline instanceof DocumentTimeline)
       .filter((animation) => animation.effect?.getComputedTiming().endTime !== Number.POSITIVE_INFINITY);
     await Promise.all(finite.map((animation) => animation.finished.catch(() => undefined)));
   });

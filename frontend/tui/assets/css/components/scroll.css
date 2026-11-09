@@ -1,0 +1,85 @@
+@layer app.components {
+  /* Inner scrollers keep a thin bar in the theme colors, which stays out of the way until it is used. */
+  .pane,
+  .term__scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-surface-2) transparent;
+  }
+
+  .pane:hover,
+  .term__scroll:hover {
+    scrollbar-color: var(--color-text-muted) transparent;
+  }
+
+  .scroll {
+    display: none;
+  }
+
+  /* Where the browser can drive an animation by scrolling, the pane drops its bar for a rail on its right edge
+     with a short block for the thumb, as in a terminal program. A pane that does not scroll has no timeline,
+     so the rail stays hidden. */
+  @supports (timeline-scope: --pane) and (animation-timeline: --pane) {
+    .win__body {
+      timeline-scope: --pane;
+    }
+
+    .pane {
+      scrollbar-width: none;
+      scroll-timeline: --pane block;
+    }
+
+    .scroll {
+      display: block;
+      grid-area: 1 / 2;
+      justify-self: end;
+      position: relative;
+      inline-size: calc(var(--cell-width) / 2);
+      margin-block: calc(var(--cell-height) / 2);
+      margin-inline-end: calc(var(--cell-width) / 2);
+      opacity: 0;
+      pointer-events: none;
+      animation: scroll-shown linear both;
+      animation-timeline: --pane;
+    }
+
+    .scroll::before {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 50%;
+      border-inline-start: var(--line);
+      content: '';
+    }
+
+    .scroll__thumb {
+      position: absolute;
+      inset-inline: 0;
+      block-size: calc(3 * var(--cell-height));
+      background-color: var(--color-accent);
+      animation: scroll-thumb linear both;
+      animation-timeline: --pane;
+    }
+  }
+
+  @keyframes scroll-shown {
+    from,
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scroll-thumb {
+    from {
+      inset-block-start: 0;
+    }
+
+    to {
+      inset-block-start: calc(100% - 3 * var(--cell-height));
+    }
+  }
+
+  @container screen (width < 100ch) {
+    .scroll {
+      display: none;
+    }
+  }
+}

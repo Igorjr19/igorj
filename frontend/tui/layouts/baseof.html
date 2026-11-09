@@ -24,6 +24,7 @@
       <main class="pane" id="pane" tabindex="-1">
         {{ block "main" . }}{{ end }}
       </main>
+      <div class="scroll" aria-hidden="true"><span class="scroll__thumb"></span></div>
     </div>
     {{ partial "window/statusbar.html" . }}
   </div>

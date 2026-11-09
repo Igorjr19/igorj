@@ -43,6 +43,7 @@
   }
 
   .pane {
+    grid-area: 1 / 2;
     min-block-size: 0;
     overflow-y: auto;
     padding: calc(1.5 * var(--cell-height)) calc(3 * var(--cell-width)) calc(2 * var(--cell-height));
