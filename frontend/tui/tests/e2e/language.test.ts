@@ -20,6 +20,20 @@ Deno.test('the language switcher is remembered and the root address follows it',
   });
 
   await t.step(
+    'the switcher shows the language codes, not the names, while the addresses stay /pt/ and /en/',
+    async () => {
+      const page = await session.open(HOME_EN, { viewport: WIDE });
+      const links = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLAnchorElement>('.win__languages a')].map((link) => [
+          link.textContent?.trim(),
+          new URL(link.href).pathname,
+        ]),
+      );
+      assertEquals(links, [['pt-br', HOME_PT]]);
+    },
+  );
+
+  await t.step(
     'the root page offers both languages as links and a refresh to English for readers without scripts',
     async () => {
       const html = await (await fetch(`${session.url}/`)).text();
