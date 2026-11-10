@@ -1,0 +1,5 @@
+{
+  "extends": "$app/tsconfig",
+  "compilerOptions": { "types": ["node"] },
+  "include": ["src", "tests"]
+}

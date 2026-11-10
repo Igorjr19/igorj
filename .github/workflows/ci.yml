@@ -32,6 +32,7 @@ jobs:
         with:
           path: .cache
           key: cache-${{ hashFiles('frontend/tui/tests/e2e/support/browser.ts', 'frontend/tui/data/themes/*.toml') }}
+      - run: deno task app:browsers
       - run: deno task ci
 
   audit:
