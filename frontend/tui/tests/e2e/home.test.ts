@@ -60,18 +60,14 @@ Deno.test('the home presents the author and the latest work', async (t) => {
       heading: document.querySelector('h1')?.textContent?.trim(),
       photo: document.querySelector('.hero__photo')?.getAttribute('aria-label'),
       role: document.querySelector('.hero__role')?.textContent?.trim(),
-      locationBesideRole:
-        Math.abs(
-          (document.querySelector('.hero__location') as Element).getBoundingClientRect().bottom -
-            (document.querySelector('.hero__role') as Element).getBoundingClientRect().bottom,
-        ) < 6,
+      oneLine: document.querySelectorAll('.hero__role').length === 1 && !document.querySelector('.hero__meta'),
       lines: [...document.querySelectorAll('.hero__lines li')].map((line) => line.textContent),
     }));
     assertEquals(hero, {
       heading: NAME,
       photo: 'Fixture photo',
-      role: 'Developer',
-      locationBesideRole: true,
+      role: 'Developer · Fixture city',
+      oneLine: true,
       lines: ['Fixture line one.', 'Fixture line two.', 'Fixture line three.'],
     });
   });

@@ -126,16 +126,8 @@
     content: none;
   }
 
-  /* The location sits on the role's line, after it, as a quieter fact. */
-  .hero__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 calc(2 * var(--cell-width));
-    align-items: baseline;
-  }
-
+  /* The location follows the role on the same line, as a quieter fact. */
   .hero__location {
-    margin: 0;
     color: var(--color-text-muted);
     font-size: var(--font-size-small);
   }
