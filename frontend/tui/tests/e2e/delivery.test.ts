@@ -51,20 +51,31 @@ Deno.test('assets are cached as long as their names allow, and the next page loa
   );
 });
 
-Deno.test('every page points to the favicon, a PNG in the two sizes browsers and phones ask for', async () => {
+Deno.test('every page points to a transparent favicon per browser theme and a touch icon with a background', async () => {
   for (const file of ['en/index.html', 'pt/posts/index.html', '404.html', 'index.html']) {
     const html = await Deno.readTextFile(`${SITE}/${file}`);
-    assert(/<link rel=(?:"icon"|icon) href=(?:"\/icons\/favicon-32\.png"|\/icons\/favicon-32\.png)/.test(html), file);
+    for (const [name, scheme] of [
+      ['favicon-light', 'dark'],
+      ['favicon-dark', 'light'],
+    ]) {
+      const link = new RegExp(
+        `<link rel="?icon"? href="?/icons/${name}\\.png"? [^>]*media="\\(prefers-color-scheme: ${scheme}\\)"`,
+      );
+      assert(link.test(html), `${file}: ${name}`);
+    }
+    assert(/apple-touch-icon"? href="?\/icons\/favicon-180\.png/.test(html) || file === '404.html', file);
   }
-  for (const [file, size] of [
-    ['favicon-32.png', 32],
-    ['favicon-180.png', 180],
+  for (const [file, size, colorType] of [
+    ['favicon-light.png', 64, 6],
+    ['favicon-dark.png', 64, 6],
+    ['favicon-180.png', 180, 2],
   ] as const) {
     const png = await Deno.readFile(`${SITE}/icons/${file}`);
     const view = new DataView(png.buffer);
     assertEquals(
-      [png.subarray(1, 4), view.getUint32(16), view.getUint32(20)],
-      [new TextEncoder().encode('PNG'), size, size],
+      [png.subarray(1, 4), view.getUint32(16), view.getUint32(20), png[25]],
+      [new TextEncoder().encode('PNG'), size, size, colorType],
+      file,
     );
   }
 });
