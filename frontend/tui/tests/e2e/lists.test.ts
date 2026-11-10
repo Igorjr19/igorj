@@ -52,7 +52,7 @@ Deno.test('the post list shows every published post, newest first, with a catego
         link.querySelector('.item__meta')?.textContent?.split(' · ').at(-1),
       ]),
     );
-    assertEquals(labels, [['Post só em português', 'pt-BR', 'Português']]);
+    assertEquals(labels, [['Post só em português', 'pt-BR', 'pt-br']]);
   });
 
   await t.step('the heading and the category names follow the interface language', async () => {

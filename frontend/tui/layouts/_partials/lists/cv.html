@@ -2,7 +2,7 @@
 {{- if .fallback }}
 {{- $shown := .language }}
 {{- range hugo.Sites }}{{ if eq .Language.Lang $shown }}
-<p class="panel__meta">{{ i18n "cvOtherLanguage" .Language.Label }}</p>
+<p class="panel__meta">{{ i18n "cvOtherLanguage" .Language.Params.name }}</p>
 {{- end }}{{ end }}
 {{- end }}
 <p>{{ .basics.label }} · {{ .basics.location }}</p>

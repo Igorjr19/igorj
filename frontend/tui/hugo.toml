@@ -33,13 +33,19 @@ tag = "tags"
 
 [languages.pt]
 locale = "pt-BR"
-label = "Português"
+label = "pt-br"
 weight = 1
+
+[languages.pt.params]
+name = "Português"
 
 [languages.en]
 locale = "en"
-label = "English"
+label = "en-us"
 weight = 2
+
+[languages.en.params]
+name = "English"
 
 # Defining any mount replaces Hugo's defaults for that target, so every source is listed.
 # tests/fixtures/hugo.toml next to this file mirrors this list with the fixture content.
