@@ -1,14 +1,17 @@
 {{- /*
-  The initial of the author, an accented capital I in Fira Code Bold, drawn at build time in the accent on the
-  background of the default dark theme. A picture rather than SVG text, because a favicon cannot use the site's
-  fonts. Published at fixed addresses so pages without the site's head (the bare 404) can point to it too.
+  The initial of the author, an accented capital I in Fira Code Bold, drawn at build time. A picture rather than SVG
+  text, because a favicon cannot use the site's fonts. The tab icons have no background: a light letter for a dark
+  browser and a dark one for a light browser, picked by the media attribute. The touch icon needs a background, so it
+  keeps the accent on the dark theme. Published at fixed addresses so pages without the site's head (the bare 404)
+  can point to them too.
 */ -}}
 {{- $colors := partial "default-colors.html" . }}
 {{- $font := resources.Get "share/fonts/FiraCode-Bold.ttf" }}
-{{- $canvas := (resources.Get "share/canvas.png").Process (printf "resize 180x180 png %s" $colors.background) }}
-{{- $letter := images.Text "Í" (dict "color" $colors.accent "size" 140 "x" 90 "y" 29 "alignx" "center" "font" $font) }}
-{{- $large := $canvas.Filter $letter | resources.Copy "icons/favicon-180.png" }}
-{{- $small := $large.Process "resize 32x32 png" | resources.Copy "icons/favicon-32.png" }}
-<link rel="icon" href="{{ $small.RelPermalink }}" sizes="32x32" type="image/png">
-<link rel="icon" href="{{ $large.RelPermalink }}" sizes="180x180" type="image/png">
-<link rel="apple-touch-icon" href="{{ $large.RelPermalink }}">
+{{- $canvas := resources.Get "share/canvas.png" }}
+{{- $touch := ($canvas.Process (printf "resize 180x180 png %s" $colors.background)).Filter (images.Text "Í" (dict "color" $colors.accent "size" 140 "x" 90 "y" 29 "alignx" "center" "font" $font)) | resources.Copy "icons/favicon-180.png" }}
+{{- $clear := $canvas.Process "resize 180x180 png" }}
+{{- $light := ($clear.Filter (images.Text "Í" (dict "color" $colors.text "size" 140 "x" 90 "y" 29 "alignx" "center" "font" $font))).Process "resize 64x64 png" | resources.Copy "icons/favicon-light.png" }}
+{{- $dark := ($clear.Filter (images.Text "Í" (dict "color" $colors.background "size" 140 "x" 90 "y" 29 "alignx" "center" "font" $font))).Process "resize 64x64 png" | resources.Copy "icons/favicon-dark.png" }}
+<link rel="icon" href="{{ $light.RelPermalink }}" sizes="64x64" type="image/png" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="{{ $dark.RelPermalink }}" sizes="64x64" type="image/png" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="{{ $touch.RelPermalink }}">
