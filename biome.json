@@ -10,6 +10,9 @@
       "frontend/*/assets/**",
       "frontend/*/tools/**",
       "frontend/*/tests/**",
+      "frontend/app/src/**",
+      "frontend/app/tests/**",
+      "frontend/app/*.ts",
       "tools/**",
       "tests/**",
       "*.json",
@@ -165,6 +168,19 @@
           }
         }
       }
+    },
+    {
+      "includes": ["frontend/app/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
     }
-  ]
+  ],
+  "html": {
+    "experimentalFullSupportEnabled": true
+  }
 }

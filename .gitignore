@@ -6,3 +6,6 @@
 /.cache/
 /content/
 /third-party/
+/frontend/app/.svelte-kit/
+/test-results/
+/frontend/app/test-results/

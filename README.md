@@ -58,6 +58,8 @@ deno task dev            # local server at http://localhost:1313 (renders in mem
 deno task build          # production build
 deno task check          # lint, types and unit tests (seconds)
 deno task ci             # everything the CI runs, browser tests included
+deno task app:build      # build the SvelteKit frontend into generated/app (not published yet)
+deno task test:app       # build it from the fixtures and run its Playwright tests (APP_BROWSERS=chromium for one browser)
 ```
 
 | Task | What it does |
@@ -112,6 +114,7 @@ The repository reads the content, applies its rules and hands the result to a fr
 | `tools/shared/` | Helpers shared by every part (downloads, files, hashes) |
 | `tests/unit/` | Unit tests for `tools/`, mirroring its paths |
 | `tests/fixtures/content/` | Fixture content in the content repository format |
+| `frontend/app/` | The frontend that is replacing `frontend/tui/`: SvelteKit prerendered with `adapter-static`, reading `generated/model/`. Everything runs on Deno, with packages from npm pinned in `deno.json`; its Playwright tests run in Chromium, Firefox and WebKit |
 | `frontend/tui/` | The terminal-style frontend: everything below is specific to it |
 | `frontend/tui/hugo.toml` | Hugo configuration; Hugo runs from the repository root with `--config frontend/tui/hugo.toml` |
 | `frontend/tui/layouts/`, `pages/`, `static/` | Hugo templates, partials and the frontend's own pages (CV, credits) |

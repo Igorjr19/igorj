@@ -1,0 +1,8 @@
+{
+  "name": "igorj-app",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#lib/*": "./src/lib/*"
+  }
+}
