@@ -28,7 +28,7 @@
     "hooks": "lefthook install",
     "app:build": "cd frontend/app && deno run -A npm:vite build",
     "app:build:fixtures": "deno task prepare && deno task content:check tests/fixtures/content && deno task model tests/fixtures/content && cd frontend/app && APP_OUT=../../generated/fixture-app deno run -A npm:vite build",
-    "app:check": "cd frontend/app && deno run -A npm:svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+    "app:check": "cd frontend/app && deno run -A npm:@sveltejs/kit sync && deno run -A npm:svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "app:browsers": "deno run -A npm:@playwright/test install --with-deps chromium firefox webkit",
     "test:app": "deno task app:build:fixtures && deno run -A npm:@playwright/test test --config frontend/app/playwright.config.ts"
   },
