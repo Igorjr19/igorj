@@ -1,0 +1,370 @@
+@layer app.components {
+  /* The top line: the site, the side switch, where the page sits, and the controls on the right. */
+  .win__top {
+    display: flex;
+    align-items: stretch;
+    gap: 0 calc(1.5 * var(--cell-width));
+    border-block-end: var(--line);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+
+  /* Filled labels use the link color, which every theme checks at 4.5:1 against the background. */
+  .win__site {
+    display: flex;
+    align-items: center;
+    padding: calc(var(--cell-height) / 3) calc(1.2 * var(--cell-width));
+    background-color: var(--color-link);
+    color: var(--color-background);
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .win__button,
+  .statusbar button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .win__button {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--cell-width) / 2);
+    white-space: nowrap;
+  }
+
+  .win__button:is(:hover, :focus-visible),
+  .statusbar__key:is(:hover, :focus-visible) {
+    color: var(--color-link);
+  }
+
+  .win__side-toggle[aria-pressed='true'] {
+    color: var(--color-text);
+  }
+
+  .icon--ui {
+    inline-size: 1em;
+    block-size: 1em;
+    fill: currentcolor;
+  }
+
+  .win__path {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+  }
+
+  .win__path ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--cell-width);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .win__path li::before {
+    content: none;
+  }
+
+  .win__path li + li::before {
+    content: '› ' / '';
+  }
+
+  .win__path a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .win__path a:is(:hover, :focus-visible) {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .win__path a[aria-current='page'] {
+    color: var(--color-text);
+  }
+
+  .win__controls {
+    display: flex;
+    align-items: center;
+    gap: calc(2 * var(--cell-width));
+    margin-inline-start: auto;
+    padding-inline-end: calc(1.5 * var(--cell-width));
+    white-space: nowrap;
+  }
+
+  .win__languages a {
+    color: inherit;
+  }
+
+  .win__languages a:hover {
+    color: var(--color-link);
+  }
+
+  /* The side column: who and the panes at the top, the contacts at the foot. */
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: calc(1.5 * var(--cell-height));
+    min-inline-size: 0;
+    min-block-size: 0;
+    overflow: hidden auto;
+    padding: calc(1.25 * var(--cell-height)) calc(2 * var(--cell-width));
+    border-inline-end: var(--line);
+    transition: visibility 0s;
+  }
+
+  /* The contents keep their width while the column narrows, so they slide out of view instead of squeezing. */
+  .side > * {
+    min-inline-size: calc(26 * var(--cell-width));
+  }
+
+  /* Once the column has slid aside, it leaves the tab order and screen readers too. */
+  .is-zoomed .side {
+    visibility: hidden;
+    transition: visibility 0s 240ms;
+  }
+
+  .side__who {
+    display: grid;
+    margin: 0;
+  }
+
+  .side__who a {
+    color: var(--color-text);
+    font-size: 1.07em;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .side__role {
+    color: var(--color-text-muted);
+  }
+
+  .side__panes {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .side__panes li::before {
+    content: none;
+  }
+
+  .side__panes a {
+    display: grid;
+    grid-template-columns: calc(3 * var(--cell-width)) 1fr auto;
+    align-items: baseline;
+    padding: calc(var(--cell-height) / 8) var(--cell-width);
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .side__panes a:is(:hover, :focus-visible) {
+    background-color: var(--color-surface-1);
+    color: var(--color-text);
+  }
+
+  .side__panes a[aria-current] {
+    background-color: var(--color-link);
+    color: var(--color-background);
+  }
+
+  .side__key,
+  .side__count {
+    color: inherit;
+    font-size: var(--font-size-small);
+  }
+
+  .side__block {
+    margin-block-start: auto;
+  }
+
+  .side__links {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--font-size-small);
+  }
+
+  .side__links li::before {
+    content: none;
+  }
+
+  .side__links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .side__links a:is(:hover, :focus-visible) {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .side__links .icon--ui {
+    inline-size: calc(3 * var(--cell-width));
+    vertical-align: -0.125em;
+  }
+
+  .statusbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0 calc(2 * var(--cell-width));
+    border-block-start: var(--line);
+    background-color: var(--color-surface-1);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+
+  .statusbar > * {
+    display: flex;
+    align-items: center;
+  }
+
+  .statusbar [hidden] {
+    display: none;
+  }
+
+  .statusbar__mode {
+    padding: calc(var(--cell-height) / 8) calc(1.2 * var(--cell-width));
+    background-color: var(--color-link);
+    color: var(--color-background);
+    font-weight: bold;
+  }
+
+  .statusbar__keys {
+    flex-wrap: wrap;
+  }
+
+  .statusbar__keys > * + *::before {
+    content: '·' / '';
+    padding-inline: var(--cell-width);
+    color: var(--color-text-muted);
+  }
+
+  .statusbar__key {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .statusbar kbd,
+  .help kbd {
+    font: inherit;
+    color: var(--color-text);
+  }
+
+  .statusbar__off button {
+    color: var(--color-text);
+    text-decoration: underline;
+  }
+
+  .statusbar__facts {
+    flex-wrap: wrap;
+    gap: 0 calc(2 * var(--cell-width));
+    margin-inline-start: auto;
+    padding-inline-end: calc(1.5 * var(--cell-width));
+  }
+
+  .statusbar .status-line {
+    padding: 0;
+    border: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  .statusbar__credits {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .statusbar__credits:is(:hover, :focus-visible) {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .statusbar__touch {
+    display: none;
+  }
+
+  @container screen (width < 100ch) {
+    .win__path,
+    .win__side-toggle,
+    .win__controls > .win__button {
+      display: none;
+    }
+
+    .side {
+      gap: 0;
+      padding: calc(var(--cell-height) / 2) calc(2 * var(--cell-width));
+      border: 0;
+      border-block-end: var(--line);
+      overflow: visible;
+    }
+
+    .side__who,
+    .side__block {
+      display: none;
+    }
+
+    .side__panes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px var(--cell-width);
+    }
+
+    .side__panes a {
+      grid-template-columns: auto auto;
+      gap: var(--cell-width);
+      white-space: nowrap;
+    }
+
+    .side__count {
+      display: none;
+    }
+
+    .is-zoomed .side {
+      display: none;
+    }
+
+    .statusbar {
+      position: sticky;
+      inset-block-end: 0;
+      padding-block-end: env(safe-area-inset-bottom);
+      font-size: inherit;
+    }
+
+    .statusbar__keys,
+    .statusbar__facts,
+    .statusbar__mode,
+    .statusbar__off {
+      display: none;
+    }
+
+    .statusbar__touch:not([hidden]) {
+      display: flex;
+      inline-size: 100%;
+    }
+
+    /* At least 44 px tall, rounded up to whole cells, so the buttons are comfortable to tap. */
+    .statusbar__touch button {
+      flex: 1;
+      min-block-size: round(up, 44px, var(--cell-height));
+      text-align: center;
+      color: var(--color-text);
+    }
+
+    .statusbar__touch button + button {
+      border-inline-start: var(--line);
+    }
+  }
+}

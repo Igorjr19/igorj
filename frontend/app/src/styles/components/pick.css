@@ -1,0 +1,198 @@
+@layer app.components {
+  /* The quick-pick box: at the top of the window, one list for searching, filtering and themes. */
+  .pick {
+    inline-size: min(calc(64 * var(--cell-width)), calc(100% - 2 * var(--cell-width)));
+    max-block-size: min(calc(20 * var(--cell-height)), calc(100dvh - 8 * var(--cell-height)));
+    margin: calc(6 * var(--cell-height)) auto auto;
+    border: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    overflow: hidden;
+  }
+
+  .pick[open] {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--cell-height) / 2);
+  }
+
+  .pick__field {
+    position: relative;
+  }
+
+  .pick__input,
+  .pick__ghost {
+    inline-size: 100%;
+    padding: calc(var(--cell-height) / 4) var(--cell-width);
+    font: inherit;
+  }
+
+  .pick__input {
+    position: relative;
+    z-index: 1;
+    border: var(--line);
+    background: transparent;
+    color: var(--color-text);
+    caret-color: var(--color-cursor);
+  }
+
+  .pick__input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+
+  /* The completion sits behind the field, in the muted color, starting with the typed text so it lines up. */
+  .pick__ghost {
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    color: var(--color-text-muted);
+    white-space: pre;
+    overflow: hidden;
+  }
+
+  .pick__list {
+    flex: 1;
+    min-block-size: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  .pick__list:focus {
+    outline: none;
+  }
+
+  .pick__list li::before {
+    content: none;
+  }
+
+  .pick__option {
+    display: grid;
+    grid-template-columns: calc(9 * var(--cell-width)) minmax(0, 1fr) auto auto;
+    align-items: baseline;
+    gap: calc(2 * var(--cell-width));
+    padding: calc(var(--cell-height) / 8) var(--cell-width);
+    cursor: pointer;
+  }
+
+  .pick__option[aria-selected='true'] {
+    background-color: var(--color-selection-background);
+    color: var(--color-selection-text);
+  }
+
+  .pick__kind {
+    overflow: hidden;
+    color: var(--pick-color, var(--color-text-muted));
+    font-size: var(--font-size-label);
+    letter-spacing: 0.08em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .pick__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pick__match {
+    background: none;
+    color: var(--color-link);
+    font-weight: bold;
+  }
+
+  /* Long facts give way to the title: they stop at a third of the row and end with an ellipsis. */
+  .pick__hint {
+    max-inline-size: calc(22 * var(--cell-width));
+    overflow: hidden;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pick__option[aria-selected='true'] :is(.pick__kind, .pick__match, .pick__hint) {
+    color: inherit;
+  }
+
+  .pick__option[data-current='true'] .pick__label::after {
+    content: ' ●' / '';
+  }
+
+  .pick__swatch {
+    display: flex;
+    gap: 2px;
+  }
+
+  .pick__swatch i {
+    inline-size: var(--cell-width);
+    block-size: var(--cell-width);
+    outline: 1px solid var(--color-surface-3);
+  }
+
+  .pick__empty {
+    padding: var(--cell-height) var(--cell-width);
+    color: var(--color-text-muted);
+  }
+
+  .pick__accents {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--cell-width) / 2);
+    padding-block-start: calc(var(--cell-height) / 2);
+    border-block-start: var(--line);
+  }
+
+  .pick__accents-label {
+    inline-size: 100%;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+  }
+
+  .pick__accent {
+    inline-size: calc(2.5 * var(--cell-width));
+    block-size: calc(2.5 * var(--cell-width));
+    padding: 0;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .pick__accent[aria-pressed='true'] {
+    border-color: var(--color-text);
+  }
+
+  .pick__keys {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+  }
+
+  .items__filter {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--cell-width) / 2);
+    padding: 0 var(--cell-width);
+    border: var(--line);
+    background: none;
+    color: var(--color-text-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .items__filter[hidden] {
+    display: none;
+  }
+
+  .items__filter:is(:hover, :focus-visible),
+  .items__filter-current {
+    color: var(--color-text);
+  }
+
+  .items__filter kbd {
+    font: inherit;
+  }
+}

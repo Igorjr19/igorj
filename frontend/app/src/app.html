@@ -1,8 +1,23 @@
 <!doctype html>
-<html lang="en">
+<!-- biome-ignore lint/a11y/useValidLang: the server hook writes the real language into each page -->
+<html lang="%lang%">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Applies the saved theme before the first paint, so the page never flashes the system theme first.
+      try {
+        const saved = JSON.parse(localStorage.getItem('theme') || 'null');
+        for (const name of ['family', 'theme', 'accent']) {
+          if (saved && typeof saved[name] === 'string') {
+            document.documentElement.dataset[name === 'family' ? 'themeFamily' : name] = saved[name];
+          }
+        }
+      } catch {
+        // Storage blocked or value corrupted: the system preference applies.
+      }
+    </script>
     %sveltekit.head%
   </head>
   <body>

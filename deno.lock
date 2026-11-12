@@ -48,6 +48,7 @@
     "npm:axe-core@4.14.0": "4.14.0",
     "npm:html-validate@*": "11.16.2",
     "npm:html-validate@11.16.2": "11.16.2",
+    "npm:smol-toml@1.9.1": "1.9.1",
     "npm:svelte-check@4.7.8": "4.7.8_svelte@5.57.3_typescript@6.0.3",
     "npm:svelte@5.57.3": "5.57.3",
     "npm:typescript@6.0.3": "6.0.3",
@@ -657,6 +658,9 @@
     "sisteransi@1.0.5": {
       "integrity": "sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg=="
     },
+    "smol-toml@1.9.1": {
+      "integrity": "sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ=="
+    },
     "source-map-js@1.2.2": {
       "integrity": "sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw=="
     },
@@ -762,6 +766,7 @@
       "npm:@webtui/css@0.1.10",
       "npm:axe-core@4.14.0",
       "npm:html-validate@11.16.2",
+      "npm:smol-toml@1.9.1",
       "npm:svelte-check@4.7.8",
       "npm:svelte@5.57.3",
       "npm:typescript@6.0.3",

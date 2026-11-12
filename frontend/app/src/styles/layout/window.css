@@ -1,0 +1,83 @@
+@layer app.layout {
+  body {
+    container: screen / inline-size;
+    min-block-size: 100dvh;
+  }
+
+  /* One window, as wide as a comfortable terminal, filling the screen height so the status line sits at the bottom. */
+  .win {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    max-inline-size: min(calc(150 * var(--cell-width)), calc(100% - 4 * var(--cell-width)));
+    block-size: calc(100dvh - 4 * var(--cell-height));
+    margin: calc(2 * var(--cell-height)) auto;
+    position: relative;
+    border: 1px solid var(--color-accent);
+    overflow: hidden;
+  }
+
+  /* The terminal, when open, takes a row under the pane, as tall as the visitor left it. The side column and the
+     terminal both grow and shrink their track, so they slide in and out instead of popping. */
+  .win__body {
+    --slide: 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: grid;
+    grid-template-columns: calc(30 * var(--cell-width)) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 0;
+    min-block-size: 0;
+    transition:
+      grid-template-rows var(--slide),
+      grid-template-columns var(--slide);
+  }
+
+  /* While the visitor drags the terminal's edge, the height follows the pointer at once. */
+  .is-resizing .win__body {
+    transition: none;
+  }
+
+  .has-terminal .win__body {
+    grid-template-rows: minmax(0, 1fr) var(--terminal-height, 45%);
+  }
+
+  .win__body > .side {
+    grid-row: 1 / -1;
+  }
+
+  .pane {
+    grid-area: 1 / 2;
+    min-block-size: 0;
+    overflow-y: auto;
+    padding: calc(1.5 * var(--cell-height)) calc(3 * var(--cell-width)) calc(2 * var(--cell-height));
+  }
+
+  .pane:focus {
+    outline: none;
+  }
+
+  /* Reading zooms the pane, like tmux: the side column slides aside and the text takes the window. */
+  .is-zoomed .win__body {
+    grid-template-columns: 0 minmax(0, 1fr);
+  }
+
+  /* Below a full-width terminal the window becomes the page: the side turns into a row of panes and the status line sticks to the bottom. */
+  @container screen (width < 100ch) {
+    .win {
+      display: block;
+      max-inline-size: none;
+      margin: 0;
+      block-size: auto;
+      min-block-size: 100dvh;
+      border: 0;
+      overflow: visible;
+    }
+
+    .win__body,
+    .is-zoomed .win__body {
+      display: block;
+    }
+
+    .pane {
+      overflow: visible;
+      padding-inline: calc(2 * var(--cell-width));
+    }
+  }
+}

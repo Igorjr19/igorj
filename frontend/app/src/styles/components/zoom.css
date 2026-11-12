@@ -1,0 +1,75 @@
+@layer app.components {
+  .zoom__title {
+    margin: 0 0 var(--cell-height);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-label);
+    font-weight: normal;
+    letter-spacing: 0.14em;
+    line-height: var(--cell-height);
+    text-transform: uppercase;
+  }
+
+  /* A page being read gets a real title and a column narrow enough to read comfortably. */
+  .zoom--page {
+    max-inline-size: calc(80 * var(--cell-width));
+    margin-inline: auto;
+  }
+
+  .zoom--page .zoom__title {
+    margin-block-end: calc(2 * var(--cell-height));
+    color: var(--color-text);
+    font-size: 2.4em;
+    font-weight: bold;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    text-transform: none;
+    text-wrap: balance;
+  }
+
+  .filter ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 calc(2 * var(--cell-width));
+    margin: 0 0 var(--cell-height);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* The filter is a row of choices, not a bulleted list. */
+  .filter li::before {
+    content: none;
+  }
+
+  .filter [aria-current='page'] {
+    color: inherit;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .filter [aria-current='page']::before {
+    content: '> ' / '';
+  }
+
+  .pager {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 calc(2 * var(--cell-width));
+    margin-block-start: calc(2 * var(--cell-height));
+    padding-block-start: var(--cell-height);
+    border-block-start: var(--line);
+  }
+}
+
+@layer app.components {
+  /* The credits read as a mono listing: the notice, then one row per third party, then the full texts. */
+  .credits {
+    margin-block: var(--cell-height);
+    row-gap: calc(var(--cell-height) / 4);
+  }
+
+  .zoom__body:not(.prose) > p {
+    max-inline-size: calc(90 * var(--cell-width));
+    margin-block-end: calc(var(--cell-height) / 2);
+  }
+}

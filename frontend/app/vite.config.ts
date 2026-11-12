@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [
     sveltekit({
       adapter: adapter({ pages: out, assets: out }),
+      files: { assets: '../../generated/static' },
     }),
   ],
 });

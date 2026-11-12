@@ -1,0 +1,9 @@
+@layer app.tokens {
+  /* Each blog category borrows a theme role that already passes the text contrast audit. */
+  :root {
+    --color-category-academic: var(--color-syntax-function);
+    --color-category-professional: var(--color-warning);
+    --color-category-entertainment: var(--color-syntax-keyword);
+    --color-category-notes: var(--color-success);
+  }
+}

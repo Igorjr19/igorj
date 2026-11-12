@@ -1,0 +1,66 @@
+@layer app.base {
+  :root {
+    scrollbar-color: var(--color-text-muted) var(--color-background);
+    caret-color: var(--color-cursor);
+  }
+
+  ::selection {
+    background-color: var(--color-selection-background);
+    color: var(--color-selection-text);
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Small uppercase labels over sections, as in the side column and the home. */
+  .label,
+  .side__heading {
+    margin: 0 0 calc(var(--cell-height) / 2);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-label);
+    font-weight: normal;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .chip {
+    padding-inline: calc(var(--cell-width) * 0.75);
+    border: var(--line);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+    text-decoration: none;
+  }
+
+  a.chip:is(:hover, :focus-visible) {
+    border-color: var(--color-accent);
+    color: var(--color-link);
+  }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--cell-height) / 3) var(--cell-width);
+  }
+
+  .zoom__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--cell-width);
+  }
+
+  .zoom__tags .label {
+    margin: 0;
+  }
+}

@@ -178,6 +178,32 @@
           }
         }
       }
+    },
+    {
+      "includes": ["frontend/app/src/lib/**/*.svelte"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": {
+              "level": "error",
+              "options": {
+                "filenameCases": ["PascalCase"],
+                "requireAscii": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["frontend/app/src/routes/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": "off"
+          }
+        }
+      }
     }
   ],
   "html": {
