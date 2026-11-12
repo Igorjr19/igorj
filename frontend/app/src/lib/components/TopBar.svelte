@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
+  import { sameEverywhere } from '../alternates.ts';
   import { languageInfo } from '../languages.ts';
   import { useShell } from '../shell.svelte.ts';
 
@@ -14,13 +15,18 @@
     }));
   });
 
+  function alternatesOf(language: string): string {
+    const given = (page.data.alternates as Record<string, string> | undefined)?.[language];
+    return given ?? sameEverywhere(page.url.pathname, shell.language, shell.languages)[language] ?? `/${language}/`;
+  }
+
   /** The same page in the other languages when the page has a twin there, otherwise their home. */
   const other = $derived(
     shell.languages
       .filter((language) => language !== shell.language)
       .map((language) => ({
         language,
-        href: (page.data.alternates as Record<string, string> | undefined)?.[language] ?? `/${language}/`,
+        href: alternatesOf(language),
         info: languageInfo(language),
       })),
   );

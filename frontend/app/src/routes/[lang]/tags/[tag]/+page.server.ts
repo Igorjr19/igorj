@@ -1,6 +1,6 @@
 import type { ItemSection } from '#lib/routes.ts';
 import { readImages } from '#lib/server/images.ts';
-import { rowOf } from '#lib/server/items.ts';
+import { rowOf, termAlternates } from '#lib/server/items.ts';
 import { modelLanguages, readModel } from '#lib/server/model.ts';
 import type { EntryGenerator, PageServerLoad } from './$types';
 
@@ -22,5 +22,5 @@ export const load: PageServerLoad = async ({ params }) => {
       .filter((item) => item.language === params.lang && item.tags.some((candidate) => candidate.slug === params.tag))
       .map((item) => rowOf(section, item, images)),
   );
-  return { name: tag?.name ?? params.tag, items };
+  return { name: tag?.name ?? params.tag, items, alternates: await termAlternates('tags', params.tag, params.lang) };
 };

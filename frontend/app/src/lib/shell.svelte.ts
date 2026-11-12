@@ -9,6 +9,10 @@ export interface ShellData {
   readonly language: string;
   readonly languages: readonly string[];
   readonly host: string;
+  /** The address the site is published at, with its trailing slash. */
+  readonly siteUrl: string;
+  readonly description: string;
+  readonly fontPreloads: readonly string[];
   readonly author: string;
   /** Author and role, the name of the site in a page title. */
   readonly siteTitle: string;
@@ -31,6 +35,18 @@ export class Shell {
 
   get languages(): readonly string[] {
     return this.#data().languages;
+  }
+
+  get siteUrl(): string {
+    return this.#data().siteUrl;
+  }
+
+  get description(): string {
+    return this.#data().description;
+  }
+
+  get fontPreloads(): readonly string[] {
+    return this.#data().fontPreloads;
   }
 
   get host(): string {

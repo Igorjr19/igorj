@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PageTitle from '#lib/components/PageTitle.svelte';
+  import PageMeta from '#lib/components/PageMeta.svelte';
   import Zoom from '#lib/components/Zoom.svelte';
   import CvView from '#lib/cv/CvView.svelte';
   import { useShell } from '#lib/shell.svelte.ts';
@@ -9,7 +9,7 @@
   const title = $derived(shell.t('cv'));
 </script>
 
-<PageTitle {title} />
+<PageMeta {title} />
 <Zoom {title}>
   {#if data.cv}
     <CvView cv={data.cv} shownIn={data.shownIn} />
