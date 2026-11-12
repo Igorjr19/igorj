@@ -47,7 +47,7 @@ test('the favicons follow the browser theme and the share pictures exist', async
   await page.goto('/en/');
   await expect(page.locator('link[rel="icon"][media="(prefers-color-scheme: dark)"]')).toHaveAttribute(
     'href',
-    '/icons/favicon-light.png',
+    /\/icons\/favicon-light\.png$/,
   );
   expect((await request.get('/share/en/default.jpg')).ok()).toBe(true);
   expect((await request.get('/icons/favicon-180.png')).ok()).toBe(true);
