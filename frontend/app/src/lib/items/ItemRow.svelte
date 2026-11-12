@@ -5,7 +5,7 @@
   import type { ItemRowData } from './types.ts';
 
   const shell = useShell();
-  let { item }: { item: ItemRowData } = $props();
+  let { item, selected = false }: { item: ItemRowData; selected?: boolean } = $props();
 
   const foreign = $derived(item.language !== shell.language);
   const kind = $derived(
@@ -26,7 +26,7 @@
   );
 </script>
 
-<li class="item" style:--item-color={color}>
+<li class="item" style:--item-color={color} data-selected={selected}>
   <a class="item__link" href={item.href} lang={foreign ? languageInfo(item.language).locale : undefined}>
     <span class="item__title">{item.title}</span>
     <span class="item__meta">{meta}</span>

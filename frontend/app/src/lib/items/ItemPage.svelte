@@ -1,10 +1,53 @@
 <script lang="ts">
+  import Icon from '../components/Icon.svelte';
   import { useShell } from '../shell.svelte.ts';
   import TagChips from './TagChips.svelte';
   import type { ItemPageData } from './types.ts';
 
   const shell = useShell();
   let { item }: { item: ItemPageData } = $props();
+
+  const COPIED_MS = 1500;
+  let shared = $state(false);
+
+  /** Each code block has its own copy button, which says it copied for a moment. */
+  function copyCode(event: MouseEvent): void {
+    const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-copy]') : null;
+    const code = button?.parentElement?.querySelector('pre')?.textContent;
+    if (!(button && code)) {
+      return;
+    }
+    const label = button.textContent ?? '';
+    navigator.clipboard
+      ?.writeText(code)
+      .then(() => {
+        button.textContent = shell.t('codeCopied');
+        setTimeout(() => {
+          button.textContent = label;
+        }, COPIED_MS);
+      })
+      .catch(() => {
+        // Clipboard refused: the code is still there to select.
+      });
+  }
+
+  /** Opens the system's sharing where there is one; elsewhere copies the address and says so. */
+  async function share(): Promise<void> {
+    const where = { title: document.title, url: location.href };
+    try {
+      if (navigator.share) {
+        await navigator.share(where);
+        return;
+      }
+      await navigator.clipboard?.writeText(where.url);
+      shared = true;
+      setTimeout(() => {
+        shared = false;
+      }, COPIED_MS);
+    } catch {
+      // Closed without sharing, or the clipboard refused: the address bar still has the link.
+    }
+  }
 
   const sections = $derived(item.headings.filter((heading) => heading.level === 2).length);
 </script>
@@ -68,8 +111,14 @@
   </details>
 {/if}
 
+<svelte:window onclick={copyCode} />
+
 <!-- The text is Markdown rendered at build time from the content, never typed by a visitor. -->
 {@html item.html}
+
+<p class="share">
+  <button type="button" class="share__button" onclick={share}><Icon name="share-nodes" /> <span>{shared ? shell.t('shareCopied') : shell.t('share')}</span></button>
+</p>
 
 {#if item.post}
   <nav class="pager" aria-label={shell.t('pagerLabel')}>
