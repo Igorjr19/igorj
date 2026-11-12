@@ -17,7 +17,7 @@ export default defineConfig({
   use: { baseURL: `http://localhost:${PORT}`, trace: 'off' },
   projects: names.map((name) => ({ name, use: all[name] })),
   webServer: {
-    command: `deno run --allow-net --allow-read jsr:@std/http@1.1.4/file-server ../../generated/fixture-app --port ${PORT}`,
+    command: `deno run --config ../../deno.json --allow-net --allow-read jsr:@std/http@1.1.4/file-server ../../generated/fixture-app --port ${PORT}`,
     port: PORT,
     reuseExistingServer: !process.env['CI'],
   },

@@ -9,3 +9,5 @@
 /frontend/app/.svelte-kit/
 /test-results/
 /frontend/app/test-results/
+/frontend/app/node_modules/
+/frontend/app/deno.lock
