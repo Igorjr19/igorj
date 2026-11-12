@@ -31,7 +31,9 @@
     align-items: center;
   }
 
+  /* The photo takes the height of the text beside it, from the top of the name to the foot of the lines. */
   .hero__photo {
+    align-self: stretch;
     --light-x: 50%;
     --light-y: 50%;
     --glow: color-mix(in oklab, var(--color-accent), var(--color-text) 65%);

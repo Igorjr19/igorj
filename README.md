@@ -59,7 +59,7 @@ deno task build          # production build
 deno task check          # lint, types and unit tests (seconds)
 deno task ci             # everything the CI runs, browser tests included
 deno task app:build      # build the SvelteKit frontend into generated/app (not published yet)
-deno task app:images     # dithered portrait and figures, share images and favicons for the app, into generated/static
+deno task app:images     # dithered portrait and figures, share images and favicons for the app, into generated/app-static
 deno task test:app       # build it from the fixtures and run its Playwright tests (APP_BROWSERS=chromium for one browser)
 ```
 
