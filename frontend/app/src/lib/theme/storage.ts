@@ -1,0 +1,58 @@
+/// <reference lib="dom" />
+export const THEME_STORAGE_KEY = 'theme';
+
+export interface SavedTheme {
+  /** Family whose light or dark variant follows the system preference. */
+  readonly family?: string;
+  /** Theme id that overrides the system preference. */
+  readonly theme?: string;
+  /** Accent name, for the family whose themes have accents. */
+  readonly accent?: string;
+}
+
+export function readSavedTheme(storage: Storage): SavedTheme | null {
+  const raw = storage.getItem(THEME_STORAGE_KEY);
+  if (!raw) {
+    return null;
+  }
+  const value: unknown = JSON.parse(raw);
+  if (typeof value !== 'object' || value === null) {
+    return null;
+  }
+  const { family, theme, accent } = value as Record<string, unknown>;
+  return {
+    ...(typeof family === 'string' && { family }),
+    ...(typeof theme === 'string' && { theme }),
+    ...(typeof accent === 'string' && { accent }),
+  };
+}
+
+export function applySavedTheme(root: HTMLElement, saved: SavedTheme): void {
+  if (saved.family) {
+    root.dataset['themeFamily'] = saved.family;
+  }
+  if (saved.theme) {
+    root.dataset['theme'] = saved.theme;
+  }
+  if (saved.accent) {
+    root.dataset['accent'] = saved.accent;
+  }
+}
+
+export function saveTheme(storage: Pick<Storage, 'setItem' | 'removeItem'>, saved: SavedTheme | null): void {
+  if (saved) {
+    storage.setItem(THEME_STORAGE_KEY, JSON.stringify(saved));
+  } else {
+    storage.removeItem(THEME_STORAGE_KEY);
+  }
+}
+
+/** Unlike applySavedTheme, a choice replaces whatever was set before, so a family never keeps an old theme. */
+export function applyThemeChoice(root: HTMLElement, saved: SavedTheme | null): void {
+  root.removeAttribute('data-theme-family');
+  root.removeAttribute('data-theme');
+  root.removeAttribute('data-accent');
+  if (saved) {
+    applySavedTheme(root, saved);
+  }
+}

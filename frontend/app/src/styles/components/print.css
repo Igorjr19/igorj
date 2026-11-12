@@ -1,0 +1,32 @@
+@layer app.components {
+  /* Paper is white whatever the theme: the system colors follow the printer, not the screen. */
+  @media print {
+    :root {
+      color-scheme: light;
+      --color-background: Canvas;
+      --color-surface-1: Canvas;
+      --color-text: CanvasText;
+      --color-text-muted: GrayText;
+      --color-link: CanvasText;
+    }
+
+    .win__top,
+    .side,
+    .statusbar,
+    .drawer {
+      display: none;
+    }
+
+    /* On paper the window is just the page: no frame, no inner scrolling, no fixed height. */
+    body,
+    .win,
+    .win__body,
+    .pane {
+      display: block;
+      block-size: auto;
+      padding: 0;
+      border: 0;
+      overflow: visible;
+    }
+  }
+}

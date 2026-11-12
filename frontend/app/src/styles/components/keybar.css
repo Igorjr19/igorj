@@ -1,0 +1,34 @@
+@layer app.components {
+  .help {
+    max-inline-size: min(80ch, calc(100% - 2 * var(--cell-width)));
+    margin: auto;
+    border: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+  .help::backdrop,
+  .pick::backdrop {
+    background-color: color-mix(in oklab, var(--color-background) 80%, transparent);
+  }
+
+  .help > p {
+    margin-block: var(--cell-height) 0;
+  }
+
+  .help__actions {
+    display: flex;
+    gap: calc(2 * var(--cell-width));
+    margin-block-start: var(--cell-height);
+  }
+
+  .help__actions button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-link);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

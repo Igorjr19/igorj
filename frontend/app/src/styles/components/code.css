@@ -1,0 +1,107 @@
+/* Chroma (Hugo's highlighter) classes. Weight and style also carry meaning for themes whose syntax colors fall back to the text color. */
+@layer app.components {
+  /* Long lines scroll inside the block instead of widening the page. */
+  .prose pre {
+    overflow-x: auto;
+  }
+
+  .chroma {
+    background-color: var(--color-surface-1);
+    color: var(--color-text);
+  }
+
+  .chroma :is(.k, .kc, .kd, .kn, .kp, .kr, .kt) {
+    color: var(--color-syntax-keyword);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .chroma :is(.s, .sa, .sb, .sc, .dl, .sd, .s2, .se, .sh, .si, .sx, .sr, .s1, .ss) {
+    color: var(--color-syntax-string);
+  }
+
+  .chroma :is(.m, .mb, .mf, .mh, .mi, .il, .mo) {
+    color: var(--color-syntax-number);
+  }
+
+  .chroma :is(.nf, .fm, .nb, .bp) {
+    color: var(--color-syntax-function);
+  }
+
+  .chroma :is(.c, .ch, .cm, .c1, .cs, .cp, .cpf) {
+    color: var(--color-syntax-comment);
+    font-style: italic;
+  }
+
+  /* The copy button sits in the top corner of the block, over the code. */
+  .code-block {
+    position: relative;
+  }
+
+  .code-block__copy {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    padding: 0 var(--cell-width);
+    border: 0;
+    border-inline-start: var(--line);
+    border-block-end: var(--line);
+    background-color: var(--color-surface-1);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: var(--font-size-label);
+    cursor: pointer;
+  }
+
+  .code-block__copy:is(:hover, :focus-visible) {
+    color: var(--color-text);
+  }
+
+  /* The list of sections of a long post, folded or open. */
+  .toc {
+    margin-block: var(--cell-height);
+    padding: 0 var(--cell-width);
+    border-inline-start: var(--line);
+  }
+
+  .toc summary {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .toc ul {
+    margin: 0;
+    padding-inline-start: calc(2 * var(--cell-width));
+  }
+
+  .not-found__art {
+    margin: 0 0 var(--cell-height);
+    overflow-x: auto;
+    line-height: 1;
+    color: var(--color-link);
+    font-weight: bold;
+  }
+
+  /* Sharing, at the end of the text. */
+  .share {
+    margin-block: calc(2 * var(--cell-height)) 0;
+  }
+
+  .share__button {
+    display: inline-flex;
+    gap: var(--cell-width);
+    align-items: center;
+    padding: 0 var(--cell-width);
+    border: var(--line);
+    background: none;
+    color: var(--color-link);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .share__button:is(:hover, :focus-visible) {
+    background-color: var(--color-surface-1);
+  }
+}

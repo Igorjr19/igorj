@@ -1,0 +1,238 @@
+@layer app.components {
+  /* Without JavaScript, and in the grid view, every item is a card with its picture first. */
+  .items__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(28 * var(--cell-width))), 1fr));
+    gap: calc(2 * var(--cell-height)) calc(3 * var(--cell-width));
+    margin: calc(1.5 * var(--cell-height)) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .items__list > li::before {
+    content: none;
+  }
+
+  .item {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--cell-height) / 3);
+  }
+
+  /* In a card the picture comes first, then the facts and the title, then the summary. */
+  .item__detail {
+    display: contents;
+  }
+
+  .item__image {
+    order: -1;
+    inline-size: 100%;
+    margin-block-end: calc(var(--cell-height) / 3);
+    background-color: var(--color-surface-1);
+  }
+
+  /* Items without a picture get a block tinted with their color, named by their kind. */
+  .item__image--none {
+    display: flex;
+    align-items: end;
+    aspect-ratio: 16 / 9;
+    padding: calc(var(--cell-height) / 2) var(--cell-width);
+    background-color: color-mix(in oklab, var(--item-color) 16%, var(--color-background));
+    color: var(--color-text);
+    font-size: var(--font-size-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .item__link {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--cell-height) / 4);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  /* The whole card opens the item. */
+  .item__link::after {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--cell-height) / 3) calc(-1 * var(--cell-width));
+  }
+
+  .item__title {
+    font-family: var(--font-text);
+    font-size: 1.25em;
+    font-weight: 500;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+
+  .item__link:is(:hover, :focus-visible) .item__title {
+    text-decoration: underline;
+    text-decoration-color: var(--item-color);
+  }
+
+  .item__meta {
+    order: -1;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+  }
+
+  .item__summary {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-text);
+    font-size: 1.05em;
+  }
+
+  .item__chips {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--cell-height) / 4) calc(var(--cell-width) / 2);
+    margin: 0;
+  }
+
+  .items[data-view='grid'] .item[data-selected='true']::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--cell-height) / 3) calc(-1 * var(--cell-width));
+    z-index: -1;
+    border: 1px solid var(--item-color);
+    background-color: var(--color-surface-1);
+  }
+
+  /* The list view, set by the script: one row per item, the title and its facts, the summary under them. */
+  .items[data-view='list'] .items__list {
+    display: block;
+    border-block-start: var(--line);
+  }
+
+  .items[data-view='list'] .item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: calc(var(--cell-height) / 8);
+    padding: calc(var(--cell-height) / 2) var(--cell-width);
+    border-block-end: var(--line);
+  }
+
+  .items[data-view='list'] .item__link::after {
+    inset: 0;
+  }
+
+  .items[data-view='list'] .item__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: calc(3 * var(--cell-width));
+  }
+
+  .items[data-view='list'] .item__title {
+    font-family: var(--font-mono);
+    font-size: inherit;
+    font-weight: normal;
+  }
+
+  .items[data-view='list'] .item__meta {
+    order: 0;
+    color: var(--item-color);
+    white-space: nowrap;
+  }
+
+  .items[data-view='list'] .item__image,
+  .items[data-view='list'] .item__chips {
+    display: none;
+  }
+
+  .items[data-view='list'] .item__summary {
+    font-size: var(--font-size-small);
+    font-style: italic;
+  }
+
+  .items[data-view='list'] .item:hover {
+    background-color: var(--color-surface-1);
+  }
+
+  .items[data-view='list'] .item[data-selected='true'] {
+    background-color: var(--color-surface-1);
+    box-shadow: inset 2px 0 0 var(--item-color);
+  }
+
+  @container screen (width < 100ch) {
+    .items[data-view='list'] .item__link {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .items[data-view='list'] .item__meta {
+      order: -1;
+    }
+  }
+}
+
+@layer app.components {
+  /* The head of a list: the filter on the left, the view switch and the feed on the right. */
+  .items__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--cell-height) / 2) calc(2 * var(--cell-width));
+    font-size: var(--font-size-small);
+  }
+
+  .items__bar .filter ul {
+    margin: 0;
+  }
+
+  .items__tools {
+    display: flex;
+    align-items: center;
+    gap: calc(2 * var(--cell-width));
+    margin-inline-start: auto;
+  }
+
+  .view-switch {
+    display: inline-flex;
+    border: var(--line);
+  }
+
+  .view-switch[hidden] {
+    display: none;
+  }
+
+  .view-switch button {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--cell-width) / 2);
+    padding: 0 var(--cell-width);
+    border: 0;
+    background: none;
+    color: var(--color-text-muted);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .view-switch button + button {
+    border-inline-start: var(--line);
+  }
+
+  .view-switch button:is(:hover, :focus-visible) {
+    color: var(--color-text);
+  }
+
+  /* The view in effect is a filled label, in the link color like the other filled labels. */
+  .view-switch button[aria-pressed='true'] {
+    background-color: var(--color-link);
+    color: var(--color-background);
+  }
+
+  .items__feed {
+    color: var(--color-text-muted);
+  }
+
+  .items__feed:is(:hover, :focus-visible) {
+    color: var(--color-link);
+  }
+}

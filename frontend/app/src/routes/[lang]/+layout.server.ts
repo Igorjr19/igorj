@@ -1,0 +1,23 @@
+import { panesOf } from '#lib/sections.ts';
+import { readDictionary } from '#lib/server/i18n.ts';
+import { readModel } from '#lib/server/model.ts';
+import type { ShellData } from '#lib/shell.svelte.ts';
+import type { LayoutServerLoad } from './$types';
+
+const SITE_URL = process.env['SITE_URL'] ?? 'https://igorj.dev/';
+
+export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: ShellData }> => {
+  const model = await readModel(params.lang);
+  return {
+    shell: {
+      language: params.lang,
+      languages: model.languages,
+      host: new URL(SITE_URL).host,
+      author: model.profile?.author ?? '',
+      role: model.profile?.role ?? '',
+      contact: model.contact,
+      panes: panesOf(params.lang, model),
+      dictionary: await readDictionary(params.lang),
+    },
+  };
+};

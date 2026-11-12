@@ -1,0 +1,71 @@
+@layer app.components {
+  /* Thin boxes in the line color, like btop; the title sits on the border. */
+  /* Thin boxes in the line color, like btop, drawn half a cell inside the edges so the title sits on the border row. */
+  .panel {
+    position: relative;
+    isolation: isolate;
+    padding: var(--cell-height) calc(1.5 * var(--cell-width));
+  }
+
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: -1;
+    inline-size: calc(100% - var(--cell-width) - 1px);
+    block-size: calc(100% - var(--cell-height) - 1px);
+    translate: -50% -50%;
+    border: 1px solid var(--color-surface-3);
+  }
+
+  /* The title sits on the top border row; its background hides the border behind the text. */
+  .panel__title {
+    display: block;
+    width: fit-content;
+    min-height: var(--cell-height);
+    margin-block: calc(-1 * var(--cell-height)) 0;
+    padding-inline: calc(var(--cell-width) / 2);
+    background-color: var(--color-background);
+    color: var(--color-link);
+    font-size: var(--font-size-small);
+    font-weight: 500;
+    line-height: var(--cell-height);
+  }
+
+  .panel__meta {
+    color: var(--color-text-muted);
+  }
+
+  .panel :is(p, ul, ol, dl) {
+    margin: 0;
+  }
+
+  .entries > li + li {
+    margin-block-start: var(--cell-height);
+  }
+
+  .entries > li > * {
+    margin-inline-end: var(--cell-width);
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: calc(2 * var(--cell-width));
+  }
+
+  .facts {
+    font-size: var(--font-size-small);
+  }
+
+  .facts > dt {
+    grid-column: 1;
+    color: var(--color-text-muted);
+  }
+
+  .facts > dd {
+    grid-column: 2;
+    margin: 0;
+  }
+}
