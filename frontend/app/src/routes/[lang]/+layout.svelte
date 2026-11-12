@@ -8,6 +8,7 @@
   import { readView, saveView } from '#lib/items/view.ts';
   import { languageInfo } from '#lib/languages.ts';
   import { isReadingPage } from '#lib/layout.ts';
+  import PickBox from '#lib/pick/PickBox.svelte';
   import { progress } from '#lib/progress.svelte.ts';
   import { provideShell } from '#lib/shell.svelte.ts';
   import Shortcuts from '#lib/shortcuts/Shortcuts.svelte';
@@ -71,3 +72,4 @@
 </div>
 <Shortcuts />
 <HelpDialog />
+<PickBox />

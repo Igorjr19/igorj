@@ -8,6 +8,8 @@ export class Ui {
   #side = $state<boolean | null>(null);
   view = $state<ItemsView>('list');
   helpOpen = $state(false);
+  /** The quick-pick box that is open, if any: the palette, the filter of the blog or the themes. */
+  pick = $state<'palette' | 'filter' | 'theme' | null>(null);
 
   /** Whether the side column is hidden, given what the page itself asks for. */
   sideHidden(pageHides: boolean): boolean {
