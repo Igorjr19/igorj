@@ -111,3 +111,17 @@ test('with scripts the name is drawn in characters, hidden from screen readers, 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ígor José Rodrigues');
   await expect(page.getByRole('heading', { level: 1 })).toHaveClass(/sr-only/);
 });
+
+test('the photo reaches from the top of the name to the foot of the three lines', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/en/');
+  await page.evaluate(() => document.fonts.ready);
+  const edges = await page.evaluate(() => {
+    const photo = (document.querySelector('.hero__photo') as Element).getBoundingClientRect();
+    const text = (document.querySelector('.hero__text') as Element).getBoundingClientRect();
+    const lines = [...document.querySelectorAll('.hero__lines li')].at(-1)?.getBoundingClientRect();
+    return { top: photo.top - text.top, bottom: photo.bottom - (lines?.bottom ?? 0) };
+  });
+  expect(Math.abs(edges.top)).toBeLessThan(2);
+  expect(Math.abs(edges.bottom)).toBeLessThan(2);
+});

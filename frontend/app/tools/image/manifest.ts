@@ -22,7 +22,8 @@ export function isRaster(path: string): boolean {
 /** Figures never fill more than the text column, so the dots are not made wider than this. */
 export const FIGURE_MAX_WIDTH = 960;
 
-export const HERO_PORTRAIT_SIZE = 320;
+/** As tall as the photo itself (3:4), so the home can stretch it to the height of the text beside it with little cropped. */
+export const HERO_PORTRAIT_SIZE = { width: 320, height: 427 } as const;
 
 export function withoutExtension(path: string): string {
   return path.replace(/\.[^./]+$/, '');

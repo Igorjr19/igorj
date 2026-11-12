@@ -42,8 +42,7 @@ async function writeMask(
 }
 
 async function portraitMask(media: string): Promise<MaskEntry> {
-  const size = { width: HERO_PORTRAIT_SIZE, height: HERO_PORTRAIT_SIZE };
-  const gray = treatPortrait(grayscale(await readRgba(`${MEDIA_DIR}/${media}`, { fit: size })));
+  const gray = treatPortrait(grayscale(await readRgba(`${MEDIA_DIR}/${media}`, { fit: HERO_PORTRAIT_SIZE })));
   return await writeMask('portrait', media, atkinson(gray));
 }
 

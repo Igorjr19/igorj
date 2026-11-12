@@ -4,12 +4,15 @@
     alt,
     ink,
     class: extra = '',
+    fill = false,
   }: {
     picture: { src: string; inverted: string; width: number; height: number };
     alt?: string | undefined;
     /** A CSS color for the dots; the theme's text color when none is given. */
     ink?: string | undefined;
     class?: string;
+    /** Takes the height its container gives, cropping at the sides, instead of keeping the picture's own proportions. */
+    fill?: boolean;
   } = $props();
 </script>
 
@@ -27,7 +30,7 @@
     style:--dither-ink={ink}
     style:--dither={`url('${picture.src}')`}
     style:--dither-inverted={`url('${picture.inverted}')`}
-    style:aspect-ratio={`${picture.width} / ${picture.height}`}
+    style:aspect-ratio={fill ? undefined : `${picture.width} / ${picture.height}`}
     style:max-inline-size={`${picture.width}px`}>{@render layers()}</span
   >
 {:else}
@@ -37,7 +40,7 @@
     style:--dither-ink={ink}
     style:--dither={`url('${picture.src}')`}
     style:--dither-inverted={`url('${picture.inverted}')`}
-    style:aspect-ratio={`${picture.width} / ${picture.height}`}
+    style:aspect-ratio={fill ? undefined : `${picture.width} / ${picture.height}`}
     style:max-inline-size={`${picture.width}px`}>{@render layers()}</span
   >
 {/if}

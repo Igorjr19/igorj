@@ -8,7 +8,7 @@
 
 <section class="hero" aria-labelledby="hero-name">
   {#if hero.photo}
-    <Dither class="hero__photo" picture={hero.photo} alt={hero.photo.alt} ink="var(--color-accent)" />
+    <Dither class="hero__photo" fill picture={hero.photo} alt={hero.photo.alt} ink="var(--color-accent)" />
   {/if}
   <div class="hero__text">
     <NameArt name={hero.author} />
