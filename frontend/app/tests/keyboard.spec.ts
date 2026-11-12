@@ -97,19 +97,21 @@ test('on a post, p and n follow the posts around it, and the buttons in the stat
   await expect(page).not.toHaveURL('/en/posts/film-post/');
 });
 
-test('the copy button of a code block copies it and says so, and reading shows how far along the reader is', async ({
-  page,
-  context,
-}) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+test('reading shows how far along the reader is, and a post can be shared', async ({ page }) => {
   await visit(page, '/en/posts/fixture-post/');
   await expect(page.locator('.statusbar__facts')).toContainText('% read');
+  await expect(page.locator('.share__button')).toBeVisible();
+});
+
+test('the copy button of a code block copies it and says so', async ({ page, context, browserName }) => {
+  test.skip(browserName !== 'chromium', 'only Chromium lets a test read the clipboard');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await visit(page, '/en/posts/fixture-post/');
   const copy = page.locator('[data-copy]').first();
   if ((await copy.count()) > 0) {
     await copy.click();
     await expect(copy).toHaveText('copied');
   }
-  await expect(page.locator('.share__button')).toBeVisible();
 });
 
 test('choosing a language with the switcher is remembered for the root address', async ({ page }) => {
