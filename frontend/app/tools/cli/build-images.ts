@@ -1,6 +1,7 @@
 import { dirname } from '@std/path';
 import { parse as parseToml } from '@std/toml';
 import type { SiteModel } from '../../../../tools/model/types.ts';
+import { removeIfExists, walkFiles } from '../../../../tools/shared/fs.ts';
 import { defaultColors, type PictureColors } from '../image/colors.ts';
 import { atkinson, floydSteinberg, invert } from '../image/dither.ts';
 import { drawFavicon } from '../image/favicon.ts';
@@ -19,7 +20,9 @@ import { drawShare, SHARE_HEIGHT, SHARE_PORTRAIT, SHARE_WIDTH, type SharePicture
 import { drawingOf, maskPng, readRgba, registerFonts } from './canvas.ts';
 
 const MEDIA_DIR = 'generated/media';
-const STATIC_DIR = 'generated/static';
+// Kept apart from generated/static, which the Hugo site publishes as it is.
+const SHARED_STATIC_DIR = 'generated/static';
+const STATIC_DIR = 'generated/app-static';
 const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://igorj.dev/';
 
 async function write(path: string, data: Uint8Array | string): Promise<void> {
@@ -107,6 +110,15 @@ async function sharePictures(language: string, colors: PictureColors): Promise<n
   return items.length + 1;
 }
 
+/** Starts from the files both frontends serve as they are (the fonts, the license texts), then the pictures go beside them. */
+async function startStatic(): Promise<void> {
+  await removeIfExists(STATIC_DIR);
+  for await (const path of walkFiles(SHARED_STATIC_DIR)) {
+    await write(`${STATIC_DIR}/${path.slice(SHARED_STATIC_DIR.length + 1)}`, await Deno.readFile(path));
+  }
+}
+
+await startStatic();
 registerFonts('generated/share/fonts');
 const colors = defaultColors(parseThemesData(JSON.parse(await Deno.readTextFile('generated/data/themes.json'))));
 const languages = (await Array.fromAsync(Deno.readDir('generated/model')))
