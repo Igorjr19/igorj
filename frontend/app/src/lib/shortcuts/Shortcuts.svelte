@@ -60,6 +60,11 @@
       case 'help':
         ui.helpOpen = true;
         return true;
+      case 'theme':
+      case 'palette':
+      case 'filter':
+        ui.pick = action.kind;
+        return true;
       default:
         return false;
     }

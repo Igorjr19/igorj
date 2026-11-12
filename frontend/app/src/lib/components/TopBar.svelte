@@ -65,6 +65,8 @@
     </ol>
   </nav>
   <div class="win__controls">
+    <button type="button" class="win__button" onclick={() => (ui.pick = 'palette')}><Icon name="magnifying-glass" />{shell.t('keyFind')} <kbd>f</kbd></button>
+    <button type="button" class="win__button" onclick={() => (ui.pick = 'theme')}><Icon name="circle-half-stroke" />{shell.t('keyTheme')}</button>
     <button type="button" class="win__button" onclick={() => (ui.helpOpen = true)}><Icon name="circle-question" />{shell.t('keyHelp')} <kbd>?</kbd></button>
     {#if other.length > 0}
       <nav class="win__languages" aria-label={shell.t('languages')}>

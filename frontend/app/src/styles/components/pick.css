@@ -64,10 +64,6 @@
     outline: none;
   }
 
-  .pick__list li::before {
-    content: none;
-  }
-
   .pick__option {
     display: grid;
     grid-template-columns: calc(9 * var(--cell-width)) minmax(0, 1fr) auto auto;
