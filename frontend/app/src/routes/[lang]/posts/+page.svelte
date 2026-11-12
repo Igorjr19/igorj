@@ -3,6 +3,7 @@
   import Zoom from '#lib/components/Zoom.svelte';
   import CategoryFilter from '#lib/items/CategoryFilter.svelte';
   import ItemList from '#lib/items/ItemList.svelte';
+  import ItemsBar from '#lib/items/ItemsBar.svelte';
   import { useShell } from '#lib/shell.svelte.ts';
 
   const shell = useShell();
@@ -12,6 +13,7 @@
 
 <PageMeta {title} />
 <Zoom {title}>
+  <ItemsBar feed={`/${shell.language}/index.xml`} />
   <CategoryFilter categories={data.categories} current={null} />
   <ItemList items={data.items} />
 </Zoom>
