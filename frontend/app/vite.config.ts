@@ -8,7 +8,7 @@ const out = process.env['APP_OUT'] ?? '../../generated/app';
 export default defineConfig({
   plugins: [
     sveltekit({
-      adapter: adapter({ pages: out, assets: out }),
+      adapter: adapter({ pages: out, assets: out, fallback: '404.html' }),
       // A section the content turns off has no entries, so its route is legitimately never seen.
       prerender: { handleUnseenRoutes: 'ignore' },
       files: { assets: '../../generated/app-static' },

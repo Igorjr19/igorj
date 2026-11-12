@@ -81,7 +81,10 @@ export interface BarArtist {
 const ARTISTS_SHOWN = 3;
 
 /** The week's artists with each bar scaled to the most played one. */
-export function listeningBars(artists: NonNullable<SiteModel['music']>['artists']): {
+export function listeningBars(
+  artists: NonNullable<SiteModel['music']>['artists'],
+  shown = ARTISTS_SHOWN,
+): {
   total: number;
   bars: BarArtist[];
 } {
@@ -89,7 +92,7 @@ export function listeningBars(artists: NonNullable<SiteModel['music']>['artists'
   const max = Math.max(1, ...artists.map((artist) => artist.plays));
   return {
     total,
-    bars: artists.slice(0, ARTISTS_SHOWN).map((artist) => ({
+    bars: artists.slice(0, shown).map((artist) => ({
       name: artist.name,
       url: artist.url ?? null,
       plays: artist.plays,
