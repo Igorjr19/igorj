@@ -8,7 +8,7 @@ test('moving between panes keeps the same window: no new document, the side colu
   });
   await page.getByRole('link', { name: /Projects/ }).click();
   await expect(page).toHaveURL('/en/projects/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('projects');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Projects');
   const kept = await page.evaluate(() => [
     document.documentElement.getAttribute('data-marker'),
     document.querySelector('.side')?.getAttribute('data-marker'),

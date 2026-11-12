@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PageTitle from "#lib/components/PageTitle.svelte";
   import CodeBox from '#lib/home/CodeBox.svelte';
   import Hero from '#lib/home/Hero.svelte';
   import ListeningBox from '#lib/home/ListeningBox.svelte';
@@ -10,6 +11,7 @@
   const home = $derived(data.home);
 </script>
 
+<PageTitle />
 <div class="home">
   {#if home.hero}<Hero hero={home.hero} />{/if}
   <RecentBox rows={home.recent} />

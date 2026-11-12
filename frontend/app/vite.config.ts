@@ -9,6 +9,8 @@ export default defineConfig({
   plugins: [
     sveltekit({
       adapter: adapter({ pages: out, assets: out }),
+      // A section the content turns off has no entries, so its route is legitimately never seen.
+      prerender: { handleUnseenRoutes: 'ignore' },
       files: { assets: '../../generated/app-static' },
     }),
   ],

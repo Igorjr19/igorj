@@ -1,0 +1,131 @@
+@layer app.components {
+  /* One ruler for every document (posts, projects, the CV): the same indent for lists, quotes, code and entries, and a
+     fixed column for the period of a CV entry, so the left edges line up from page to page. */
+  :root {
+    --indent: calc(3 * var(--cell-width));
+    --period: calc(20 * var(--cell-width));
+  }
+
+  /* Running text is Fira Sans, justified and hyphenated; labels and facts stay mono and flush left. */
+  :is(.prose, .cv) :is(p, li):not(.panel__meta, .cv__period, .cv__place, .cv__contact, .cv__headline) {
+    hyphens: auto;
+    text-align: justify;
+    text-wrap: pretty;
+  }
+
+  /* Labels and facts around the text are mono, flush left, at the size of the interface. */
+  .prose :is(.panel__meta, .facts, .zoom__tags, .toc, .pager) {
+    --font-family: var(--font-mono);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+    text-align: start;
+  }
+
+  .prose :is(ul, ol),
+  .prose blockquote,
+  .prose .code-block,
+  .cv__highlights {
+    margin-inline-start: var(--indent);
+  }
+
+  .prose blockquote {
+    padding-inline-start: var(--indent);
+  }
+
+  .prose :is(h2, h3, h4) {
+    --font-family: var(--font-mono);
+    font-family: var(--font-mono);
+    font-size: 1em;
+    margin-block-start: 1.5lh;
+  }
+
+  .cv {
+    display: grid;
+    gap: calc(2 * var(--cell-height));
+    --font-family: var(--font-text);
+    max-inline-size: calc(100 * var(--cell-width));
+    font-family: var(--font-text);
+    font-size: 1.1em;
+  }
+
+  .cv__section {
+    display: grid;
+    gap: var(--cell-height);
+  }
+
+  .cv__section > .label {
+    margin: 0;
+    padding-block-end: calc(var(--cell-height) / 4);
+    border-block-end: var(--line);
+  }
+
+  .cv__entry {
+    display: grid;
+    grid-template-columns: var(--period) minmax(0, 1fr);
+    gap: 0 calc(2 * var(--cell-width));
+  }
+
+  .cv__period,
+  .cv__place,
+  .cv__headline,
+  .cv__contact,
+  .cv__skills dt {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+
+  .cv__title {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1em;
+  }
+
+  .cv__org {
+    color: var(--color-link);
+  }
+
+  .cv__body > * + * {
+    margin-block-start: calc(var(--cell-height) / 2);
+  }
+
+  /* The marker hangs in the indent, so wrapped lines line up under the text and not under the dash. */
+  :is(.prose ul, .cv__highlights) > li {
+    padding-inline-start: calc(2 * var(--cell-width));
+  }
+
+  :is(.prose ul, .cv__highlights) > li::before {
+    content: '- ' / '';
+    display: inline-block;
+    inline-size: calc(2 * var(--cell-width));
+    margin-inline-start: calc(-2 * var(--cell-width));
+    font-family: var(--font-mono);
+  }
+
+  .cv__skills {
+    display: grid;
+    grid-template-columns: var(--period) minmax(0, 1fr);
+    gap: calc(var(--cell-height) / 2) calc(2 * var(--cell-width));
+  }
+
+  .cv__skills dd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--cell-height) / 4) var(--cell-width);
+  }
+
+  .cv__print button {
+    padding: 0 var(--cell-width);
+    border: var(--line);
+    background: none;
+    color: var(--color-link);
+    font: var(--font-size) var(--font-mono);
+    cursor: pointer;
+  }
+
+  @media print {
+    .cv__print {
+      display: none;
+    }
+  }
+}

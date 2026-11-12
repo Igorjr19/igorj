@@ -10,6 +10,8 @@ export interface ShellData {
   readonly languages: readonly string[];
   readonly host: string;
   readonly author: string;
+  /** Author and role, the name of the site in a page title. */
+  readonly siteTitle: string;
   readonly role: string;
   readonly contact: ContactModel | null;
   readonly panes: readonly Pane[];
@@ -37,6 +39,10 @@ export class Shell {
 
   get author(): string {
     return this.#data().author;
+  }
+
+  get siteTitle(): string {
+    return this.#data().siteTitle;
   }
 
   get role(): string {
