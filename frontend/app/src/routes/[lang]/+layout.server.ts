@@ -14,6 +14,7 @@ export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: Shell
       languages: model.languages,
       host: new URL(SITE_URL).host,
       author: model.profile?.author ?? '',
+      siteTitle: model.profile?.title ?? '',
       role: model.profile?.role ?? '',
       contact: model.contact,
       panes: panesOf(params.lang, model),

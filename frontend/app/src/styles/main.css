@@ -24,5 +24,6 @@
 @import './components/motion.css';
 @import './components/intro.css';
 @import './components/prose.css';
+@import './components/document.css';
 @import './components/code.css';
 @import './components/print.css';
