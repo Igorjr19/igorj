@@ -28,3 +28,17 @@ test('a page that does not exist says so, as a command not found, and leads to b
   await expect(page.locator('.not-found a')).toHaveText(['~ pt-br', '~ en-us']);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
 });
+
+test('the old address of the shelf leads to the shelf in the visitor language', async ({ browser }) => {
+  const context = await browser.newContext({ locale: 'pt-BR' });
+  const page = await context.newPage();
+  await page.goto('/listening/');
+  await expect(page).toHaveURL('/pt/shelf/');
+  await context.close();
+});
+
+test('the headers file caches the hashed scripts for good and the pictures for a week', async ({ request }) => {
+  const headers = await (await request.get('/_headers')).text();
+  expect(headers).toContain('/_app/immutable/*');
+  expect(headers).toContain('max-age=31536000, immutable');
+});

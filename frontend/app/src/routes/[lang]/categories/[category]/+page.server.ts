@@ -1,4 +1,4 @@
-import { categoryCounts, rowsOf } from '#lib/server/items.ts';
+import { categoryCounts, rowsOf, termAlternates } from '#lib/server/items.ts';
 import { modelLanguages, readModel } from '#lib/server/model.ts';
 import type { EntryGenerator, PageServerLoad } from './$types';
 
@@ -20,5 +20,6 @@ export const load: PageServerLoad = async ({ params }) => {
     // A category lists only the posts written in the page language; the blog lists every post the model gives it.
     items: rows.filter((row) => row.language === params.lang && row.category?.slug === params.category),
     categories: categoryCounts(model),
+    alternates: await termAlternates('categories', params.category, params.lang),
   };
 };

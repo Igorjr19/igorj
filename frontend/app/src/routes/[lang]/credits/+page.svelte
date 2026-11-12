@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PageTitle from '#lib/components/PageTitle.svelte';
+  import PageMeta from '#lib/components/PageMeta.svelte';
   import Zoom from '#lib/components/Zoom.svelte';
   import { useShell } from '#lib/shell.svelte.ts';
   import { REPOSITORY } from '#lib/site.ts';
@@ -11,7 +11,7 @@
   const rights = $derived(shell.t('creditsRights', { Author: shell.author, Repository: REPOSITORY }));
 </script>
 
-<PageTitle {title} />
+<PageMeta {title} />
 <Zoom {title}>
   <!-- The sentence comes from the interface strings and holds one link to the repository. -->
   <p>{@html rights}</p>

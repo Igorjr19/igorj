@@ -31,6 +31,8 @@ export interface ItemRowData {
 export interface ItemPageData {
   readonly section: 'posts' | 'projects' | 'research';
   readonly title: string;
+  readonly slug: string;
+  readonly summary: string;
   readonly html: string;
   readonly headings: readonly { readonly id: string; readonly text: string; readonly level: number }[];
   readonly tags: readonly TagData[];

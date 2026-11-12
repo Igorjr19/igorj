@@ -118,6 +118,7 @@ async function startStatic(): Promise<void> {
 }
 
 await startStatic();
+await write(`${STATIC_DIR}/_headers`, await Deno.readFile('frontend/app/static/_headers'));
 registerFonts('generated/share/fonts');
 const colors = defaultColors(parseThemesData(JSON.parse(await Deno.readTextFile('generated/data/themes.json'))));
 const languages = (await Array.fromAsync(Deno.readDir('generated/model')))

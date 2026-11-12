@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { ItemSection } from '#lib/routes.ts';
 import { readDictionary } from '#lib/server/i18n.ts';
-import { itemPageOf } from '#lib/server/items.ts';
+import { itemAlternates, itemPageOf } from '#lib/server/items.ts';
 import { modelLanguages, readModel } from '#lib/server/model.ts';
 import type { EntryGenerator, PageServerLoad } from './$types';
 
@@ -28,5 +28,8 @@ export const load: PageServerLoad = async ({ params }) => {
     error(404);
   }
   const copy = (await readDictionary(params.lang))['codeCopy'];
-  return { item: await itemPageOf(model, section, item, typeof copy === 'string' ? copy : 'copy') };
+  return {
+    item: await itemPageOf(model, section, item, typeof copy === 'string' ? copy : 'copy'),
+    alternates: await itemAlternates(section, item.id, params.lang),
+  };
 };

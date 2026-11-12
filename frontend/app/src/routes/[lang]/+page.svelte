@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PageTitle from "#lib/components/PageTitle.svelte";
+  import PageMeta from "#lib/components/PageMeta.svelte";
   import CodeBox from '#lib/home/CodeBox.svelte';
   import Hero from '#lib/home/Hero.svelte';
   import ListeningBox from '#lib/home/ListeningBox.svelte';
@@ -7,11 +7,14 @@
   import SystemBox from '#lib/home/SystemBox.svelte';
   import WatchedBox from '#lib/home/WatchedBox.svelte';
 
+  import { useShell } from '#lib/shell.svelte.ts';
+
+  const shell = useShell();
   let { data } = $props();
   const home = $derived(data.home);
 </script>
 
-<PageTitle />
+<PageMeta description={shell.description} />
 <div class="home">
   {#if home.hero}<Hero hero={home.hero} />{/if}
   <RecentBox rows={home.recent} />

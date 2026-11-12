@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PageTitle from '#lib/components/PageTitle.svelte';
+  import PageMeta from '#lib/components/PageMeta.svelte';
   import Zoom from '#lib/components/Zoom.svelte';
   import ItemList from '#lib/items/ItemList.svelte';
   import { useShell } from '#lib/shell.svelte.ts';
@@ -9,7 +9,7 @@
   const title = $derived(shell.t('panelProjects'));
 </script>
 
-<PageTitle {title} />
+<PageMeta {title} />
 <Zoom {title}>
   <ItemList items={data.items} />
 </Zoom>

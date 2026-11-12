@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PageTitle from '#lib/components/PageTitle.svelte';
+  import PageMeta from '#lib/components/PageMeta.svelte';
   import Zoom from '#lib/components/Zoom.svelte';
   import { useShell } from '#lib/shell.svelte.ts';
 
@@ -8,7 +8,7 @@
   const title = $derived(shell.t('sectionCategories'));
 </script>
 
-<PageTitle {title} />
+<PageMeta {title} />
 <Zoom {title}>
   <p class="tag-cloud">
     {#each data.categories as category (category.slug)}

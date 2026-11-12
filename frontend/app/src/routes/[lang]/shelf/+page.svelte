@@ -1,6 +1,6 @@
 <script lang="ts">
   import starUrl from '@fortawesome/fontawesome-free/svgs/solid/star.svg?url';
-  import PageTitle from '#lib/components/PageTitle.svelte';
+  import PageMeta from '#lib/components/PageMeta.svelte';
   import Zoom from '#lib/components/Zoom.svelte';
   import AgeNote from '#lib/home/AgeNote.svelte';
   import { listeningBars } from '#lib/home/data.ts';
@@ -15,7 +15,7 @@
   const kinds = { book: 'kindBook', paper: 'kindPaper' } as const;
 </script>
 
-<PageTitle {title} />
+<PageMeta {title} />
 <Zoom {title}>
   <div class="shelf">
     <section aria-labelledby="music-title">

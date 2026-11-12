@@ -3,6 +3,7 @@ import type { ItemPageData, ItemRowData } from '../items/types.ts';
 import { renderMarkdown } from '../markdown/render.ts';
 import { type ItemSection, itemHref } from '../routes.ts';
 import { readImages } from './images.ts';
+import { modelLanguages, readModel } from './model.ts';
 
 type Images = Awaited<ReturnType<typeof readImages>>;
 type Item = PostModel | ProjectModel | ResearchModel;
@@ -82,6 +83,8 @@ export async function itemPageOf(
   return {
     section,
     title: item.title,
+    slug: item.slug,
+    summary: 'summary' in item ? item.summary : '',
     html: rendered.html,
     headings: rendered.headings,
     tags: item.tags.map((tag) => ({ slug: tag.slug, name: tag.name })),
@@ -106,4 +109,42 @@ export function categoryCounts(model: SiteModel): { slug: string; name: string; 
     }))
     .filter((category) => category.count > 0)
     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Where the same item lives in the other languages: only the ones that have it written in that language. */
+export async function itemAlternates(
+  section: ItemSection,
+  id: string,
+  language: string,
+): Promise<Record<string, string>> {
+  const others = (await modelLanguages()).filter((other) => other !== language);
+  const found = await Promise.all(
+    others.map(async (other) => {
+      const item = (await readModel(other))[section].find(
+        (candidate) => candidate.id === id && candidate.language === other,
+      );
+      return item ? ([other, itemHref(section, item)] as const) : null;
+    }),
+  );
+  return Object.fromEntries(found.filter((entry) => entry !== null));
+}
+
+/** The page of a category or a tag in the other languages, where the language has it. */
+export async function termAlternates(
+  kind: 'categories' | 'tags',
+  slug: string,
+  language: string,
+): Promise<Record<string, string>> {
+  const others = (await modelLanguages()).filter((other) => other !== language);
+  const found = await Promise.all(
+    others.map(async (other) => {
+      const model = await readModel(other);
+      const has =
+        kind === 'tags'
+          ? model.tags.some((tag) => tag.slug === slug)
+          : categoryCounts(model).some((category) => category.slug === slug);
+      return has ? ([other, `/${other}/${kind}/${slug}/`] as const) : null;
+    }),
+  );
+  return Object.fromEntries(found.filter((entry) => entry !== null));
 }
