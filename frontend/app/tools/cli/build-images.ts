@@ -33,15 +33,28 @@ async function write(path: string, data: Uint8Array | string): Promise<void> {
   await (typeof data === 'string' ? Deno.writeTextFile(path, data) : Deno.writeFile(path, data));
 }
 
+/** A short fingerprint of the bytes, so a picture that changes gets a new address and no cache keeps the old one. */
+async function fingerprint(data: Uint8Array): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', Uint8Array.from(data));
+  return [...new Uint8Array(digest)]
+    .slice(0, 5)
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 async function writeMask(
   kind: 'portrait' | 'figure' | 'thumb',
   media: string,
   bits: ReturnType<typeof atkinson>,
 ): Promise<MaskEntry> {
   const base = `img/${kind}/${withoutExtension(media)}`;
-  await write(`${STATIC_DIR}/${base}.png`, maskPng(bits));
-  await write(`${STATIC_DIR}/${base}.inverted.png`, maskPng(invert(bits)));
-  return { src: `/${base}.png`, inverted: `/${base}.inverted.png`, width: bits.width, height: bits.height };
+  const mask = maskPng(bits);
+  const inverse = maskPng(invert(bits));
+  const src = `${base}.${await fingerprint(mask)}.png`;
+  const inverted = `${base}.inverted.${await fingerprint(inverse)}.png`;
+  await write(`${STATIC_DIR}/${src}`, mask);
+  await write(`${STATIC_DIR}/${inverted}`, inverse);
+  return { src: `/${src}`, inverted: `/${inverted}`, width: bits.width, height: bits.height };
 }
 
 async function portraitMask(media: string): Promise<MaskEntry> {
