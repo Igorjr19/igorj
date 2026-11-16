@@ -76,7 +76,7 @@ test('theme changes the theme from the terminal and the status line follows', as
 
 test('the button in the top bar and exit close and open it, and clear empties the screen', async ({ page }) => {
   await visit(page, '/en/');
-  await page.locator('.win__button', { hasText: 'terminal' }).click();
+  await page.getByRole('button', { name: 'terminal' }).click();
   await expect(page.locator('#terminal-input')).toBeFocused();
   await type(page, 'clear');
   await expect(page.locator('.term__line')).toHaveCount(0);
