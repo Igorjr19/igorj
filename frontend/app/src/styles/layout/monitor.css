@@ -1,0 +1,96 @@
+/* On a wide window the site is the screen of a monitor: the window takes the share of the view the 3D screen takes
+   at rest (REST_FILL in scene.ts), in the 16:10 of that screen, and the room is drawn behind it. The query is the
+   one in query.ts and in the head of app.html. */
+@layer app.layout {
+  @media (min-width: 1100px) and (min-height: 660px) {
+    html[data-monitor] {
+      overflow: hidden;
+      background-color: var(--color-surface-1);
+    }
+
+    html[data-monitor] .monitor {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 400ms ease-out;
+      pointer-events: none;
+    }
+
+    html[data-monitor] .monitor[data-on] {
+      opacity: 1;
+    }
+
+    html[data-monitor] .monitor__canvas {
+      display: block;
+      inline-size: 100%;
+      block-size: 100%;
+      image-rendering: pixelated;
+    }
+
+    html[data-monitor] body {
+      --monitor-width: min(80vw, calc(80vh * 1.6));
+      position: fixed;
+      inset: 50% auto auto 50%;
+      inline-size: var(--monitor-width);
+      block-size: calc(var(--monitor-width) / 1.6);
+      min-block-size: 0;
+      translate: -50% -50%;
+      overflow: hidden;
+      container: screen / size;
+    }
+
+    /* Glass over the screen: a reflection, a vignette and scanlines, none of which takes a click. */
+    html[data-monitor] body::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, color-mix(in oklab, var(--color-surface-1) 45%, transparent) 0%, transparent 35%),
+        radial-gradient(
+          ellipse at center,
+          transparent 60%,
+          color-mix(in oklab, var(--color-surface-3) 55%, transparent) 100%
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0 2px,
+          color-mix(in oklab, var(--color-text) 7%, transparent) 2px 3px
+        );
+    }
+
+    html[data-monitor] .win {
+      block-size: calc(100cqb - 2 * var(--cell-height));
+      margin-block: var(--cell-height);
+    }
+
+    html[data-monitor][data-boot] body {
+      visibility: hidden;
+    }
+
+    html[data-monitor][data-powering] body {
+      animation: monitor-on 520ms ease-out;
+    }
+  }
+
+  @keyframes monitor-on {
+    0% {
+      scale: 0.35 0.004;
+      filter: brightness(4);
+    }
+    35% {
+      scale: 1 0.004;
+      filter: brightness(4);
+    }
+    70% {
+      scale: 1 1;
+      filter: brightness(1.8);
+    }
+    100% {
+      filter: brightness(1);
+    }
+  }
+}

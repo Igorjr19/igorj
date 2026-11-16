@@ -9,6 +9,7 @@
   import { readView, saveView } from '#lib/items/view.ts';
   import { languageInfo } from '#lib/languages.ts';
   import { isReadingPage } from '#lib/layout.ts';
+  import Monitor from '#lib/monitor/Monitor.svelte';
   import { direction } from '#lib/motion/direction.ts';
   import { navigationTransition } from '#lib/motion/transition.ts';
   import PickBox from '#lib/pick/PickBox.svelte';
@@ -117,6 +118,7 @@
     <StatusBar />
   </div>
 </div>
+<Monitor boot={data.shell.boot} />
 <Shortcuts />
 <HelpDialog />
 <PickBox />
