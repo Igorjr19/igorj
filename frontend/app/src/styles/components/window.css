@@ -42,6 +42,31 @@
     color: var(--color-link);
   }
 
+  /* The tools in the top bar are icons; the name and the key show on hover or focus, as a label under the icon. */
+  .win__tool {
+    position: relative;
+  }
+
+  .win__tool::after {
+    content: attr(data-tip);
+    position: absolute;
+    inset-block-start: calc(100% + var(--cell-height) / 4);
+    inset-inline-end: 0;
+    z-index: 5;
+    padding: 0 var(--cell-width);
+    border: var(--line);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease-in;
+  }
+
+  .win__tool:is(:hover, :focus-visible)::after {
+    opacity: 1;
+  }
+
   .win__side-toggle[aria-pressed='true'] {
     color: var(--color-text);
   }

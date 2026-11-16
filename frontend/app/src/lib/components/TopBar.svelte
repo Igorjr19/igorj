@@ -10,6 +10,12 @@
 
   const shell = useShell();
   const ui = useUi();
+  const tools = $derived([
+    { key: 'search', icon: 'magnifying-glass', label: shell.t('keyFind'), shortcut: 'f', run: () => (ui.pick = 'palette') },
+    { key: 'theme', icon: 'circle-half-stroke', label: shell.t('keyTheme'), shortcut: 't', run: () => (ui.pick = 'theme') },
+    { key: 'terminal', icon: 'terminal', label: shell.t('keyTerminal'), shortcut: ':', run: () => (ui.terminalOpen = !ui.terminalOpen) },
+    { key: 'help', icon: 'circle-question', label: shell.t('keyHelp'), shortcut: '?', run: () => (ui.helpOpen = true) },
+  ] as const);
   const sideHidden = $derived(ui.sideHidden(isReadingPage(page.url.pathname)));
 
   /** Where the page sits: `~` for the home, then one entry per address segment after the language. */
@@ -65,10 +71,16 @@
     </ol>
   </nav>
   <div class="win__controls">
-    <button type="button" class="win__button" onclick={() => (ui.pick = 'palette')}><Icon name="magnifying-glass" />{shell.t('keyFind')} <kbd>f</kbd></button>
-    <button type="button" class="win__button" onclick={() => (ui.pick = 'theme')}><Icon name="circle-half-stroke" />{shell.t('keyTheme')}</button>
-    <button type="button" class="win__button" onclick={() => (ui.terminalOpen = !ui.terminalOpen)}><Icon name="terminal" />{shell.t('keyTerminal')}</button>
-    <button type="button" class="win__button" onclick={() => (ui.helpOpen = true)}><Icon name="circle-question" />{shell.t('keyHelp')} <kbd>?</kbd></button>
+    {#each tools as tool (tool.key)}
+      <button
+        type="button"
+        class="win__button win__tool"
+        aria-label={tool.label}
+        aria-keyshortcuts={tool.shortcut}
+        data-tip={`${tool.label} · ${tool.shortcut}`}
+        onclick={tool.run}><Icon name={tool.icon} /></button
+      >
+    {/each}
     {#if other.length > 0}
       <nav class="win__languages" aria-label={shell.t('languages')}>
         {#each other as { language, href, info } (language)}

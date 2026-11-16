@@ -11,7 +11,7 @@
 </script>
 
 <PageMeta title={data.name} alternates={data.alternates} />
-<Zoom title={data.name}>
+<Zoom title={data.name} back={`/${shell.language}/posts/`}>
   <ItemsBar feed={`/${shell.language}/categories/${data.slug}/index.xml`} />
   <CategoryFilter categories={data.categories} current={data.slug} />
   <ItemList items={data.items} />

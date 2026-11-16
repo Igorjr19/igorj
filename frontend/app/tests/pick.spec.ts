@@ -101,9 +101,9 @@ test('# opens the filter with the categories and tags, and choosing a category g
 
 test('the buttons in the top bar open the search and the themes', async ({ page }) => {
   await visit(page, '/en/');
-  await page.locator('.win__button', { hasText: 'search' }).click();
+  await page.getByRole('button', { name: 'search' }).click();
   await expect(page.locator('dialog.pick')).toBeVisible();
   await page.keyboard.press('Escape');
-  await page.locator('.win__button', { hasText: 'theme' }).click();
+  await page.getByRole('button', { name: 'theme' }).click();
   await expect(page.locator('.pick__accents')).toBeVisible();
 });

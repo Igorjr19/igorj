@@ -17,6 +17,6 @@
   published={data.item.post?.date}
   alternates={data.alternates}
 />
-<Zoom title={data.item.title} page>
+<Zoom title={data.item.title} page back={`/${shell.language}/${data.item.section}/`}>
   <ItemPage item={data.item} />
 </Zoom>
