@@ -35,6 +35,8 @@
     "@fontsource/fira-code": "npm:@fontsource/fira-code@5.3.0",
     "@fontsource/fira-sans": "npm:@fontsource/fira-sans@5.3.0",
     "@fortawesome/fontawesome-free": "npm:@fortawesome/fontawesome-free@7.3.1",
+    "three": "npm:three@0.170.0",
+    "@types/three": "npm:@types/three@0.170.0",
     "highlight.js": "npm:highlight.js@11.12.0",
     "markdown-it": "npm:markdown-it@15.0.3",
     "html-validate": "npm:html-validate@11.16.2",
