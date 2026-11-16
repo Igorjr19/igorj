@@ -125,6 +125,7 @@ export interface CvModel {
   readonly work: readonly {
     readonly name: string;
     readonly position: string;
+    readonly url?: string | undefined;
     readonly startDate: string;
     readonly endDate?: string | undefined;
     readonly location?: string | undefined;
@@ -133,6 +134,7 @@ export interface CvModel {
   }[];
   readonly education: readonly {
     readonly institution: string;
+    readonly url?: string | undefined;
     readonly studyType: string;
     readonly area: string;
     readonly startDate?: string | undefined;
@@ -141,6 +143,7 @@ export interface CvModel {
   readonly academic: readonly {
     readonly title: string;
     readonly institution: string;
+    readonly url?: string | undefined;
     readonly year: number;
     readonly summary?: string | undefined;
   }[];

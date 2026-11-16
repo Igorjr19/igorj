@@ -51,3 +51,9 @@ Deno.test('checkContentFile reports broken YAML with the parser message', () => 
 Deno.test('checkContentFile reports files outside the known structure, so they do not go unvalidated', () => {
   assertStringIncludes(checkContentFile('notes/today.md', '---\ntitle: A\n---\n') ?? '', 'No content type');
 });
+
+Deno.test('a company, a school or an academic body may link to its page, and the link must be an address', () => {
+  assertEquals(checkContentFile('cv/cv.pt.yaml', CV.replace('- name:', '- url: https://example.org\n    name:')), null);
+  const problem = checkContentFile('cv/cv.pt.yaml', CV.replace('- name:', '- url: not-an-address\n    name:'));
+  assertEquals(problem !== null, true);
+});

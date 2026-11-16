@@ -10,6 +10,7 @@ basics:
       url: https://github.com/example
 work:
   - name: Fixture Company
+    url: https://example.com/company
     position: Fixture Developer
     startDate: 2024-02
     location: Remote
@@ -22,6 +23,7 @@ work:
     endDate: 2023-12
 education:
   - institution: Fixture University
+    url: https://example.com/university
     studyType: Bachelor
     area: Computing
     startDate: 2020-01

@@ -108,6 +108,7 @@ const CvSchema = v.strictObject({
     v.strictObject({
       name: Text,
       position: Text,
+      url: v.optional(Url),
       startDate: Month,
       endDate: v.optional(Month),
       location: v.optional(Text),
@@ -118,6 +119,7 @@ const CvSchema = v.strictObject({
   education: v.array(
     v.strictObject({
       institution: Text,
+      url: v.optional(Url),
       studyType: Text,
       area: Text,
       startDate: v.optional(Month),
@@ -130,6 +132,7 @@ const CvSchema = v.strictObject({
       v.strictObject({
         title: Text,
         institution: Text,
+        url: v.optional(Url),
         year: v.pipe(v.number(), v.integer(), v.minValue(1900), v.maxValue(2100)),
         summary: v.optional(Text),
       }),

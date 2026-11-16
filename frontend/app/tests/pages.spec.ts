@@ -98,3 +98,34 @@ test('a preview in a list uses the picture made at its own size, not the large o
     .evaluate((node) => getComputedStyle(node).maskImage);
   expect(mask).toContain('/img/thumb/');
 });
+
+test('the period of a CV entry is at the right edge and the text at the left, and a company with an address is a link', async ({
+  page,
+}) => {
+  await page.goto('/en/cv/');
+  const edges = await page
+    .locator('.cv__entry')
+    .first()
+    .evaluate((entry) => {
+      const body = (entry.querySelector('.cv__body') as Element).getBoundingClientRect();
+      const period = (entry.querySelector('.cv__period') as Element).getBoundingClientRect();
+      return {
+        bodyBeforePeriod: body.right <= period.left + 1,
+        periodAtEnd: Math.abs(period.right - entry.getBoundingClientRect().right) < 2,
+      };
+    });
+  expect(edges).toEqual({ bodyBeforePeriod: true, periodAtEnd: true });
+  await expect(page.locator('.cv__org a').first()).toHaveAttribute('href', 'https://example.com/company');
+});
+
+test('on paper the CV opens with the name large, then the role and the place, without the page title', async ({
+  page,
+}) => {
+  await page.goto('/en/cv/');
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.locator('.cv__name')).toBeVisible();
+  await expect(page.locator('.zoom__title')).toBeHidden();
+  const size = await page.locator('.cv__name').evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
+  expect(size).toBeGreaterThan(30);
+  await expect(page.locator('.cv__headline')).toContainText('Fixture role');
+});

@@ -61,8 +61,24 @@
 
   .cv__entry {
     display: grid;
-    grid-template-columns: var(--period) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) var(--period);
     gap: 0 calc(2 * var(--cell-width));
+  }
+
+  /* The period sits at the right edge and the text at the left, so the eye reads the content first. */
+  .cv__entry > .cv__body {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .cv__entry > .cv__period {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: end;
+  }
+
+  .cv__name {
+    display: none;
   }
 
   .cv__period,

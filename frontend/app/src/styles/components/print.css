@@ -1,4 +1,8 @@
 @layer app.components {
+  @page {
+    margin: 14mm;
+  }
+
   /* Paper is white whatever the theme: the system colors follow the printer, not the screen. */
   @media print {
     :root {
@@ -15,6 +19,24 @@
     .statusbar,
     .drawer {
       display: none;
+    }
+
+    /* The CV opens with the name, large, then the role and the place; the page title "CV" is not needed. */
+    .zoom:has(.cv) > .zoom__title {
+      display: none;
+    }
+
+    .cv__name {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 28pt;
+      font-weight: bold;
+      line-height: 1.1;
+    }
+
+    .cv__headline {
+      font-size: 12pt;
+      color: CanvasText;
     }
 
     /* On paper the window is just the page: no frame, no inner scrolling, no fixed height. */
