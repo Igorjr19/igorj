@@ -17,7 +17,7 @@
   import Terminal from '#lib/terminal/Terminal.svelte';
   import { currentChoice } from '#lib/theme/current.ts';
   import { provideUi } from '#lib/ui.svelte.ts';
-  import { afterNavigate, onNavigate } from '$app/navigation';
+  import { afterNavigate, onNavigate, preloadData } from '$app/navigation';
   import { page } from '$app/state';
 
   let { data, children } = $props();
@@ -33,6 +33,12 @@
   let ready = $state(false);
   onMount(() => {
     ready = true;
+    // The panes are what the visitor moves between most, so their data is fetched as soon as the window is up.
+    (window.requestIdleCallback ?? setTimeout)(() => {
+      for (const pane of data.shell.panes) {
+        void preloadData(pane.href);
+      }
+    });
     ui.theme = currentChoice();
     try {
       const height = Number(localStorage.getItem('terminal-height'));
