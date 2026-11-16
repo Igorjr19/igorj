@@ -12,6 +12,8 @@
   import { progress } from '#lib/progress.svelte.ts';
   import { provideShell } from '#lib/shell.svelte.ts';
   import Shortcuts from '#lib/shortcuts/Shortcuts.svelte';
+  import Terminal from '#lib/terminal/Terminal.svelte';
+  import { currentChoice } from '#lib/theme/current.ts';
   import { provideUi } from '#lib/ui.svelte.ts';
   import { afterNavigate } from '$app/navigation';
   import { page } from '$app/state';
@@ -29,6 +31,15 @@
   let ready = $state(false);
   onMount(() => {
     ready = true;
+    ui.theme = currentChoice();
+    try {
+      const height = Number(localStorage.getItem('terminal-height'));
+      if (height > 0) {
+        ui.terminalHeight = height;
+      }
+    } catch {
+      // Storage blocked: the default height applies.
+    }
     const storage = browserStorage('localStorage');
     if (storage) {
       ui.view = readView(storage);
@@ -57,7 +68,13 @@
   });
 </script>
 
-<div class="app" class:is-zoomed={zoomed} data-ready={ready} lang={languageInfo(data.shell.language).locale}>
+<div
+  class="app"
+  class:is-zoomed={zoomed}
+  class:has-terminal={ui.terminalOpen}
+  class:is-resizing={ui.resizing}
+  data-ready={ready}
+  style:--terminal-height={`${ui.terminalHeight * 100}%`} lang={languageInfo(data.shell.language).locale}>
   <div class="win">
     <TopBar />
     <div class="win__body">
@@ -66,6 +83,7 @@
         {@render children()}
       </main>
       <div class="scroll" aria-hidden="true"><span class="scroll__thumb"></span></div>
+      <Terminal />
     </div>
     <StatusBar />
   </div>

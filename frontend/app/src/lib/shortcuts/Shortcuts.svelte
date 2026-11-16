@@ -60,6 +60,9 @@
       case 'help':
         ui.helpOpen = true;
         return true;
+      case 'terminal':
+        ui.terminalOpen = !ui.terminalOpen;
+        return true;
       case 'theme':
       case 'palette':
       case 'filter':

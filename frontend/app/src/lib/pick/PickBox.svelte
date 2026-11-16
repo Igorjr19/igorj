@@ -22,6 +22,7 @@
     themeEntries,
   } from './entries.ts';
   import { highlight } from './fuzzy.ts';
+  import { loadIndex } from './index-store.ts';
 
   const shell = useShell();
   const ui = useUi();
@@ -85,7 +86,7 @@
   async function load(): Promise<void> {
     if (!index) {
       try {
-        index = (await (await fetch(`/${shell.language}/site.json`)).json()) as PickIndex;
+        index = await loadIndex(shell.language);
       } catch {
         // Offline or blocked: the box stays closed and every page keeps its links.
         ui.pick = null;
@@ -140,6 +141,7 @@
 
   function saveChoice(saved: SavedTheme | null): void {
     applyThemeChoice(document.documentElement, saved);
+    ui.theme = saved;
     const storage = browserStorage('localStorage');
     try {
       if (storage) {
@@ -157,6 +159,9 @@
       },
       filter: () => {
         ui.pick = 'filter';
+      },
+      terminal: () => {
+        ui.terminalOpen = true;
       },
       accent: () =>
         saveChoice({ ...(currentChoice() ?? { family: index?.themeIndex.defaultFamily ?? '' }), accent: argument ?? '' }),
@@ -207,6 +212,7 @@
   function cancel(): void {
     if (mode === 'theme' && !chosen) {
       applyThemeChoice(document.documentElement, before);
+      ui.theme = before;
     }
   }
 
