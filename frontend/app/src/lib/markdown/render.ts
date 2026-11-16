@@ -91,3 +91,23 @@ export function renderMarkdown(source: string, context: RenderContext): Rendered
   const html = markdown.render(source);
   return { html, headings };
 }
+
+const ENTITIES: Readonly<Record<string, string>> = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#39;': "'",
+};
+
+/** The text of a Markdown source with no markup at all, one paragraph per line, for places that only show text. */
+export function plainText(source: string): string {
+  const { html } = renderMarkdown(source, { mediaBase: '', figures: {}, copyLabel: '' });
+  return html
+    .replace(/<button[^>]*>.*?<\/button>/g, '')
+    .replace(/<\/(?:p|h[1-6]|li|pre|blockquote|div)>/g, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&(?:amp|lt|gt|quot|#39);/g, (entity) => ENTITIES[entity] ?? entity)
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}

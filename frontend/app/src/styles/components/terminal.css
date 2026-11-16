@@ -22,6 +22,7 @@
 
   /* The top edge is the grip for the height: a thin line that thickens under the pointer or the focus. */
   .drawer__handle {
+    border: 0;
     block-size: calc(var(--cell-height) / 4);
     margin-block-start: calc(-1 * var(--cell-height) / 8);
     cursor: ns-resize;

@@ -3,6 +3,7 @@
   import { isReadingPage } from '../layout.ts';
   import { progress } from '../progress.svelte.ts';
   import { useShell } from '../shell.svelte.ts';
+  import { themeLabel } from '../theme/status.ts';
   import { useUi } from '../ui.svelte.ts';
 
   const shell = useShell();
@@ -13,6 +14,7 @@
   const reading = $derived(isReadingPage(pathname));
   const isList = $derived(/^\/[^/]+\/(?:projects|posts|research)\/$/.test(pathname) || /^\/[^/]+\/(?:categories|tags)\/[^/]+\/$/.test(pathname));
   const parent = $derived(pathname.replace(/[^/]+\/$/, ''));
+  const themeName = $derived(themeLabel(shell.themeNames, ui.theme, typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches));
   const lastPane = $derived(shell.panes.length);
   const isPost = $derived(/^\/[^/]+\/posts\/[^/]+\/$/.test(pathname));
   const previous = $derived(page.data.item?.post?.previous as { href: string } | null | undefined);
@@ -20,7 +22,7 @@
 </script>
 
 <footer class="statusbar">
-  <span class="statusbar__mode">{shell.t(reading ? 'modeReading' : 'modeNormal')}</span>
+  <span class="statusbar__mode">{shell.t(ui.terminalOpen ? 'modeTerminal' : reading ? 'modeReading' : 'modeNormal')}</span>
   <span class="statusbar__keys">
     {#if !isHome}
       <a class="statusbar__key" href={parent} data-nav="back"><kbd>q</kbd> {shell.t('keyBack')}</a>
@@ -45,6 +47,7 @@
       <span>{progress.percent}% {shell.t('statusRead')}</span>
     {/if}
     <span>{shell.locale}</span>
+    {#if ui.theme !== undefined}<span>{themeName}</span>{/if}
     <a class="statusbar__credits" href={`/${shell.language}/credits/`}>{shell.t('credits').toLowerCase()}</a>
   </div>
 </footer>

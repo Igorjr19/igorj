@@ -3,6 +3,7 @@ import type { ContactModel } from '../../../../tools/model/types.ts';
 import { type Argument, type Dictionary, translate } from './i18n.ts';
 import { languageInfo } from './languages.ts';
 import type { Pane } from './sections.ts';
+import type { ThemeNames } from './theme/status.ts';
 
 /** What every page of a language shares: who the site is about, the panes that are on, the interface text. */
 export interface ShellData {
@@ -13,6 +14,7 @@ export interface ShellData {
   readonly siteUrl: string;
   readonly description: string;
   readonly fontPreloads: readonly string[];
+  readonly themeNames: ThemeNames;
   readonly author: string;
   /** Author and role, the name of the site in a page title. */
   readonly siteTitle: string;
@@ -43,6 +45,10 @@ export class Shell {
 
   get description(): string {
     return this.#data().description;
+  }
+
+  get themeNames(): ThemeNames {
+    return this.#data().themeNames;
   }
 
   get fontPreloads(): readonly string[] {

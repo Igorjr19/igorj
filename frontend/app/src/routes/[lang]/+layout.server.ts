@@ -2,6 +2,7 @@ import { panesOf } from '#lib/sections.ts';
 import { readFontPreloads } from '#lib/server/fonts.ts';
 import { readDictionary } from '#lib/server/i18n.ts';
 import { readModel } from '#lib/server/model.ts';
+import { readThemeNames } from '#lib/server/theme-names.ts';
 import type { ShellData } from '#lib/shell.svelte.ts';
 import type { LayoutServerLoad } from './$types';
 
@@ -17,6 +18,7 @@ export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: Shell
       siteUrl: SITE_URL,
       description: model.profile?.description ?? '',
       fontPreloads: await readFontPreloads(),
+      themeNames: await readThemeNames(),
       author: model.profile?.author ?? '',
       siteTitle: model.profile?.title ?? '',
       role: model.profile?.role ?? '',
