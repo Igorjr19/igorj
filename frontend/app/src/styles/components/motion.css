@@ -1,9 +1,5 @@
 /* Moving between pages: the frame stays, the highlight of the open pane slides along the side column,
-   and the pane enters from the side its number lies on. Browsers without view transitions just load the page. */
-@view-transition {
-  navigation: auto;
-}
-
+   and the pane enters from the side its number lies on. The page changes inside one document, as a view transition. */
 @layer app.components {
   .win__top {
     view-transition-name: win-top;
@@ -119,19 +115,6 @@
     @starting-style {
       opacity: 0;
     }
-  }
-
-  /* The visitor's choice turns every movement of the site off: transitions, entrances and the blinking cursor. */
-  :root[data-motion='reduced'] *,
-  :root[data-motion='reduced'] *::before,
-  :root[data-motion='reduced'] *::after {
-    transition-duration: 0s !important;
-    animation-duration: 0s !important;
-    animation-iteration-count: 1 !important;
-  }
-
-  :root[data-motion='reduced'] .cursor {
-    animation: none;
   }
 }
 

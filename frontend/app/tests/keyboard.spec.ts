@@ -5,6 +5,7 @@ test('a number key opens that pane and the pane already open gives its first ite
   await visit(page, '/en/');
   await page.keyboard.press('2');
   await expect(page).toHaveURL('/en/projects/');
+  await expect(page.locator('.item__link').first()).toBeVisible();
   await page.keyboard.press('2');
   await expect(page.locator('.item__link').first()).toBeFocused();
 });
