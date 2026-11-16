@@ -6,7 +6,7 @@ import type { HomeData } from '../home/types.ts';
 import { readImages } from './images.ts';
 
 const BUILD_INFO = process.env['BUILD_INFO'] ?? '../../generated/data/build.json';
-const SOURCES = process.env['SOURCES_FILE'] ?? '../tui/data/sources.toml';
+const SOURCES = process.env['SOURCES_FILE'] ?? 'data/sources.toml';
 
 async function commitOf(): Promise<string | null> {
   try {

@@ -1,0 +1,44 @@
+# Third-party material served by the site and where its license text comes from:
+# a file inside the installed package, or an upstream file pinned by commit and checksum.
+
+[[entries]]
+name = "Svelte"
+license = "MIT"
+homepage = "https://svelte.dev"
+text = { package = "svelte", file = "LICENSE.md" }
+
+[[entries]]
+name = "SvelteKit"
+license = "MIT"
+homepage = "https://svelte.dev/docs/kit"
+text = { package = "@sveltejs/kit", file = "LICENSE" }
+
+[[entries]]
+name = "Fira Code"
+license = "OFL-1.1"
+homepage = "https://github.com/tonsky/FiraCode"
+text = { package = "@fontsource/fira-code", file = "LICENSE" }
+
+[[entries]]
+name = "Fira Sans"
+license = "OFL-1.1"
+homepage = "https://github.com/mozilla/Fira"
+text = { package = "@fontsource/fira-sans", file = "LICENSE" }
+
+[[entries]]
+name = "Catppuccin palette"
+license = "MIT"
+homepage = "https://catppuccin.com"
+text = { url = "https://raw.githubusercontent.com/catppuccin/catppuccin/d09787dd98ca6fba08af5ef2ae94a7e09f17daca/LICENSE", sha256 = "814096d2c34cc216c624738a49356f32b7237733b4f7edb0685f4e50ef5074ba" }
+
+[[entries]]
+name = "iTerm2-Color-Schemes"
+license = "MIT"
+homepage = "https://github.com/mbadolato/iTerm2-Color-Schemes"
+text = { url = "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/5a44b4f0a21646be296e408338ff7dc1a09ff9a8/LICENSE", sha256 = "2373168614b527494dff99eb393024608216db79f687d58bad420f6c1e0ad192" }
+
+[[entries]]
+name = "Font Awesome Free (icons)"
+license = "CC-BY-4.0"
+homepage = "https://fontawesome.com"
+text = { package = "@fortawesome/fontawesome-free", file = "LICENSE.txt" }

@@ -74,7 +74,7 @@ async function readModel(language: string): Promise<SiteModel> {
 }
 
 async function sectionLabels(language: string): Promise<Record<string, string>> {
-  return parseToml(await Deno.readTextFile(`frontend/tui/i18n/${language}.toml`)) as Record<string, string>;
+  return parseToml(await Deno.readTextFile(`frontend/app/i18n/${language}.toml`)) as Record<string, string>;
 }
 
 async function sharePictures(language: string, colors: PictureColors): Promise<number> {
@@ -107,6 +107,20 @@ async function sharePictures(language: string, colors: PictureColors): Promise<n
     });
   }
   return items.length + 1;
+}
+
+/** Files an item offers for download, such as a paper, are served as they are under /media/. */
+async function copyDocuments(languages: readonly string[]): Promise<void> {
+  const seen = new Set<string>();
+  for (const language of languages) {
+    const model = await readModel(language);
+    for (const media of [...model.posts, ...model.projects, ...model.research].flatMap((item) => item.media)) {
+      if (!(isRaster(media) || media.toLowerCase().endsWith('.svg') || seen.has(media))) {
+        seen.add(media);
+        await write(`${STATIC_DIR}/media/${media}`, await Deno.readFile(`${MEDIA_DIR}/${media}`));
+      }
+    }
+  }
 }
 
 /** Starts from the files both frontends serve as they are (the fonts, the license texts), then the pictures go beside them. */
@@ -142,6 +156,7 @@ for (const language of languages) {
   shared += await sharePictures(language, colors);
 }
 await favicons(colors);
+await copyDocuments(languages);
 const manifest: ImagesManifest = { portraits, figures };
 await write('generated/data/images.json', `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(

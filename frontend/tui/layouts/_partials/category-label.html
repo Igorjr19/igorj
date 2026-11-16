@@ -1,4 +1,0 @@
-{{- /* The slug is the same in both languages; the model names it in the page language. */ -}}
-{{- $label := .Data.Term }}
-{{- range (partial "model.html" .).categories }}{{ if eq .slug $.Data.Term }}{{ $label = .name }}{{ end }}{{ end }}
-{{- return $label }}

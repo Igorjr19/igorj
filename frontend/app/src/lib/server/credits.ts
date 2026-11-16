@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { parse } from 'smol-toml';
 
-const THIRD_PARTY = process.env['THIRD_PARTY_FILE'] ?? '../tui/data/third-party.toml';
-const SOURCES = process.env['SOURCES_FILE'] ?? '../tui/data/sources.toml';
+const THIRD_PARTY = process.env['THIRD_PARTY_FILE'] ?? 'data/third-party.toml';
+const SOURCES = process.env['SOURCES_FILE'] ?? 'data/sources.toml';
 
 export interface CreditEntry {
   readonly name: string;
