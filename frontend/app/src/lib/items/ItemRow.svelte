@@ -39,8 +39,6 @@
         style:--dither-ink={color}
         style:--dither={`url('${item.image.src}')`}
         style:--dither-inverted={`url('${item.image.inverted}')`}
-        style:aspect-ratio={`${item.image.width} / ${item.image.height}`}
-        style:max-inline-size={`${item.image.width}px`}
         ><span class="dither__ink dither__ink--on-bright"></span><span class="dither__ink dither__ink--on-dark"></span></span
       >
     {:else}

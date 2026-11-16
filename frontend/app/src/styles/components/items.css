@@ -29,6 +29,9 @@
   .item__image {
     order: -1;
     inline-size: 100%;
+    /* Every preview has the same shape, cropped if need be, so the cards line up. */
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
     margin-block-end: calc(var(--cell-height) / 3);
     background-color: var(--color-surface-1);
   }

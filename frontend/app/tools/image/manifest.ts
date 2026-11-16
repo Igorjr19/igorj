@@ -12,7 +12,7 @@ export interface MaskEntry {
 export interface ImagesManifest {
   readonly portraits: Readonly<Record<string, MaskEntry>>;
   readonly figures: Readonly<Record<string, MaskEntry>>;
-  /** For an item with no picture, by `section:id`: a pattern made from its name. */
+  /** For an item with no picture, by `section:id`: its initial. */
   readonly placeholders: Readonly<Record<string, MaskEntry>>;
 }
 
@@ -27,14 +27,11 @@ export function isRaster(path: string): boolean {
 export const FIGURE_MAX_WIDTH = 960;
 
 /** As tall as the photo itself (3:4), so the home can stretch it to the height of the text beside it with little cropped. */
-/** A preview in a list is never wider than this, so its dots are made at this width. */
-export const THUMB_WIDTH = 480;
-
 export const HERO_PORTRAIT_SIZE = { width: 320, height: 427 } as const;
 
 export function withoutExtension(path: string): string {
   return path.replace(/\.[^./]+$/, '');
 }
 
-/** The shape of a list preview, which a picture-less item fills with a pattern. */
+/** The shape of every list preview, 16:9: a picture is cropped to it, so a row of cards lines up whatever the pictures are. */
 export const PLACEHOLDER_SIZE = { width: 480, height: 270 } as const;

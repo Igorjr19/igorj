@@ -8,6 +8,16 @@
   import { useUi } from '../ui.svelte.ts';
   import Icon from './Icon.svelte';
 
+  /** A modal opening over a button makes the browser report the pointer as gone while it is still there, so only a pointer really outside ends the quiet. */
+  function hush(event: PointerEvent & { currentTarget: HTMLButtonElement }): void {
+    const box = event.currentTarget.getBoundingClientRect();
+    const inside =
+      event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom;
+    if (!inside) {
+      event.currentTarget.removeAttribute('data-quiet');
+    }
+  }
+
   const shell = useShell();
   const ui = useUi();
   const tools = $derived([
@@ -78,7 +88,12 @@
         aria-label={tool.label}
         aria-keyshortcuts={tool.shortcut}
         data-tip={`${tool.label} · ${tool.shortcut}`}
-        onclick={tool.run}><Icon name={tool.icon} /></button
+        onclick={(event) => {
+          event.currentTarget.setAttribute('data-quiet', '');
+          tool.run();
+        }}
+        onpointerleave={hush}
+        onkeydown={(event) => event.currentTarget.removeAttribute('data-quiet')}><Icon name={tool.icon} /></button
       >
     {/each}
     {#if other.length > 0}
