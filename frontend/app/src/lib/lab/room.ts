@@ -47,10 +47,10 @@ function furniture(three: Three, palette: Palette): InstanceType<Three['Group']>
 
 function lights(three: Three): InstanceType<Three['Group']> {
   const group = new three.Group();
-  const glow = new three.PointLight('#ffffff', 5, 6);
+  const glow = new three.PointLight('#ffffff', 1.2, 6);
   glow.position.set(0, SCREEN.y, 1.2);
-  group.add(glow, new three.AmbientLight('#ffffff', 0.25));
-  const lamp = new three.DirectionalLight('#ffffff', 1.4);
+  group.add(glow, new three.AmbientLight('#ffffff', 0.5));
+  const lamp = new three.DirectionalLight('#ffffff', 1.1);
   lamp.position.set(-3, 4, 3);
   group.add(lamp);
   return group;
