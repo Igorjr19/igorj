@@ -18,6 +18,35 @@
         // Storage blocked or value corrupted: the system preference applies.
       }
     </script>
+    <script>
+      // Decides before the first paint whether the site is the screen of a monitor, and whether it boots first.
+      // The size is the one in lib/monitor/query.ts. Automated browsers get the plain site, unless asked otherwise
+      // with localStorage.monitor = 'on'; 'off' turns the monitor off.
+      try {
+        const root = document.documentElement;
+        const choice = localStorage.getItem('monitor');
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl2');
+        gl?.getExtension('WEBGL_lose_context')?.loseContext();
+        if (
+          matchMedia('(min-width: 1100px) and (min-height: 660px)').matches &&
+          gl &&
+          choice !== 'off' &&
+          (!navigator.webdriver || choice === 'on')
+        ) {
+          root.dataset.monitor = '';
+          const navigation = performance.getEntriesByType('navigation')[0];
+          const today = new Date().toLocaleDateString('sv-SE');
+          if ((navigation && navigation.type === 'reload') || localStorage.getItem('boot-day') !== today) {
+            root.dataset.boot = '';
+            // If the room never lands, the page must not stay hidden.
+            setTimeout(() => delete root.dataset.boot, 12000);
+          }
+        }
+      } catch {
+        // No storage or no WebGL: the site is plain.
+      }
+    </script>
     %sveltekit.head%
   </head>
   <body>

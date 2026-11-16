@@ -223,6 +223,17 @@ termSudo = "%s não está no arquivo sudoers. Este incidente será relatado."
 termRm = "boa tentativa: nada aqui pode ser apagado."
 termKeys = "tab completa · ↑ histórico"
 termClose = "esc fechar"
+bootBios = "IGORJ BIOS v1"
+bootBuild = "versão {{ .Commit }} {{ .Built }}"
+bootLocal = "local"
+bootContent = "conteúdo {{ . }}"
+bootPosts = { one = "{{ .Count }} texto", other = "{{ .Count }} textos" }
+bootProjects = { one = "{{ .Count }} projeto", other = "{{ .Count }} projetos" }
+bootResearch = { one = "{{ .Count }} pesquisa", other = "{{ .Count }} pesquisas" }
+bootData = "dados {{ . }}"
+bootMemory = "teste de memória ... ok"
+bootStart = "abrindo a janela ..."
+bootSkip = "qualquer tecla pula"
 termRun = "executar"
 termCloseLabel = "Fechar o terminal"
 termName = "NOME"

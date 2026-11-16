@@ -8,6 +8,7 @@
 @import './base/reset.css';
 @import './base/elements.css';
 @import './layout/window.css';
+@import './layout/monitor.css';
 @import './components/window.css';
 @import './components/scroll.css';
 @import './components/keybar.css';

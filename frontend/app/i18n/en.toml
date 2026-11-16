@@ -223,6 +223,17 @@ termSudo = "%s is not in the sudoers file. This incident will be reported."
 termRm = "nice try: nothing here can be deleted."
 termKeys = "tab completes · ↑ history"
 termClose = "esc close"
+bootBios = "IGORJ BIOS v1"
+bootBuild = "build {{ .Commit }} {{ .Built }}"
+bootLocal = "local"
+bootContent = "content {{ . }}"
+bootPosts = { one = "{{ .Count }} post", other = "{{ .Count }} posts" }
+bootProjects = { one = "{{ .Count }} project", other = "{{ .Count }} projects" }
+bootResearch = { one = "{{ .Count }} paper", other = "{{ .Count }} papers" }
+bootData = "data {{ . }}"
+bootMemory = "memory test ... ok"
+bootStart = "starting the window ..."
+bootSkip = "any key skips"
 termRun = "run"
 termCloseLabel = "Close the terminal"
 termName = "NAME"
