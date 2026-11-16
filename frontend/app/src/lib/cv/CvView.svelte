@@ -13,6 +13,7 @@
   {#if shownIn}<p class="panel__meta">{shell.t('cvOtherLanguage', shownIn)}</p>{/if}
 
   <header class="cv__head">
+    <p class="cv__name">{shell.author}</p>
     <p class="cv__headline">{cv.basics.label}{#if cv.basics.location}{' · '}{cv.basics.location}{/if}</p>
     <p class="cv__text">{cv.basics.summary}</p>
     <p class="cv__contact">
@@ -27,7 +28,7 @@
         <article class="cv__entry">
           <p class="cv__period">{period(job.startDate, job.endDate, shell.t('periodPresent'))}</p>
           <div class="cv__body">
-            <h3 class="cv__title"><span class="cv__role">{job.position}</span>{' · '}<span class="cv__org">{job.name}</span></h3>
+            <h3 class="cv__title"><span class="cv__role">{job.position}</span>{' · '}<span class="cv__org">{#if job.url}<a href={job.url}>{job.name}</a>{:else}{job.name}{/if}</span></h3>
             {#if job.location}<p class="cv__place">{job.location}</p>{/if}
             {#if job.summary}<p class="cv__text">{job.summary}</p>{/if}
             {#if job.highlights.length > 0}
@@ -49,7 +50,7 @@
           <p class="cv__period">{period(study.startDate, study.endDate, '')}</p>
           <div class="cv__body">
             <h3 class="cv__title"><span class="cv__role">{study.studyType}{' · '}{study.area}</span></h3>
-            <p class="cv__place">{study.institution}</p>
+            <p class="cv__place">{#if study.url}<a href={study.url}>{study.institution}</a>{:else}{study.institution}{/if}</p>
           </div>
         </article>
       {/each}
@@ -64,7 +65,7 @@
           <p class="cv__period">{entry.year}</p>
           <div class="cv__body">
             <h3 class="cv__title"><span class="cv__role">{entry.title}</span></h3>
-            <p class="cv__place">{entry.institution}</p>
+            <p class="cv__place">{#if entry.url}<a href={entry.url}>{entry.institution}</a>{:else}{entry.institution}{/if}</p>
             {#if entry.summary}<p class="cv__text">{entry.summary}</p>{/if}
           </div>
         </article>
