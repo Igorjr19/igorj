@@ -74,7 +74,8 @@
   }
 
   function onKeydown(event: KeyboardEvent): void {
-    const editable = event.target instanceof Element && event.target.closest(EDITABLE) !== null;
+    // Just after a box closes, the browser still reports its field as focused, which is no longer a field being typed in.
+    const editable = event.target instanceof Element && event.target.closest(EDITABLE) !== null && event.target.closest('dialog:not([open])') === null;
     if (document.querySelector('dialog[open]') || !isShortcutCandidate(event, editable)) {
       return;
     }
