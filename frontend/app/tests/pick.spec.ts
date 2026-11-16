@@ -55,7 +55,7 @@ test('the commands for shortcuts and motion are gone, as those choices are', asy
 test('t previews each theme as the selection moves and enter keeps the one chosen', async ({ page }) => {
   await visit(page, '/en/');
   await page.keyboard.press('t');
-  await expect(page.locator('dialog.pick')).toBeVisible();
+  await expect(page.locator('.pick__accents')).toBeVisible();
   await page.keyboard.press('ArrowDown');
   const preview = await page.evaluate(
     () => document.documentElement.dataset['theme'] ?? document.documentElement.dataset['themeFamily'],
@@ -70,6 +70,7 @@ test('escape in the themes goes back to the theme the visitor had', async ({ pag
   await visit(page, '/en/');
   const before = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   await page.keyboard.press('t');
+  await expect(page.locator('.pick__accents')).toBeVisible();
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('Escape');
