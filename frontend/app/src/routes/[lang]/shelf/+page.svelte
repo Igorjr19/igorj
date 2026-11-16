@@ -2,6 +2,7 @@
   import starUrl from '@fortawesome/fontawesome-free/svgs/solid/star.svg?url';
   import PageMeta from '#lib/components/PageMeta.svelte';
   import Zoom from '#lib/components/Zoom.svelte';
+  import { cssUrl } from '#lib/css-url.ts';
   import AgeNote from '#lib/home/AgeNote.svelte';
   import { listeningBars } from '#lib/home/data.ts';
   import { useShell } from '#lib/shell.svelte.ts';
@@ -49,7 +50,7 @@
               <span class="films__year">{film.year}</span>
               {#if film.rating !== undefined}
                 <span class="films__rating"
-                  ><span class="stars" aria-hidden="true" style:--rating={film.rating} style:--star={`url('${starUrl}')`}></span><span class="sr-only"
+                  ><span class="stars" aria-hidden="true" style:--rating={film.rating} style:--star={cssUrl(starUrl)}></span><span class="sr-only"
                     >{shell.t('rating', oneDecimal.format(film.rating))}</span
                   ></span
                 >

@@ -125,3 +125,22 @@ test('the photo reaches from the top of the name to the foot of the three lines'
   expect(Math.abs(edges.top)).toBeLessThan(2);
   expect(Math.abs(edges.bottom)).toBeLessThan(2);
 });
+
+test('the rating of a film is five stars filled up to the rating, not bars: the star mask must load', async ({
+  page,
+}) => {
+  await page.goto('/en/');
+  const mask = await page
+    .locator('#watched .stars')
+    .first()
+    .evaluate((node) => getComputedStyle(node).maskImage);
+  expect(mask).not.toBe('none');
+  expect(mask).toContain('svg');
+});
+
+test('the box of films says what it shows, as the one of music does', async ({ page }) => {
+  await page.goto('/en/');
+  await expect(page.locator('#watched .panel__meta').first()).toContainText(/last \d+ films? watched/);
+  await page.goto('/pt/');
+  await expect(page.locator('#watched .panel__meta').first()).toContainText(/últimos? \d* ?filmes? vistos?/);
+});

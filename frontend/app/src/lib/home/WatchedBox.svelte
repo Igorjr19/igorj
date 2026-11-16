@@ -1,5 +1,6 @@
 <script lang="ts">
   import starUrl from '@fortawesome/fontawesome-free/svgs/solid/star.svg?url';
+  import { cssUrl } from '../css-url.ts';
   import { useShell } from '../shell.svelte.ts';
   import AgeNote from './AgeNote.svelte';
   import BoxTitle from './BoxTitle.svelte';
@@ -15,6 +16,7 @@
 <section class="panel widget" id="watched" aria-labelledby="watched-title">
   <BoxTitle id="watched" label={shell.t('panelWatched')} {url} />
   {#if watched}
+    <p class="panel__meta">{shell.t('watchedCaption', watched.films.length)}</p>
     <AgeNote updated={watched.updatedLate} />
     <ul class="films">
       {#each watched.films as film (film.title)}
@@ -23,7 +25,7 @@
           <span class="films__year">{film.year}</span>
           {#if film.rating !== null}
             <span class="films__rating"
-              ><span class="stars" aria-hidden="true" style:--rating={film.rating} style:--star={`url('${starUrl}')`}></span><span class="sr-only"
+              ><span class="stars" aria-hidden="true" style:--rating={film.rating} style:--star={cssUrl(starUrl)}></span><span class="sr-only"
                 >{shell.t('rating', oneDecimal.format(film.rating))}</span
               ></span
             >

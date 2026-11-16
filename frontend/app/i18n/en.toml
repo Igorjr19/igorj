@@ -266,3 +266,7 @@ other = "{{ .Count }} papers"
 [contributionsYear]
 one = "{{ .Count }} contribution in the last year"
 other = "{{ .Count }} contributions in the last year"
+
+[watchedCaption]
+one = "last film watched"
+other = "last {{ .Count }} films watched"
