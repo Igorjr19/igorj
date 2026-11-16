@@ -1,5 +1,6 @@
 import type { PictureColors } from './colors.ts';
 import { atkinson } from './dither.ts';
+import { toLinear } from './filters.ts';
 import { wrapLines } from './text.ts';
 import type { Bits, Gray } from './types.ts';
 
@@ -75,7 +76,7 @@ function runsOf(bits: Bits, y: number, wanted: number): [number, number][] {
 
 /** Runs of dots of one color, as wide as they go, so a photo takes thousands of rectangles instead of hundreds of thousands. */
 function drawPhoto(surface: Surface, colors: PictureColors, photo: Gray): void {
-  const bits = atkinson(photo);
+  const bits = atkinson(toLinear(photo));
   const left = SHARE_WIDTH - LEFT - bits.width;
   for (const [ink, wanted] of [
     [colors.background, 0],

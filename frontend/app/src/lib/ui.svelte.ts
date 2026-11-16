@@ -15,6 +15,8 @@ export class Ui {
   terminalHeight = $state(0.45);
   /** While the visitor drags the terminal's edge, the height follows the pointer at once. */
   resizing = $state(false);
+  /** True while a page change runs, so nothing else animates under its transition. */
+  navigating = $state(false);
   /** What the visitor chose for the theme, for the status line; none until the saved choice is read. */
   theme = $state<SavedTheme | null>(null);
   /** The quick-pick box that is open, if any: the palette, the filter of the blog or the themes. */

@@ -5,7 +5,7 @@ import { removeIfExists, walkFiles } from '../../../../tools/shared/fs.ts';
 import { defaultColors, type PictureColors } from '../image/colors.ts';
 import { atkinson, floydSteinberg, invert } from '../image/dither.ts';
 import { drawFavicon } from '../image/favicon.ts';
-import { grayscale } from '../image/filters.ts';
+import { grayscale, toLinear } from '../image/filters.ts';
 import {
   FIGURE_MAX_WIDTH,
   HERO_PORTRAIT_SIZE,
@@ -44,15 +44,15 @@ async function writeMask(
 
 async function portraitMask(media: string): Promise<MaskEntry> {
   const gray = treatPortrait(grayscale(await readRgba(`${MEDIA_DIR}/${media}`, { fit: HERO_PORTRAIT_SIZE })));
-  return await writeMask('portrait', media, atkinson(gray));
+  return await writeMask('portrait', media, atkinson(toLinear(gray)));
 }
 
 async function figureMask(media: string): Promise<MaskEntry> {
   const probe = await readRgba(`${MEDIA_DIR}/${media}`, { width: FIGURE_MAX_WIDTH });
   const thumb = await readRgba(`${MEDIA_DIR}/${media}`, { width: THUMB_WIDTH });
   return {
-    ...(await writeMask('figure', media, floydSteinberg(grayscale(probe)))),
-    thumb: await writeMask('thumb', media, floydSteinberg(grayscale(thumb))),
+    ...(await writeMask('figure', media, floydSteinberg(toLinear(grayscale(probe))))),
+    thumb: await writeMask('thumb', media, floydSteinberg(toLinear(grayscale(thumb)))),
   };
 }
 
