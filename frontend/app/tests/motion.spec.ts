@@ -67,3 +67,22 @@ test('there is no switch to reduce motion: the pages never ask', async ({ page }
   await expect(page.locator('dialog.help')).not.toContainText(/motion/i);
   expect(await page.evaluate(() => document.documentElement.dataset['motion'])).toBeUndefined();
 });
+
+test('during a page change the window marks it, so the columns do not slide under the page transition', async ({
+  page,
+}) => {
+  await visit(page, '/en/posts/');
+  await page.evaluate(() => {
+    const app = document.querySelector('.app');
+    Object.assign(window, { marked: false });
+    new MutationObserver(() => {
+      if (app?.classList.contains('is-navigating')) {
+        Object.assign(window, { marked: true });
+      }
+    }).observe(app as Element, { attributes: true, attributeFilter: ['class'] });
+  });
+  await page.locator('.item__link').first().click();
+  await expect(page.locator('.is-zoomed')).toHaveCount(1);
+  expect(await page.evaluate(() => Reflect.get(window, 'marked'))).toBe(true);
+  await expect(page.locator('.is-navigating')).toHaveCount(0);
+});

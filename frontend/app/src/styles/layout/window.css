@@ -29,8 +29,10 @@
       grid-template-columns var(--slide);
   }
 
-  /* While the visitor drags the terminal's edge, the height follows the pointer at once. */
-  .is-resizing .win__body {
+  /* While the visitor drags the terminal's edge, the height follows the pointer at once. A page change runs inside a
+     view transition, which snapshots the new page as soon as it is in place: a column still sliding would be caught
+     half way and then jump, so during a page change the columns change at once. */
+  :is(.is-resizing, .is-navigating) .win__body {
     transition: none;
   }
 

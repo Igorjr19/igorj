@@ -71,6 +71,10 @@
     if (!(navigation.from && navigation.to)) {
       return;
     }
+    ui.navigating = true;
+    void navigation.complete.finally(() => {
+      ui.navigating = false;
+    });
     return navigationTransition(direction(navigation.from.url.pathname, navigation.to.url.pathname), navigation.complete);
   });
 
@@ -89,6 +93,7 @@
   class:is-zoomed={zoomed}
   class:has-terminal={ui.terminalOpen}
   class:is-resizing={ui.resizing}
+  class:is-navigating={ui.navigating}
   data-ready={ready}
   style:--terminal-height={`${ui.terminalHeight * 100}%`} lang={languageInfo(data.shell.language).locale}>
   <div class="win">
