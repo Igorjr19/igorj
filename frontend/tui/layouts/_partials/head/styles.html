@@ -1,4 +1,0 @@
-{{- $options := dict "minify" hugo.IsProduction "externals" (slice "/fonts/*") }}
-{{- with resources.Get "css/main.css" | css.Build $options | fingerprint }}
-<link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
-{{- end }}

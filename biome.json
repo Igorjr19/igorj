@@ -7,7 +7,6 @@
   },
   "files": {
     "includes": [
-      "frontend/*/assets/**",
       "frontend/*/tools/**",
       "frontend/*/tests/**",
       "frontend/app/src/**",
@@ -22,7 +21,7 @@
   "plugins": [
     {
       "path": "./tools/quality/biome/no-hardcoded-colors.grit",
-      "includes": ["**/assets/css/**"]
+      "includes": ["**/styles/**"]
     },
     {
       "path": "./tools/quality/biome/no-io-outside-boundaries.grit",
@@ -34,7 +33,7 @@
     },
     {
       "path": "./tools/quality/biome/no-double-type-assertion.grit",
-      "includes": ["**/tools/**", "**/tests/**", "**/assets/**"]
+      "includes": ["**/tools/**", "**/tests/**", "**/src/**"]
     }
   ],
   "formatter": {

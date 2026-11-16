@@ -10,6 +10,6 @@ export const load: PageServerLoad = async ({ params }) => {
   return {
     material: credits.material,
     // A service is credited only when the model has its data.
-    sources: credits.sources.filter((source) => (model as unknown as Record<string, unknown>)[source.model]),
+    sources: credits.sources.filter((source) => Reflect.get(model, source.model)),
   };
 };
