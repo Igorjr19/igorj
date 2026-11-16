@@ -265,6 +265,8 @@
 </script>
 
 <dialog class="pick panel" aria-label={title} bind:this={dialog} onclose={onClose} onkeydown={onKeydown}>
+  <!-- The strings come with the index, so before it is loaded the box has nothing to say and is left empty. -->
+  {#if index}
   <h2 class="panel__title pick__title">{title}</h2>
   {#if searching}
     <div class="pick__field">
@@ -338,4 +340,5 @@
     </div>
   {/if}
   <p class="pick__keys">{keys}</p>
+  {/if}
 </dialog>

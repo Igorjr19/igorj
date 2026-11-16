@@ -258,6 +258,7 @@
           oninput={showSuggestions}
           onkeydown={onKeydown}
         />
+        <button type="submit" hidden>{data?.strings['termRun'] ?? 'run'}</button>
       </form>
       <div class="term__suggest">{suggestions}</div>
     </div>
