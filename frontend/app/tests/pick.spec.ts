@@ -107,3 +107,14 @@ test('the buttons in the top bar open the search and the themes', async ({ page 
   await page.getByRole('button', { name: 'theme' }).click();
   await expect(page.locator('.pick__accents')).toBeVisible();
 });
+
+test('a key typed right after Escape closes the search is a shortcut again, not typing in the closed field', async ({
+  page,
+}) => {
+  await visit(page, '/en/');
+  await page.keyboard.press('f');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.keyboard.press(':');
+  await expect(page.locator('.drawer--open')).toBeVisible();
+});
