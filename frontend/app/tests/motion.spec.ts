@@ -53,6 +53,8 @@ test('a move between panes runs as a view transition that knows which way it goe
   await visit(page, '/en/');
   await page.keyboard.press('3');
   await expect(page).toHaveURL('/en/posts/');
+  // Let the first transition finish, so the second one is not skipped by a transition still running.
+  await page.waitForTimeout(600);
   await page.keyboard.press('2');
   await expect(page).toHaveURL('/en/projects/');
   expect(await page.evaluate(() => Reflect.get(window, 'calls'))).toEqual(['forward', 'backward']);
