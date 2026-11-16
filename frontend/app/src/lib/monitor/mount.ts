@@ -27,13 +27,12 @@ interface State {
 function begin(root: HTMLElement, element: HTMLElement, boot: Boot, state: State, withBoot: boolean): void {
   state.generation += 1;
   const mine = state.generation;
-  void startMonitor(element, withBoot ? boot : null, () => {
-    element.dataset['on'] = '';
-    finish(root);
-  }).then((started) => {
+  void startMonitor(element, withBoot ? boot : null, () => finish(root)).then((started) => {
     if (mine !== state.generation) {
       started?.stop();
     } else if (started) {
+      // The room shows as soon as it exists: the boot is typed on its screen.
+      element.dataset['on'] = '';
       state.control = started;
       if (state.skipped) {
         started.land();

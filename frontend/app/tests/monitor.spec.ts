@@ -78,6 +78,9 @@ test('the first visit of the day boots with the site hidden until any key skips 
   await expect(page.locator('html')).toHaveAttribute('data-boot', '');
   await expect(page.locator('body')).toBeHidden();
   await expect(page.locator('.monitor')).toHaveCount(1);
+  // The room is on view while the boot runs, since the boot is typed on its screen.
+  await expect(page.locator('.monitor[data-on]')).toHaveCount(1);
+  await expect(page.locator('html')).toHaveAttribute('data-boot', '');
   await page.keyboard.press('f');
   await expect(page.locator('html')).not.toHaveAttribute('data-boot', '');
   await expect(page.locator('body')).toBeVisible();
