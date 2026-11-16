@@ -42,3 +42,9 @@ name = "Font Awesome Free (icons)"
 license = "CC-BY-4.0"
 homepage = "https://fontawesome.com"
 text = { package = "@fortawesome/fontawesome-free", file = "LICENSE.txt" }
+
+[[entries]]
+name = "three.js"
+license = "MIT"
+homepage = "https://threejs.org"
+text = { package = "three", file = "LICENSE" }
