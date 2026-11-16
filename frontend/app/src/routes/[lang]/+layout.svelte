@@ -86,7 +86,8 @@
   });
 
   // A new page starts from what it asks for, at the top, read from the beginning.
-  afterNavigate(() => {
+  afterNavigate((navigation) => {
+    ui.cameFrom = navigation.from?.url.pathname ?? null;
     ui.newPage();
     pane?.scrollTo({ top: 0 });
     if (pane) {

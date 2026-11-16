@@ -10,7 +10,7 @@
 </script>
 
 <PageMeta title={data.name} alternates={data.alternates} />
-<Zoom title={data.name}>
+<Zoom title={data.name} back={`/${shell.language}/tags/`}>
   <ItemsBar feed={`/${shell.language}/tags/${data.tag}/index.xml`} />
   <ItemList items={data.items} />
 </Zoom>

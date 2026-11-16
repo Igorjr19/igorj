@@ -72,4 +72,19 @@
     max-inline-size: calc(90 * var(--cell-width));
     margin-block-end: calc(var(--cell-height) / 2);
   }
+
+  .back {
+    margin: 0 0 var(--cell-height);
+    font-size: var(--font-size-small);
+  }
+
+  .back a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .back a:is(:hover, :focus-visible) {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
 }
