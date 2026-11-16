@@ -74,7 +74,7 @@ test('escape in the themes goes back to the theme the visitor had', async ({ pag
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('Escape');
-  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(before);
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(before);
   expect(await page.evaluate(() => localStorage.getItem('theme'))).toBeNull();
 });
 
