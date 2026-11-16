@@ -79,3 +79,22 @@ test('running text is justified and hyphenated while the facts around it stay mo
   expect(look.metaFont).toContain('Fira Code');
   expect(look.metaAlign).toBe('start');
 });
+
+test('the dither masks keep their shape in the alpha channel, which Safari reads, not in the luminance', async ({
+  request,
+}) => {
+  const mask = await request.get('/img/figure/posts/fixture-post/wide.png');
+  const png = new Uint8Array(await mask.body());
+  expect(png[25]).toBe(6);
+  const thumb = await request.get('/img/thumb/posts/fixture-post/wide.png');
+  expect(new DataView((await thumb.body()).buffer.slice(0)).getUint32(16)).toBeLessThanOrEqual(480);
+});
+
+test('a preview in a list uses the picture made at its own size, not the large one shrunk', async ({ page }) => {
+  await page.goto('/en/posts/');
+  const mask = await page
+    .locator('.item__image:not(.item__image--none) .dither__ink')
+    .first()
+    .evaluate((node) => getComputedStyle(node).maskImage);
+  expect(mask).toContain('/img/thumb/');
+});

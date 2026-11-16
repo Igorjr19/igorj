@@ -4,6 +4,8 @@ export interface MaskEntry {
   readonly inverted: string;
   readonly width: number;
   readonly height: number;
+  /** The same picture dithered at the size of a list preview, so the browser never shrinks the dots. */
+  readonly thumb?: Omit<MaskEntry, 'thumb'>;
 }
 
 /** What the build of the pictures tells the frontend, by the media path the content uses. */
@@ -23,6 +25,9 @@ export function isRaster(path: string): boolean {
 export const FIGURE_MAX_WIDTH = 960;
 
 /** As tall as the photo itself (3:4), so the home can stretch it to the height of the text beside it with little cropped. */
+/** A preview in a list is never wider than this, so its dots are made at this width. */
+export const THUMB_WIDTH = 480;
+
 export const HERO_PORTRAIT_SIZE = { width: 320, height: 427 } as const;
 
 export function withoutExtension(path: string): string {
