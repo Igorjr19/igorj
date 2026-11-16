@@ -30,11 +30,13 @@ test('the command box and the theme box both offer the switch, and the choice is
   expect(await page.evaluate(() => localStorage.getItem('retro'))).toBe('on');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-retro', '');
+  await expect(page.locator('.app[data-ready="true"]')).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-retro', '');
   await page.keyboard.press('t');
   await expect(page.locator('.pick__option').first()).toContainText('retro mode: turn off');
   await page.locator('.pick__option').first().click();
   await expect(page.locator('html')).not.toHaveAttribute('data-retro', '');
-  expect(await page.evaluate(() => localStorage.getItem('retro'))).toBe('off');
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('retro'))).toBe('off');
 });
 
 test('a saved retro mode is on in the HTML before any script of the app runs, so it never flashes', async ({
