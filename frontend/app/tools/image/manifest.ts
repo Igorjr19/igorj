@@ -12,6 +12,8 @@ export interface MaskEntry {
 export interface ImagesManifest {
   readonly portraits: Readonly<Record<string, MaskEntry>>;
   readonly figures: Readonly<Record<string, MaskEntry>>;
+  /** For an item with no picture, by `section:id`: a pattern made from its name. */
+  readonly placeholders: Readonly<Record<string, MaskEntry>>;
 }
 
 /** Image files the content can hold that are worth dithering; vector images stay as they are. */
@@ -33,3 +35,6 @@ export const HERO_PORTRAIT_SIZE = { width: 320, height: 427 } as const;
 export function withoutExtension(path: string): string {
   return path.replace(/\.[^./]+$/, '');
 }
+
+/** The shape of a list preview, which a picture-less item fills with a pattern. */
+export const PLACEHOLDER_SIZE = { width: 480, height: 270 } as const;

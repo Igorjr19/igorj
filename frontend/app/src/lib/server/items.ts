@@ -8,10 +8,10 @@ import { modelLanguages, readModel } from './model.ts';
 type Images = Awaited<ReturnType<typeof readImages>>;
 type Item = PostModel | ProjectModel | ResearchModel;
 
-function firstImage(item: ItemModel, images: Images): ItemRowData['image'] {
+function firstImage(item: ItemModel, images: Images, key: string): ItemRowData['image'] {
   const media = item.media.find((path) => path in images.figures);
   const figure = media ? images.figures[media] : undefined;
-  return figure ? (figure.thumb ?? figure) : null;
+  return figure ? (figure.thumb ?? figure) : (images.placeholders[key] ?? null);
 }
 
 export function rowOf(section: ItemSection, item: Item, images: Images): ItemRowData {
@@ -31,7 +31,7 @@ export function rowOf(section: ItemSection, item: Item, images: Images): ItemRow
     research: research
       ? { kind: research.kind, year: research.year, authors: research.authors, venue: research.venue }
       : null,
-    image: firstImage(item, images),
+    image: firstImage(item, images, `${section}:${item.id}`),
   };
 }
 
