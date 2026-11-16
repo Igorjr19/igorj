@@ -1,6 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import type { ItemsView } from './items/view.ts';
 import { otherView } from './items/view.ts';
+import { transition } from './motion/transition.ts';
 import type { SavedTheme } from './theme/storage.ts';
 
 /** What the window shows that the visitor can change: the side column, the list or grid view and the help. */
@@ -33,8 +34,15 @@ export class Ui {
     this.#side = null;
   }
 
+  /** The switch between list and grid crossfades in place where the browser can. */
+  setView(view: ItemsView): void {
+    transition(() => {
+      this.view = view;
+    }, 'view');
+  }
+
   toggleView(): void {
-    this.view = otherView(this.view);
+    this.setView(otherView(this.view));
   }
 }
 

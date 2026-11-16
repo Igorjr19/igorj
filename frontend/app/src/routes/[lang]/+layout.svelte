@@ -8,6 +8,8 @@
   import { readView, saveView } from '#lib/items/view.ts';
   import { languageInfo } from '#lib/languages.ts';
   import { isReadingPage } from '#lib/layout.ts';
+  import { direction } from '#lib/motion/direction.ts';
+  import { navigationTransition } from '#lib/motion/transition.ts';
   import PickBox from '#lib/pick/PickBox.svelte';
   import { progress } from '#lib/progress.svelte.ts';
   import { provideShell } from '#lib/shell.svelte.ts';
@@ -15,7 +17,7 @@
   import Terminal from '#lib/terminal/Terminal.svelte';
   import { currentChoice } from '#lib/theme/current.ts';
   import { provideUi } from '#lib/ui.svelte.ts';
-  import { afterNavigate } from '$app/navigation';
+  import { afterNavigate, onNavigate } from '$app/navigation';
   import { page } from '$app/state';
 
   let { data, children } = $props();
@@ -56,6 +58,14 @@
         // Storage full or blocked: the view lasts until the page closes.
       }
     }
+  });
+
+  // The old page stays until the new one is ready, then the two cross, from the side its number lies on.
+  onNavigate((navigation) => {
+    if (!(navigation.from && navigation.to)) {
+      return;
+    }
+    return navigationTransition(direction(navigation.from.url.pathname, navigation.to.url.pathname), navigation.complete);
   });
 
   // A new page starts from what it asks for, at the top, read from the beginning.
