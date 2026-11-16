@@ -28,6 +28,11 @@
   provideShell(() => data.shell);
 
   const ui = provideUi();
+  // The head script has already put the saved retro mode on the page; starting from it keeps the first run of the
+  // effect below from taking it off again.
+  if (typeof document !== 'undefined') {
+    ui.retro = document.documentElement.hasAttribute('data-retro');
+  }
   const zoomed = $derived(ui.sideHidden(isReadingPage(page.url.pathname)));
   let pane: HTMLElement | undefined = $state();
 
