@@ -63,7 +63,9 @@ function composerOf(
   camera: InstanceType<Three['PerspectiveCamera']>,
   palette: Palette,
 ) {
-  const composer = new EffectComposer(renderer);
+  // Plain 8-bit targets: the picture ends in four steps, and not every browser can draw into floating point ones.
+  const target = new three.WebGLRenderTarget(1, 1, { type: three.UnsignedByteType });
+  const composer = new EffectComposer(renderer, target);
   composer.addPass(new RenderPass(scene, camera));
   composer.addPass(new ShaderPass(ditherShader(three, palette.background, palette.text, 3)));
   composer.addPass(new OutputPass());
