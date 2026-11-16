@@ -78,7 +78,7 @@ Deno.test('the palette lists panes, items and categories, and ranks them by the 
 
 Deno.test('commands start with >, show only what fits the page, and complete the best one', () => {
   assertEquals(parseQuery('> th'), { commands: true, text: 'th' });
-  const commands = commandEntries(index, { hasList: false, isBlog: false, language: null });
+  const commands = commandEntries(index, { hasList: false, isBlog: false, language: null, retro: false });
   assert(!commands.some((entry) => entry.id === 'command:view'));
   const [best] = rank(commands, 'th');
   assertEquals(completion('th', best?.entry), 'eme: choose the theme');

@@ -6,4 +6,6 @@ Deno.test('the head script and the stylesheet ask for the monitor with the same 
   const css = await Deno.readTextFile(new URL('../../../src/styles/layout/monitor.css', import.meta.url));
   assertStringIncludes(head, `matchMedia('${MONITOR_QUERY}')`);
   assertStringIncludes(css, `@media ${MONITOR_QUERY}`);
+  const retro = await Deno.readTextFile(new URL('../../../src/styles/components/retro.css', import.meta.url));
+  assertStringIncludes(retro, `@media ${MONITOR_QUERY}`);
 });

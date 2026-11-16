@@ -49,7 +49,7 @@ const data: TerminalData = {
   strings: { termUnknown: '%s: command not found', termNotFound: '%s: missing', termOpening: 'opening %s' },
 };
 
-const context = { data, cwd: '', history: [], themeName: 'Catppuccin Mocha · mauve' };
+const context = { data, cwd: '', history: [], themeName: 'Catppuccin Mocha · mauve', retro: false };
 const text = (lines: readonly Line[]) => lines.map((line) => line.map(([, part]) => part).join(''));
 
 Deno.test('format fills each %s in turn', () => {
@@ -125,4 +125,29 @@ Deno.test('a few commands stay out of help and tab, for the curious', () => {
   assertEquals(text(run('rm -rf /', secrets).lines), ['nice try']);
   assertEquals(text(run('cowsay hi', secrets).lines).slice(0, 3), [' ____', '< hi >', ' ----']);
   assertEquals(complete('su', '', data), []);
+});
+
+const retroData = {
+  ...data,
+  strings: {
+    ...data.strings,
+    termRetroOn: 'retro on',
+    termRetroOff: 'retro off',
+    termRetroUsage: 'usage: retro [on|off]',
+  },
+};
+
+Deno.test('retro alone switches the mode, and on or off set it whatever it was', () => {
+  assertEquals(run('retro', { ...context, data: retroData, retro: false }).retro, true);
+  assertEquals(run('retro', { ...context, data: retroData, retro: true }).retro, false);
+  assertEquals(run('retro on', { ...context, data: retroData, retro: true }).retro, true);
+  assertEquals(run('retro off', { ...context, data: retroData, retro: false }).retro, false);
+  assertEquals(text(run('retro off', { ...context, data: retroData, retro: true }).lines), ['retro off']);
+});
+
+Deno.test('retro with anything else says how it is used and changes nothing', () => {
+  const result = run('retro maybe', { ...context, data: retroData });
+  assertEquals(result.retro, undefined);
+  assertEquals(text(result.lines), ['usage: retro [on|off]']);
+  assertEquals(run('retro on now', { ...context, data: retroData }).retro, undefined);
 });

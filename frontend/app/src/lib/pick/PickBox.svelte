@@ -58,6 +58,7 @@
           hasList: document?.querySelector('[data-items]') !== null,
           isBlog: /^\/[^/]+\/(?:posts|categories)\//.test(page.url.pathname),
           language: shell.languages.filter((language) => language !== shell.language)[0] ?? null,
+          retro: ui.retro,
         })
       : [],
   );
@@ -65,7 +66,10 @@
     index ? [...categoryEntries(index, page.url.pathname, true), ...tagEntries(index, page.url.pathname)] : [],
   );
   const themeList = $derived(
-    index ? themeEntries(index.themeIndex, s['pickFollowSystem'] ?? '', savedToChoice(before, index.themeIndex.defaultFamily)) : [],
+    index ? themeEntries(index.themeIndex, s['pickFollowSystem'] ?? '', savedToChoice(before, index.themeIndex.defaultFamily), {
+            label: s[ui.retro ? 'cmdRetroOff' : 'cmdRetroOn'] ?? '',
+            kind: s['pickKindCommand'] ?? '',
+          }) : [],
   );
 
   const ranked = $derived.by(() => {
@@ -162,6 +166,14 @@
       },
       terminal: () => {
         ui.terminalOpen = true;
+      },
+      retro: () => {
+        // Chosen from the theme box, the theme being previewed is not kept: only the mode changes.
+        if (mode === 'theme') {
+          applyThemeChoice(document.documentElement, before);
+          ui.theme = before;
+        }
+        ui.retro = !ui.retro;
       },
       accent: () =>
         saveChoice({ ...(currentChoice() ?? { family: index?.themeIndex.defaultFamily ?? '' }), accent: argument ?? '' }),
