@@ -12,9 +12,11 @@ import {
   type ImagesManifest,
   isRaster,
   type MaskEntry,
+  PLACEHOLDER_SIZE,
   THUMB_WIDTH,
   withoutExtension,
 } from '../image/manifest.ts';
+import { placeholderGray } from '../image/placeholder.ts';
 import { treatPortrait } from '../image/portrait.ts';
 import { parseThemesData } from '../image/schema.ts';
 import { drawShare, SHARE_HEIGHT, SHARE_PORTRAIT, SHARE_WIDTH, type SharePicture } from '../image/share.ts';
@@ -114,6 +116,19 @@ async function sharePictures(language: string, colors: PictureColors): Promise<n
   return items.length + 1;
 }
 
+/** An item with no picture gets a pattern made from its name, the same on every build. */
+async function placeholderMasks(model: SiteModel, into: Record<string, MaskEntry>): Promise<void> {
+  for (const section of ['posts', 'projects', 'research'] as const) {
+    for (const item of model[section]) {
+      const key = `${section}:${item.id}`;
+      if (!(key in into || item.media.some(isRaster))) {
+        const gray = placeholderGray(key, PLACEHOLDER_SIZE.width, PLACEHOLDER_SIZE.height);
+        into[key] = await writeMask('thumb', `placeholder/${section}/${item.id}`, atkinson(toLinear(gray)));
+      }
+    }
+  }
+}
+
 /** Files an item offers for download, such as a paper, are served as they are under /media/. */
 async function copyDocuments(languages: readonly string[]): Promise<void> {
   const seen = new Set<string>();
@@ -144,6 +159,7 @@ const languages = (await Array.fromAsync(Deno.readDir('generated/model')))
   .filter((entry) => entry.name.endsWith('.json'))
   .map((entry) => entry.name.slice(0, -'.json'.length));
 
+const placeholders: Record<string, MaskEntry> = {};
 const portraits: Record<string, MaskEntry> = {};
 const figures: Record<string, MaskEntry> = {};
 let shared = 0;
@@ -158,11 +174,12 @@ for (const language of languages) {
       figures[media] = await figureMask(media);
     }
   }
+  await placeholderMasks(model, placeholders);
   shared += await sharePictures(language, colors);
 }
 await favicons(colors);
 await copyDocuments(languages);
-const manifest: ImagesManifest = { portraits, figures };
+const manifest: ImagesManifest = { portraits, figures, placeholders };
 await write('generated/data/images.json', `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(
   `Wrote ${Object.keys(portraits).length} portraits, ${Object.keys(figures).length} figures, ${shared} share images and the favicons.`,

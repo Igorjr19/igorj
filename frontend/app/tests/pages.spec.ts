@@ -129,3 +129,15 @@ test('on paper the CV opens with the name large, then the role and the place, wi
   expect(size).toBeGreaterThan(30);
   await expect(page.locator('.cv__headline')).toContainText('Fixture role');
 });
+
+test('an item with no picture gets a pattern made from its name, the same every time, in the preview', async ({
+  page,
+}) => {
+  await page.goto('/en/posts/');
+  const masks = await page
+    .locator('.item__image .dither__ink--on-bright')
+    .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).maskImage));
+  expect(masks.length).toBe(4);
+  expect(masks.filter((mask) => mask.includes('/img/thumb/placeholder/')).length).toBe(3);
+  await expect(page.locator('.item__image--none')).toHaveCount(0);
+});
