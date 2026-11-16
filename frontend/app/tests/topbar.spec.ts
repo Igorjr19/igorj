@@ -31,7 +31,9 @@ test('the name of a tool goes away once it is clicked, even with the pointer sti
   const theme = page.getByRole('button', { name: /theme/i }).first();
   await theme.hover();
   await theme.click();
+  await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect
     .poll(async () => Number(await theme.evaluate((node) => getComputedStyle(node, '::after').opacity)))
     .toBe(0);

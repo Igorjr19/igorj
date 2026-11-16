@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { visit } from './support.ts';
 
 test('the blog lists every post the language has, with a category filter and the language of a foreign post', async ({
   page,
@@ -155,14 +156,16 @@ test('an item with no picture shows its initial in the preview, and every previe
 });
 
 test('every preview in the grid has the same proportion, so the cards line up', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('items-view', 'grid'));
-  await page.goto('/en/posts/');
+  await visit(page, '/en/posts/');
+  await page.keyboard.press('v');
+  await expect(page.locator('[data-items]')).toHaveAttribute('data-view', 'grid');
   const shapes = await page.locator('.item__image').evaluateAll((nodes) =>
     nodes.map((node) => {
       const box = node.getBoundingClientRect();
       return Math.round((box.width / box.height) * 100) / 100;
     }),
   );
+  expect(shapes.length).toBeGreaterThan(1);
   expect(new Set(shapes).size).toBe(1);
   expect(shapes[0]).toBeCloseTo(16 / 9, 1);
 });
