@@ -94,6 +94,9 @@
     if (result.theme) {
       saveChosenTheme(result.theme);
     }
+    if (result.retro !== undefined) {
+      ui.retro = result.retro;
+    }
     if (result.open) {
       void goto(result.open);
     }
@@ -121,7 +124,7 @@
     value = '';
     suggestions = '';
     const themeName = themeLabel(shell.themeNames, ui.theme, matchMedia('(prefers-color-scheme: dark)').matches);
-    apply(run(typed, { data, cwd, history, themeName }));
+    apply(run(typed, { data, cwd, history, themeName, retro: ui.retro }));
   }
 
   function showSuggestions(): void {

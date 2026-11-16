@@ -8,6 +8,9 @@
     <script>
       // Applies the saved theme before the first paint, so the page never flashes the system theme first.
       try {
+        if (localStorage.getItem('retro') === 'on') {
+          document.documentElement.dataset.retro = '';
+        }
         const saved = JSON.parse(localStorage.getItem('theme') || 'null');
         for (const name of ['family', 'theme', 'accent']) {
           if (saved && typeof saved[name] === 'string') {

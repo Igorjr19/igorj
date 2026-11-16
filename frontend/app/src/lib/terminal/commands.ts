@@ -53,6 +53,8 @@ export interface Result {
   readonly theme?: { readonly id: string; readonly accent?: string };
   readonly clear?: boolean;
   readonly exit?: boolean;
+  /** The retro mode the command asks for. */
+  readonly retro?: boolean;
 }
 
 export const COMMANDS = [
@@ -64,6 +66,7 @@ export const COMMANDS = [
   'tree',
   'fetch',
   'theme',
+  'retro',
   'man',
   'whoami',
   'history',
@@ -153,6 +156,7 @@ function help(data: TerminalData): Result {
     ['tree', s['termHelpTree']],
     ['fetch', s['termHelpFetch']],
     ['theme [name] [accent]', s['termHelpTheme']],
+    ['retro [on|off]', s['termHelpRetro']],
     ['man igor', s['termHelpMan']],
     ['whoami · history · clear · exit', s['termHelpRest']],
   ];
@@ -273,6 +277,15 @@ function theme(data: TerminalData, args: readonly string[]): Result {
   };
 }
 
+/** `retro` switches the mode, `retro on` and `retro off` set it. */
+function retro(data: TerminalData, args: readonly string[], current: boolean): Result {
+  const wanted = args[0] === undefined ? !current : { on: true, off: false }[args[0]];
+  if (wanted === undefined || args.length > 1) {
+    return error(data.strings['termRetroUsage'] ?? '');
+  }
+  return { lines: [[['ok', data.strings[wanted ? 'termRetroOn' : 'termRetroOff'] ?? '']]], retro: wanted };
+}
+
 function manual(data: TerminalData, topic: string): Result {
   if (topic !== 'igor') {
     return error(format(data.strings['termNoManual'], topic || '?'));
@@ -335,10 +348,11 @@ export interface Context {
   readonly cwd: string;
   readonly history: readonly string[];
   readonly themeName: string;
+  readonly retro: boolean;
 }
 
 /** Runs one command line; unknown commands say so and suggest help. */
-export function run(input: string, { data, cwd, history, themeName }: Context): Result {
+export function run(input: string, { data, cwd, history, themeName, retro: retroOn }: Context): Result {
   const [command = '', ...args] = input.trim().split(/\s+/);
   const arg = args.join(' ');
   const hidden = secret(command, arg, data);
@@ -364,6 +378,8 @@ export function run(input: string, { data, cwd, history, themeName }: Context): 
       return fetchSummary(data, themeName);
     case 'theme':
       return theme(data, args);
+    case 'retro':
+      return retro(data, args, retroOn);
     case 'man':
       return manual(data, arg);
     case 'whoami':
