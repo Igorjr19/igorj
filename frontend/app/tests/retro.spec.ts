@@ -5,6 +5,8 @@ test('retro mode is off by default and the terminal switches it, on, off and bac
   await visit(page, '/en/');
   await expect(page.locator('html')).not.toHaveAttribute('data-retro', '');
   await page.keyboard.press(':');
+  // The terminal ignores what is typed before its commands have loaded, which its greeting shows.
+  await expect(page.locator('.term__log')).toContainText('type help');
   const input = page.locator('.term__input');
   await input.fill('retro');
   await input.press('Enter');
