@@ -12,6 +12,7 @@ import {
   type ImagesManifest,
   isRaster,
   type MaskEntry,
+  THUMB_WIDTH,
   withoutExtension,
 } from '../image/manifest.ts';
 import { treatPortrait } from '../image/portrait.ts';
@@ -31,7 +32,7 @@ async function write(path: string, data: Uint8Array | string): Promise<void> {
 }
 
 async function writeMask(
-  kind: 'portrait' | 'figure',
+  kind: 'portrait' | 'figure' | 'thumb',
   media: string,
   bits: ReturnType<typeof atkinson>,
 ): Promise<MaskEntry> {
@@ -48,7 +49,11 @@ async function portraitMask(media: string): Promise<MaskEntry> {
 
 async function figureMask(media: string): Promise<MaskEntry> {
   const probe = await readRgba(`${MEDIA_DIR}/${media}`, { width: FIGURE_MAX_WIDTH });
-  return await writeMask('figure', media, floydSteinberg(grayscale(probe)));
+  const thumb = await readRgba(`${MEDIA_DIR}/${media}`, { width: THUMB_WIDTH });
+  return {
+    ...(await writeMask('figure', media, floydSteinberg(grayscale(probe)))),
+    thumb: await writeMask('thumb', media, floydSteinberg(grayscale(thumb))),
+  };
 }
 
 async function shareJpeg(path: string, colors: PictureColors, picture: SharePicture): Promise<void> {

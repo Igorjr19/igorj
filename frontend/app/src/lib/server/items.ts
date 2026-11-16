@@ -10,7 +10,8 @@ type Item = PostModel | ProjectModel | ResearchModel;
 
 function firstImage(item: ItemModel, images: Images): ItemRowData['image'] {
   const media = item.media.find((path) => path in images.figures);
-  return media ? (images.figures[media] ?? null) : null;
+  const figure = media ? images.figures[media] : undefined;
+  return figure ? (figure.thumb ?? figure) : null;
 }
 
 export function rowOf(section: ItemSection, item: Item, images: Images): ItemRowData {

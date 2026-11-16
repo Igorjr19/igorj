@@ -36,14 +36,14 @@ export async function readRgba(path: string, size: { width: number } | { fit: Fi
   return { width: target.width, height: target.height, data };
 }
 
-/** A PNG with white where the bit is set and black elsewhere: the mask the page paints with the theme's ink. */
+/** A PNG that is opaque where the bit is set and transparent elsewhere: the mask the page paints with the theme's ink.
+ * The shape is in the alpha channel, so it works in every browser; luminance masks do not work in Safari. */
 export function maskPng(bits: Bits): Uint8Array {
   const canvas = createCanvas(bits.width, bits.height);
   const context = canvas.getContext('2d');
   const image = context.createImageData(bits.width, bits.height);
   bits.data.forEach((bit, index) => {
-    const value = bit ? 255 : 0;
-    image.data.set([value, value, value, 255], index * 4);
+    image.data.set([255, 255, 255, bit ? 255 : 0], index * 4);
   });
   context.putImageData(image, 0, 0);
   return canvas.toBuffer('image/png');
