@@ -77,3 +77,10 @@ export function sigmoid(image: Gray, midpoint: number, factor: number): Gray {
   const span = curve(1) - low;
   return { ...image, data: image.data.map((value) => clamp01((curve(value) - low) / span)) };
 }
+
+/** Converts sRGB values to linear light, the space the error diffusion of the Hugo site's dithering worked in: a mid
+ * gray then lights fewer dots, so darks stay dark and a light wall keeps a fine texture instead of going flat. */
+export function toLinear(image: Gray): Gray {
+  const data = image.data.map((value) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
+  return { width: image.width, height: image.height, data };
+}

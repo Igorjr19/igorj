@@ -1,5 +1,5 @@
 import { assertAlmostEquals, assertEquals } from '@std/assert';
-import { brightness, grayscale, sigmoid, unsharpMask } from '../../../tools/image/filters.ts';
+import { brightness, grayscale, sigmoid, toLinear, unsharpMask } from '../../../tools/image/filters.ts';
 import { treatPortrait } from '../../../tools/image/portrait.ts';
 import type { Gray } from '../../../tools/image/types.ts';
 
@@ -38,4 +38,11 @@ Deno.test('the portrait treatment turns a light wall to clean white so the dithe
     wall.data.every((value) => value > 0.9),
     true,
   );
+});
+
+Deno.test('linear light darkens the middle grays, so a dark sweater lights few dots and a light wall keeps a fine texture', () => {
+  const [black, mid, white] = toLinear(row(0, 0.5, 1)).data;
+  assertAlmostEquals(black ?? 1, 0, 1e-6);
+  assertAlmostEquals(white ?? 0, 1, 1e-6);
+  assertEquals((mid ?? 1) < 0.25, true);
 });
