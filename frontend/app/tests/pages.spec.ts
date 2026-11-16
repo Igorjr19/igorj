@@ -81,12 +81,24 @@ test('running text is justified and hyphenated while the facts around it stay mo
 });
 
 test('the dither masks keep their shape in the alpha channel, which Safari reads, not in the luminance', async ({
+  page,
   request,
 }) => {
-  const mask = await request.get('/img/figure/posts/fixture-post/wide.png');
+  await page.goto('/en/posts/fixture-post/');
+  const address = await page
+    .locator('.prose .dither--figure')
+    .first()
+    .evaluate((node) => getComputedStyle(node.querySelector('.dither__ink') as Element).maskImage);
+  const mask = await request.get(address.slice(5, -2));
   const png = new Uint8Array(await mask.body());
   expect(png[25]).toBe(6);
-  const thumb = await request.get('/img/thumb/posts/fixture-post/wide.png');
+  expect(address).toMatch(/\.[0-9a-f]{10}\.png/);
+  await page.goto('/en/posts/');
+  const thumbAddress = await page
+    .locator('.item__image .dither__ink')
+    .first()
+    .evaluate((node) => getComputedStyle(node).maskImage);
+  const thumb = await request.get(thumbAddress.slice(5, -2));
   expect(new DataView((await thumb.body()).buffer.slice(0)).getUint32(16)).toBeLessThanOrEqual(480);
 });
 
