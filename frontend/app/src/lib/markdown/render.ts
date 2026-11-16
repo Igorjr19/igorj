@@ -88,6 +88,17 @@ export function renderMarkdown(source: string, context: RenderContext): Rendered
     return self.renderToken(tokens, index, options);
   };
 
+  // A link to another site opens in a new tab, already in the HTML, so it does not wait for a script.
+  markdown.renderer.rules['link_open'] = (tokens, index, options, _env, self) => {
+    const token = tokens[index];
+    const href = String(token?.attrGet('href') ?? '');
+    if (token && /^https?:\/\//i.test(href)) {
+      token.attrSet('target', '_blank');
+      token.attrSet('rel', 'noopener noreferrer');
+    }
+    return self.renderToken(tokens, index, options);
+  };
+
   const html = markdown.render(source);
   return { html, headings };
 }

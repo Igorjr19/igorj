@@ -25,4 +25,12 @@
   .prose pre code {
     font-variant-ligatures: common-ligatures;
   }
+
+  /* A link that opens a new tab says so with a small arrow after it. */
+  a[target='_blank']:not(.win__site, .side__links a)::after {
+    content: '↗' / '';
+    margin-inline-start: 0.25em;
+    font-size: 0.8em;
+    text-decoration: none;
+  }
 }

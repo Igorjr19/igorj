@@ -5,6 +5,7 @@
   import SideColumn from '#lib/components/SideColumn.svelte';
   import StatusBar from '#lib/components/StatusBar.svelte';
   import TopBar from '#lib/components/TopBar.svelte';
+  import { markExternalLinks } from '#lib/external-links.ts';
   import { readView, saveView } from '#lib/items/view.ts';
   import { languageInfo } from '#lib/languages.ts';
   import { isReadingPage } from '#lib/layout.ts';
@@ -33,6 +34,11 @@
   let ready = $state(false);
   onMount(() => {
     ready = true;
+    // Links to other sites open in a new tab, including the ones the pages draw later.
+    const mark = (): void => markExternalLinks(document, location.origin);
+    mark();
+    const watcher = new MutationObserver(mark);
+    watcher.observe(document.body, { childList: true, subtree: true });
     // The panes are what the visitor moves between most, so their data is fetched as soon as the window is up.
     (window.requestIdleCallback ?? setTimeout)(() => {
       for (const pane of data.shell.panes) {
@@ -53,6 +59,7 @@
       ui.view = readView(storage);
     }
     viewRead = true;
+    return () => watcher.disconnect();
   });
   $effect(() => {
     const view = ui.view;
