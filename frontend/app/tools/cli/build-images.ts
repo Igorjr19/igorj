@@ -6,6 +6,7 @@ import { defaultColors, type PictureColors } from '../image/colors.ts';
 import { atkinson, floydSteinberg, invert } from '../image/dither.ts';
 import { drawFavicon } from '../image/favicon.ts';
 import { grayscale, toLinear } from '../image/filters.ts';
+import { initialOf } from '../image/initial.ts';
 import {
   FIGURE_MAX_WIDTH,
   HERO_PORTRAIT_SIZE,
@@ -13,13 +14,12 @@ import {
   isRaster,
   type MaskEntry,
   PLACEHOLDER_SIZE,
-  THUMB_WIDTH,
   withoutExtension,
 } from '../image/manifest.ts';
-import { placeholderGray } from '../image/placeholder.ts';
 import { treatPortrait } from '../image/portrait.ts';
 import { parseThemesData } from '../image/schema.ts';
 import { drawShare, SHARE_HEIGHT, SHARE_PORTRAIT, SHARE_WIDTH, type SharePicture } from '../image/share.ts';
+import type { Gray } from '../image/types.ts';
 import { drawingOf, maskPng, readRgba, registerFonts } from './canvas.ts';
 
 const MEDIA_DIR = 'generated/media';
@@ -54,7 +54,12 @@ async function writeMask(
   const inverted = `${base}.inverted.${await fingerprint(inverse)}.png`;
   await write(`${STATIC_DIR}/${src}`, mask);
   await write(`${STATIC_DIR}/${inverted}`, inverse);
-  return { src: `/${src}`, inverted: `/${inverted}`, width: bits.width, height: bits.height };
+  return {
+    src: `/${src}`,
+    inverted: `/${inverted}`,
+    width: bits.width,
+    height: bits.height,
+  };
 }
 
 async function portraitMask(media: string): Promise<MaskEntry> {
@@ -63,8 +68,12 @@ async function portraitMask(media: string): Promise<MaskEntry> {
 }
 
 async function figureMask(media: string): Promise<MaskEntry> {
-  const probe = await readRgba(`${MEDIA_DIR}/${media}`, { width: FIGURE_MAX_WIDTH });
-  const thumb = await readRgba(`${MEDIA_DIR}/${media}`, { width: THUMB_WIDTH });
+  const probe = await readRgba(`${MEDIA_DIR}/${media}`, {
+    width: FIGURE_MAX_WIDTH,
+  });
+  const thumb = await readRgba(`${MEDIA_DIR}/${media}`, {
+    fit: PLACEHOLDER_SIZE,
+  });
   return {
     ...(await writeMask('figure', media, floydSteinberg(toLinear(grayscale(probe))))),
     thumb: await writeMask('thumb', media, floydSteinberg(toLinear(grayscale(thumb)))),
@@ -81,7 +90,14 @@ async function favicons(colors: PictureColors): Promise<void> {
   for (const [name, spec] of [
     ['favicon-light', { size: 64, ink: colors.text, background: null }],
     ['favicon-dark', { size: 64, ink: colors.background, background: null }],
-    ['favicon-180', { size: 180, ink: colors.accent, background: colors.background }],
+    [
+      'favicon-180',
+      {
+        size: 180,
+        ink: colors.accent,
+        background: colors.background,
+      },
+    ],
   ] as const) {
     const { context, png } = drawingOf(spec.size, spec.size);
     drawFavicon(context, { ...spec, letter: 'Í' });
@@ -129,14 +145,40 @@ async function sharePictures(language: string, colors: PictureColors): Promise<n
   return items.length + 1;
 }
 
-/** An item with no picture gets a pattern made from its name, the same on every build. */
+/** The initial, large, over a faint texture: what an item with no picture shows in a list. */
+function initialGray(title: string): Gray {
+  const { width, height } = PLACEHOLDER_SIZE;
+  const { context } = drawingOf(width, height);
+  const texture = context.createLinearGradient(0, 0, width, height);
+  texture.addColorStop(0, '#0d0d0d');
+  texture.addColorStop(1, '#3a3a3a');
+  context.fillStyle = texture;
+  context.fillRect(0, 0, width, height);
+  context.fillStyle = '#ffffff';
+  context.font = `bold ${Math.round(height * 0.78)}px "Fira Code"`;
+  context.textAlign = 'center';
+  context.textBaseline = 'alphabetic';
+  const letter = initialOf(title);
+  const { actualBoundingBoxAscent: ascent, actualBoundingBoxDescent: descent } = context.measureText(letter);
+  context.fillText(letter, width / 2, height / 2 + (ascent - descent) / 2);
+  return grayscale({
+    width,
+    height,
+    data: context.getImageData(0, 0, width, height).data,
+  });
+}
+
+/** An item with no picture gets its initial, the same on every build. */
 async function placeholderMasks(model: SiteModel, into: Record<string, MaskEntry>): Promise<void> {
   for (const section of ['posts', 'projects', 'research'] as const) {
     for (const item of model[section]) {
       const key = `${section}:${item.id}`;
       if (!(key in into || item.media.some(isRaster))) {
-        const gray = placeholderGray(key, PLACEHOLDER_SIZE.width, PLACEHOLDER_SIZE.height);
-        into[key] = await writeMask('thumb', `placeholder/${section}/${item.id}`, atkinson(toLinear(gray)));
+        into[key] = await writeMask(
+          'thumb',
+          `placeholder/${section}/${item.id}`,
+          atkinson(toLinear(initialGray(item.title))),
+        );
       }
     }
   }
@@ -195,5 +237,7 @@ await copyDocuments(languages);
 const manifest: ImagesManifest = { portraits, figures, placeholders };
 await write('generated/data/images.json', `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(
-  `Wrote ${Object.keys(portraits).length} portraits, ${Object.keys(figures).length} figures, ${shared} share images and the favicons.`,
+  `Wrote ${Object.keys(portraits).length} portraits, ${
+    Object.keys(figures).length
+  } figures, ${shared} share images and the favicons.`,
 );

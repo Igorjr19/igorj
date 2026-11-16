@@ -25,3 +25,14 @@ test('every tool of the top bar opens what its key opens', async ({ page }) => {
   await page.getByRole('button', { name: 'terminal' }).click();
   await expect(page.locator('#terminal-input')).toBeFocused();
 });
+
+test('the name of a tool goes away once it is clicked, even with the pointer still over it', async ({ page }) => {
+  await visit(page, '/en/');
+  const theme = page.getByRole('button', { name: /theme/i }).first();
+  await theme.hover();
+  await theme.click();
+  await page.keyboard.press('Escape');
+  await expect
+    .poll(async () => Number(await theme.evaluate((node) => getComputedStyle(node, '::after').opacity)))
+    .toBe(0);
+});

@@ -78,7 +78,12 @@
         aria-label={tool.label}
         aria-keyshortcuts={tool.shortcut}
         data-tip={`${tool.label} · ${tool.shortcut}`}
-        onclick={tool.run}><Icon name={tool.icon} /></button
+        onclick={(event) => {
+          event.currentTarget.setAttribute('data-quiet', '');
+          tool.run();
+        }}
+        onpointerleave={(event) => event.currentTarget.removeAttribute('data-quiet')}
+        onblur={(event) => event.currentTarget.removeAttribute('data-quiet')}><Icon name={tool.icon} /></button
       >
     {/each}
     {#if other.length > 0}

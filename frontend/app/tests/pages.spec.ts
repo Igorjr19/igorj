@@ -142,7 +142,7 @@ test('on paper the CV opens with the name large, then the role and the place, wi
   await expect(page.locator('.cv__headline')).toContainText('Fixture role');
 });
 
-test('an item with no picture gets a pattern made from its name, the same every time, in the preview', async ({
+test('an item with no picture shows its initial in the preview, and every preview has the same shape', async ({
   page,
 }) => {
   await page.goto('/en/posts/');
@@ -152,4 +152,17 @@ test('an item with no picture gets a pattern made from its name, the same every 
   expect(masks.length).toBe(4);
   expect(masks.filter((mask) => mask.includes('/img/thumb/placeholder/')).length).toBe(3);
   await expect(page.locator('.item__image--none')).toHaveCount(0);
+});
+
+test('every preview in the grid has the same proportion, so the cards line up', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('items-view', 'grid'));
+  await page.goto('/en/posts/');
+  const shapes = await page.locator('.item__image').evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const box = node.getBoundingClientRect();
+      return Math.round((box.width / box.height) * 100) / 100;
+    }),
+  );
+  expect(new Set(shapes).size).toBe(1);
+  expect(shapes[0]).toBeCloseTo(16 / 9, 1);
 });
