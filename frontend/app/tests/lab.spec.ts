@@ -35,8 +35,28 @@ test('the monitor prototype shows its 3D room or says WebGL is missing, never no
   await expect(page.locator('.lab__stage canvas, .lab__note').first()).toBeVisible();
 });
 
-test('the boot prototype hands over to the live page on skip', async ({ page }) => {
+test('the boot prototype lands on the monitor on skip and shows the live page on its screen, or takes the window without WebGL', async ({
+  page,
+}) => {
   await page.goto('/lab/boot/');
   await page.getByRole('button', { name: 'skip' }).click();
-  await expect(page.locator('iframe.lab__takeover')).toHaveAttribute('src', '/en/');
+  await expect(page.locator('.lab__monitor-window iframe, iframe.lab__takeover').first()).toHaveAttribute(
+    'src',
+    '/en/',
+  );
+});
+
+test('once the boot has landed the room stands still: no frame is drawn, whatever the pointer does', async ({
+  page,
+}) => {
+  await page.goto('/lab/boot/');
+  const stage = page.locator('.lab__stage');
+  await page.getByRole('button', { name: 'skip' }).click();
+  test.skip((await page.locator('canvas.lab__canvas').count()) === 0, 'no WebGL here');
+  await expect(page.locator('.lab__monitor-window')).toBeVisible();
+  const frames = await stage.getAttribute('data-frames');
+  await page.mouse.move(40, 40);
+  await page.mouse.move(1300, 800);
+  await page.waitForTimeout(400);
+  expect(await stage.getAttribute('data-frames')).toBe(frames);
 });

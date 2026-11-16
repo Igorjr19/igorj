@@ -127,3 +127,36 @@
     opacity: 0;
   }
 }
+
+.lab__monitor-window {
+  position: fixed;
+  z-index: 5;
+  overflow: hidden;
+  background: var(--color-background);
+  animation: lab-power-on 520ms ease-out;
+}
+
+.lab__monitor-window iframe {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
+@keyframes lab-power-on {
+  0% {
+    transform: scale(0.35, 0.004);
+    filter: brightness(4);
+  }
+  35% {
+    transform: scale(1, 0.004);
+    filter: brightness(4);
+  }
+  70% {
+    transform: scale(1, 1);
+    filter: brightness(1.8);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
