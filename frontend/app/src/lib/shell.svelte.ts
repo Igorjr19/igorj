@@ -12,6 +12,8 @@ export interface ShellData {
   readonly host: string;
   /** The address the site is published at, with its trailing slash. */
   readonly siteUrl: string;
+  /** Whether search engines may list the pages of this edition. */
+  readonly indexed: boolean;
   readonly description: string;
   readonly fontPreloads: readonly string[];
   readonly themeNames: ThemeNames;
@@ -41,6 +43,10 @@ export class Shell {
 
   get siteUrl(): string {
     return this.#data().siteUrl;
+  }
+
+  get indexed(): boolean {
+    return this.#data().indexed;
   }
 
   get description(): string {

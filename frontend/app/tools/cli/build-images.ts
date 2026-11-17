@@ -31,7 +31,7 @@ const MEDIA_DIR = `generated/media/${EDITION}`;
 // Kept apart from generated/static, which the Hugo site publishes as it is.
 const SHARED_STATIC_DIR = 'generated/static';
 const STATIC_DIR = 'generated/app-static';
-const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://igorj.dev/';
+const FALLBACK_URL = Deno.env.get('SITE_URL') ?? 'https://igorj.dev/';
 
 async function write(path: string, data: Uint8Array | string): Promise<void> {
   await Deno.mkdir(dirname(path), { recursive: true });
@@ -139,7 +139,7 @@ async function sectionLabels(language: string): Promise<Record<string, string>> 
 async function sharePictures(language: string, colors: PictureColors): Promise<number> {
   const model = await readModel(language);
   const labels = await sectionLabels(language);
-  const host = new URL(SITE_URL).host;
+  const host = new URL(model.edition.url ?? FALLBACK_URL).host;
   const photoPath = model.profile?.photo;
   const photo = photoPath
     ? treatPortrait(grayscale(await readRgba(`${MEDIA_DIR}/${photoPath}`, { fit: SHARE_PORTRAIT })))

@@ -2,11 +2,10 @@ import { panesOf } from '#lib/sections.ts';
 import { readFontPreloads } from '#lib/server/fonts.ts';
 import { readDictionary } from '#lib/server/i18n.ts';
 import { readModel } from '#lib/server/model.ts';
+import { SITE_URL } from '#lib/server/site.ts';
 import { readThemeNames } from '#lib/server/theme-names.ts';
 import type { ShellData } from '#lib/shell.svelte.ts';
 import type { LayoutServerLoad } from './$types';
-
-const SITE_URL = process.env['SITE_URL'] ?? 'https://igorj.dev/';
 
 export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: ShellData }> => {
   const model = await readModel(params.lang);
@@ -16,6 +15,7 @@ export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: Shell
       languages: model.languages,
       host: new URL(SITE_URL).host,
       siteUrl: SITE_URL,
+      indexed: model.edition.index,
       description: model.profile?.description ?? '',
       fontPreloads: await readFontPreloads(),
       themeNames: await readThemeNames(),

@@ -46,6 +46,7 @@
 <svelte:head>
   <title>{full}</title>
   {#if description}<meta name="description" content={description} />{/if}
+  {#if !shell.indexed}<meta name="robots" content="noindex" />{/if}
   <link rel="canonical" href={canonical} />
   {#each twins as [language, path] (language)}
     <link rel="alternate" hreflang={languageInfo(language).locale} href={absolute(path)} />

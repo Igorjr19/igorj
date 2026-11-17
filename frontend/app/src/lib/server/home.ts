@@ -118,6 +118,7 @@ async function systemOf(model: SiteModel, now: Date): Promise<HomeData['system']
 export async function buildHome(model: SiteModel, now: Date): Promise<HomeData> {
   const music = model.music?.artists.length ? listeningBars(model.music.artists) : null;
   return {
+    boxes: model.edition.boxes,
     hero: heroOf(model, await readImages()),
     recent: recentRows(model, model.language),
     system: await systemOf(model, now),

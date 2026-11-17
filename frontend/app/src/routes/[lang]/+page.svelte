@@ -17,11 +17,18 @@
 <PageMeta description={shell.description} />
 <div class="home">
   {#if home.hero}<Hero hero={home.hero} />{/if}
-  <RecentBox rows={home.recent} />
+  {#if home.boxes.includes('recent')}<RecentBox rows={home.recent} />{/if}
   <div class="home__widgets">
-    <SystemBox system={home.system} />
-    {#if home.code}<CodeBox code={home.code} githubUrl={home.networks['GitHub']} />{/if}
-    <ListeningBox listening={home.listening} url={home.networks['Last.fm']} />
-    <WatchedBox watched={home.watched} url={home.networks['Letterboxd']} />
+    {#each home.boxes as box (box)}
+      {#if box === 'system'}
+        <SystemBox system={home.system} />
+      {:else if box === 'code' && home.code}
+        <CodeBox code={home.code} githubUrl={home.networks['GitHub']} />
+      {:else if box === 'listening'}
+        <ListeningBox listening={home.listening} url={home.networks['Last.fm']} />
+      {:else if box === 'watched'}
+        <WatchedBox watched={home.watched} url={home.networks['Letterboxd']} />
+      {/if}
+    {/each}
   </div>
 </div>
