@@ -27,9 +27,16 @@ export const load: PageServerLoad = async ({ params }) => {
   if (!(section && item)) {
     error(404);
   }
-  const copy = (await readDictionary(params.lang))['codeCopy'];
+  const dictionary = await readDictionary(params.lang);
+  const word = (key: string, fallback: string): string => {
+    const entry = dictionary[key];
+    return typeof entry === 'string' ? entry : fallback;
+  };
   return {
-    item: await itemPageOf(model, section, item, typeof copy === 'string' ? copy : 'copy'),
+    item: await itemPageOf(model, section, item, {
+      copy: word('codeCopy', 'copy'),
+      open: word('figureOpen', 'open the original'),
+    }),
     alternates: await itemAlternates(section, item.id, params.lang),
   };
 };

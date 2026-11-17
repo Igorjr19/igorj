@@ -1,3 +1,5 @@
+import type { ColorRole } from './color.ts';
+
 /** A dithered picture the page paints with the theme's ink: the mask for bright ink, its inverse for dark ink, and the size. */
 export interface MaskEntry {
   readonly src: string;
@@ -8,10 +10,23 @@ export interface MaskEntry {
   readonly thumb?: Omit<MaskEntry, 'thumb'>;
 }
 
+/** A picture in the colors of the theme: one dithered layer pair per color role it uses, each painted with that role's color. */
+export interface ColorEntry {
+  readonly width: number;
+  readonly height: number;
+  readonly layers: readonly {
+    readonly role: ColorRole;
+    readonly src: string;
+    readonly inverted: string;
+  }[];
+}
+
 /** What the build of the pictures tells the frontend, by the media path the content uses. */
 export interface ImagesManifest {
   readonly portraits: Readonly<Record<string, MaskEntry>>;
   readonly figures: Readonly<Record<string, MaskEntry>>;
+  /** The figures the content asked for in color with `#color`, by media path. */
+  readonly colorFigures: Readonly<Record<string, ColorEntry>>;
   /** For an item with no picture, by `section:id`: its initial. */
   readonly placeholders: Readonly<Record<string, MaskEntry>>;
 }
