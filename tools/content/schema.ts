@@ -3,6 +3,14 @@ import * as v from '@valibot/valibot';
 const Text = v.pipe(v.string(), v.nonEmpty());
 const Slug = v.pipe(v.string(), v.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Expected a lowercase slug'));
 const Url = v.pipe(v.string(), v.url());
+// Covers and posters are shown straight from the services that serve them, so only those hosts are accepted.
+export const IMAGE_HOSTS = ['lastfm-img.freetls.fastly.net', 'a.ltrbxd.com'] as const;
+const ImageUrl = v.pipe(
+  v.string(),
+  v.url(),
+  v.startsWith('https://', 'Expected an https address'),
+  v.check((address) => IMAGE_HOSTS.some((host) => new URL(address).host === host), `Expected an image on ${IMAGE_HOSTS.join(' or ')}`),
+);
 const Email = v.pipe(v.string(), v.email());
 const Month = v.pipe(v.string(), v.regex(/^\d{4}-(?:0[1-9]|1[0-2])$/, 'Expected a month as YYYY-MM'));
 // YAML turns unquoted ISO dates into Date objects; Hugo also accepts them quoted.
@@ -172,6 +180,8 @@ const MusicSchema = v.strictObject({
   artists: v.array(
     v.strictObject({ name: Text, plays: v.pipe(v.number(), v.integer(), v.minValue(1)), url: v.optional(Url) }),
   ),
+  // The album played most this week, with its cover: Last.fm has real pictures for albums, not for artists.
+  album: v.optional(v.strictObject({ title: Text, artist: Text, url: v.optional(Url), cover: v.optional(ImageUrl) })),
 });
 
 const FilmsSchema = v.strictObject({
@@ -183,6 +193,7 @@ const FilmsSchema = v.strictObject({
       year: v.pipe(v.number(), v.integer()),
       rating: v.optional(v.pipe(v.number(), v.minValue(0.5), v.maxValue(5), v.multipleOf(0.5))),
       url: v.optional(Url),
+      poster: v.optional(ImageUrl),
     }),
   ),
 });

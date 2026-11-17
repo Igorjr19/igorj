@@ -289,3 +289,23 @@ Deno.test('the coding time lists the languages of the month, most used first', (
     ],
   });
 });
+
+Deno.test('the album of the week and the posters pass to the model, and a model without them has none', () => {
+  const album = {
+    title: 'An album',
+    artist: 'An artist',
+    cover: 'https://lastfm-img.freetls.fastly.net/i/u/300x300/a.png',
+  };
+  const withExtras = {
+    ...RAW,
+    music: { updated: new Date('2026-01-01'), period: 'week' as const, artists: [], album },
+    films: {
+      updated: new Date('2026-01-01'),
+      films: [{ title: 'A film', year: 2024, poster: 'https://a.ltrbxd.com/p.jpg' }],
+    },
+  };
+  const model = buildModel(withExtras, 'en');
+  assertEquals(model.music?.album, album);
+  assertEquals(model.films?.films[0]?.poster, 'https://a.ltrbxd.com/p.jpg');
+  assertEquals('album' in (buildModel(RAW, 'en').music ?? {}), false);
+});
