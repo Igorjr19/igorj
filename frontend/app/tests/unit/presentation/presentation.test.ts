@@ -29,3 +29,25 @@ Deno.test('the head script of app.html reads the same storage key and sets the s
   assertStringIncludes(head, 'root.dataset.presentation');
   assertStringIncludes(head, 'root.dataset.sceneCapable');
 });
+
+Deno.test('the menu words exist in both languages as plain strings, not as entries of a table of counts', async () => {
+  const { parse } = await import('smol-toml');
+  const { translate } = await import('../../../src/lib/i18n.ts');
+  const words = {
+    en: ['Presentation', 'Presentation', 'Scene', 'Simple'],
+    pt: ['Apresentação', 'Apresentação', 'Cena', 'Simples'],
+  } as const;
+  for (const [language, locale] of [
+    ['en', 'en-US'],
+    ['pt', 'pt-BR'],
+  ] as const) {
+    const dictionary = parse(
+      await Deno.readTextFile(new URL(`../../../i18n/${language}.toml`, import.meta.url)),
+    ) as Parameters<typeof translate>[0];
+    const keys = ['presentationButton', 'presentationLegend', 'presentationScene', 'presentationSimple'];
+    assertEquals(
+      keys.map((key) => translate(dictionary, locale, key)),
+      [...words[language]],
+    );
+  }
+});
