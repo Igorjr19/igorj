@@ -78,3 +78,51 @@ test('the reading list stands as spines, each in a color role of the theme, with
   await expect(spines.nth(1).locator('.sr-only')).toContainText('First Author, Second Author');
   await expect(spines.nth(0).locator('.spine__title')).toHaveText('Fixture book');
 });
+
+test('the track playing now shows above the record, with its title and artist, and nothing when none is playing or the endpoint is not there', async ({
+  page,
+}) => {
+  await page.route('**/api/now-playing', (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        playing: true,
+        title: 'A Song',
+        artist: 'A Band',
+        url: 'https://www.last.fm/music/A+Band/_/A+Song',
+      }),
+    }),
+  );
+  await page.goto('/en/shelf/');
+  const now = page.locator('.now');
+  await expect(now).toContainText('playing now');
+  await expect(now.locator('.now__track a')).toHaveText('A Song');
+  await expect(now.locator('.now__artist')).toHaveText('A Band');
+});
+
+test('with no track playing, or no endpoint, the shelf shows no "playing now" line at all', async ({ page }) => {
+  await page.route('**/api/now-playing', (route) =>
+    route.fulfill({ contentType: 'application/json', body: '{"playing":false}' }),
+  );
+  await page.goto('/en/shelf/');
+  await expect(page.locator('.record')).toBeVisible();
+  await expect(page.locator('.now')).toHaveCount(0);
+  await page.unroute('**/api/now-playing');
+  await page.route('**/api/now-playing', (route) =>
+    route.fulfill({ status: 503, contentType: 'application/json', body: '{"playing":false}' }),
+  );
+  await page.reload();
+  await expect(page.locator('.record')).toBeVisible();
+  await expect(page.locator('.now')).toHaveCount(0);
+});
+
+test('a playing answer that lacks a title or an artist is not shown, so a broken endpoint never prints half a line', async ({
+  page,
+}) => {
+  await page.route('**/api/now-playing', (route) =>
+    route.fulfill({ contentType: 'application/json', body: '{"playing":true,"title":"Only a title"}' }),
+  );
+  await page.goto('/en/shelf/');
+  await expect(page.locator('.record')).toBeVisible();
+  await expect(page.locator('.now')).toHaveCount(0);
+});
