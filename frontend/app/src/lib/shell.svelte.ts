@@ -21,7 +21,6 @@ export interface ShellData {
   readonly role: string;
   readonly contact: ContactModel | null;
   readonly panes: readonly Pane[];
-  readonly boot: { readonly lines: readonly string[]; readonly skip: string };
   readonly dictionary: Dictionary;
 }
 

@@ -169,13 +169,6 @@ export interface MusicModel {
   readonly updated: string;
   readonly period: 'week' | 'month';
   readonly artists: readonly { readonly name: string; readonly plays: number; readonly url?: string | undefined }[];
-  /** The album played most this week, with the address of its cover on the service that serves it. */
-  readonly album?: {
-    readonly title: string;
-    readonly artist: string;
-    readonly url?: string | undefined;
-    readonly cover?: string | undefined;
-  };
 }
 
 export interface FilmsModel {
@@ -185,8 +178,6 @@ export interface FilmsModel {
     readonly year: number;
     readonly rating?: number | undefined;
     readonly url?: string | undefined;
-    /** The address of the poster on the service that serves it. */
-    readonly poster?: string | undefined;
   }[];
 }
 

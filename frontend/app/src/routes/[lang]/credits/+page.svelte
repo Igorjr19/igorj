@@ -24,7 +24,7 @@
   </dl>
   <p><a href="/third-party-licenses.txt">{shell.t('creditsTexts')}</a></p>
   {#if data.sources.length > 0}
-    <p>{shell.t('creditsData')} {shell.t('creditsImages')}</p>
+    <p>{shell.t('creditsData')}</p>
     <dl class="facts credits credits--data">
       {#each data.sources as source (source.name)}
         <dt>{source.name}</dt>

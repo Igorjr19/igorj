@@ -5,8 +5,7 @@
       "title": "Fixture Film",
       "year": 2020,
       "rating": 4.5,
-      "url": "https://example.com/film",
-      "poster": "https://a.ltrbxd.com/resized/film-poster/fixture-poster-0-600-0-900-crop.jpg"
+      "url": "https://example.com/film"
     },
     {
       "title": "Unrated Film",

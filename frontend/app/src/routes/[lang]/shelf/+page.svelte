@@ -5,7 +5,6 @@
   import { cssUrl } from '#lib/css-url.ts';
   import AgeNote from '#lib/home/AgeNote.svelte';
   import { listeningBars } from '#lib/home/data.ts';
-  import NowPlaying from '#lib/shelf/NowPlaying.svelte';
   import { useShell } from '#lib/shell.svelte.ts';
 
   const shell = useShell();
@@ -22,7 +21,6 @@
   <div class="shelf">
     <section aria-labelledby="music-title">
       <h2 class="label" id="music-title">{shell.t('panelListening')}</h2>
-      <NowPlaying />
       {#if data.music && bars}
         <p class="panel__meta">{shell.t(data.music.period === 'month' ? 'periodMonth' : 'periodWeek')} · {shell.t('playsTotal', bars.total)}</p>
         <AgeNote updated={data.music.updatedLate} />

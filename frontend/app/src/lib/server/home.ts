@@ -102,7 +102,7 @@ function watchedOf(model: SiteModel, now: Date): HomeData['watched'] {
   };
 }
 
-export async function systemOf(model: SiteModel, now: Date): Promise<HomeData['system']> {
+async function systemOf(model: SiteModel, now: Date): Promise<HomeData['system']> {
   const sources = systemSources(model, await readSources());
   const count = (section: 'posts' | 'projects' | 'research'): number | null =>
     model.sections[section] ? model[section].length : null;
