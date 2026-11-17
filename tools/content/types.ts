@@ -50,4 +50,6 @@ export interface RawContent {
   readonly posts: readonly ContentItem<Post>[];
   readonly projects: readonly ContentItem<Project>[];
   readonly research: readonly ContentItem<Research>[];
+  /** Where each file was read from: its plain path, and the path of the file read in its place (an edition's own, perhaps). */
+  readonly origin: ReadonlyMap<string, string>;
 }

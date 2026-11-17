@@ -1,2 +1,14 @@
 author: "Ígor José Rodrigues"
 languages: [pt, en]
+editions:
+  full:
+    url: https://igorj.dev/
+  pro:
+    url: https://pro.igorj.dev/
+    extends: full
+    index: false
+    sections:
+      shelf: false
+    categories: [academic, professional]
+    boxes: [recent, system, code]
+    personal: false

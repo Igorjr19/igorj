@@ -1,7 +1,8 @@
 import * as v from '@valibot/valibot';
 import { readData } from './check.ts';
+import { editionNames, lineage, sourcesFor } from './editions.ts';
 import { stripFrontMatter } from './front-matter.ts';
-import type { Post, Project, Research } from './schema.ts';
+import type { Post, Project, Research, Site } from './schema.ts';
 import { schemaForPath } from './schema.ts';
 import type { ContentFile, ContentItem, RawContent } from './types.ts';
 
@@ -36,8 +37,40 @@ function required<T>(byPath: ReadonlyMap<string, ContentFile>, path: string): T 
   return value;
 }
 
-/** Turns the content files into typed content; `paths` lists every file, images included, relative to the content root. */
-export function readContent(files: readonly ContentFile[], paths: readonly string[]): RawContent {
+/** The files to read for an edition: each under the plain name of its path, the one the edition has laid over the plain one. */
+function forEdition(
+  files: readonly ContentFile[],
+  paths: readonly string[],
+  edition: string | undefined,
+): { files: ContentFile[]; paths: string[]; origin: ReadonlyMap<string, string> } {
+  const siteFile = files.find((file) => file.path === 'site/site.yaml');
+  if (!siteFile) {
+    throw new Error('site/site.yaml is missing');
+  }
+  const site = parse<Site>(siteFile);
+  const names = editionNames(site);
+  const chosen = edition ?? names[0] ?? 'full';
+  const sources = sourcesFor(paths, new Set(names), lineage(site, chosen));
+  const byPath = new Map(files.map((file) => [file.path, file]));
+  const selected = [...sources].flatMap(([base, actual]) => {
+    const file = byPath.get(actual);
+    return file ? [{ path: base, text: file.text }] : [];
+  });
+  return { files: selected, paths: [...sources.keys()].sort(), origin: sources };
+}
+
+/**
+ * Turns the content files into typed content; `paths` lists every file, images included, relative to the content root.
+ * `edition` is the one the content is read for (the first the site declares, when none is named): a file made for an
+ * edition, `about.pro.pt.yaml`, is read in place of the plain one, and the files of other editions are left out.
+ */
+export function readContent(
+  allFiles: readonly ContentFile[],
+  allPaths: readonly string[],
+  edition?: string,
+): RawContent {
+  const everything = [...new Set([...allPaths, ...allFiles.map((file) => file.path)])];
+  const { files, paths, origin } = forEdition(allFiles, everything, edition);
   const byPath = new Map(files.map((file) => [file.path, file]));
   const perLanguage: { about: Record<string, unknown>; cv: Record<string, unknown> } = { about: {}, cv: {} };
   const items: { posts: ContentItem<Post>[]; projects: ContentItem<Project>[]; research: ContentItem<Research>[] } = {
@@ -78,6 +111,7 @@ export function readContent(files: readonly ContentFile[], paths: readonly strin
     github: single(byPath, 'external/github.json'),
     codetime: single(byPath, 'external/codetime.json'),
     photo: paths.find((path) => PHOTO.test(path)) ?? null,
+    origin,
     ...items,
   };
 }

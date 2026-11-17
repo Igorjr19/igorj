@@ -65,6 +65,9 @@ export function resolveEdition(site: Site, name: string): Edition {
 /** What is wrong with the way the editions are declared, in words the author can act on. */
 export function editionProblems(site: Site): string[] {
   const problems: string[] = [];
+  if (site.editions && !site.editions[FULL]) {
+    problems.push(`A site that declares editions declares "${FULL}" too, which is the one the build makes by default`);
+  }
   for (const name of editionNames(site)) {
     try {
       lineage(site, name);
