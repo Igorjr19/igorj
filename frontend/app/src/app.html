@@ -8,9 +8,6 @@
     <script>
       // Applies the saved theme before the first paint, so the page never flashes the system theme first.
       try {
-        if (localStorage.getItem('retro') === 'on') {
-          document.documentElement.dataset.retro = '';
-        }
         const saved = JSON.parse(localStorage.getItem('theme') || 'null');
         for (const name of ['family', 'theme', 'accent']) {
           if (saved && typeof saved[name] === 'string') {
@@ -19,36 +16,6 @@
         }
       } catch {
         // Storage blocked or value corrupted: the system preference applies.
-      }
-    </script>
-    <script>
-      // Decides before the first paint how the site is shown and whether it boots first (lib/presentation/presentation.ts
-      // holds the same rule). The size is the one in lib/scene/query.ts. data-scene-capable says the window and the
-      // browser can draw the room, so the menu to choose is offered. The choice is localStorage.presentation, 'scene' or
-      // 'simple'; automated browsers get the plain site unless it is 'scene'.
-      const root = document.documentElement;
-      root.dataset.presentation = 'simple';
-      try {
-        const saved = localStorage.getItem('presentation');
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl2');
-        gl?.getExtension('WEBGL_lose_context')?.loseContext();
-        if (matchMedia('(min-width: 1100px) and (min-height: 660px)').matches && gl) {
-          root.dataset.sceneCapable = '';
-          if (saved === 'scene' || (saved !== 'simple' && !navigator.webdriver)) {
-            root.dataset.presentation = 'scene';
-            root.dataset.scene = '';
-            const navigation = performance.getEntriesByType('navigation')[0];
-            const today = new Date().toLocaleDateString('sv-SE');
-            if ((navigation && navigation.type === 'reload') || localStorage.getItem('boot-day') !== today) {
-              root.dataset.boot = '';
-              // If the room never lands, the page must not stay hidden.
-              setTimeout(() => delete root.dataset.boot, 12000);
-            }
-          }
-        }
-      } catch {
-        // No storage or no WebGL: the site is plain.
       }
     </script>
     %sveltekit.head%

@@ -45,17 +45,7 @@ export interface ThemeIndex {
   } | null;
 }
 
-export type Command =
-  | 'theme'
-  | 'accent'
-  | 'language'
-  | 'side'
-  | 'view'
-  | 'terminal'
-  | 'help'
-  | 'copy-link'
-  | 'filter'
-  | 'retro';
+export type Command = 'theme' | 'accent' | 'language' | 'side' | 'view' | 'terminal' | 'help' | 'copy-link' | 'filter';
 
 export type Action =
   | { readonly type: 'go'; readonly url: string }
@@ -162,7 +152,6 @@ export interface CommandContext {
   readonly hasList: boolean;
   readonly isBlog: boolean;
   readonly language: string | null;
-  readonly retro: boolean;
 }
 
 /** The commands after `>`, with only those that make sense on this page. */
@@ -182,7 +171,6 @@ export function commandEntries(index: PickIndex, context: CommandContext): Entry
     ...(context.hasList ? [command('view', s['cmdView'])] : []),
     ...(context.isBlog ? [command('filter', s['cmdFilter'])] : []),
     command('terminal', s['cmdTerminal']),
-    command('retro', s[context.retro ? 'cmdRetroOff' : 'cmdRetroOn']),
     command('help', s['cmdHelp']),
     command('copy-link', s['cmdCopyLink']),
     // The accents come last: there are many, and the theme box shows them all at once.
@@ -191,13 +179,8 @@ export function commandEntries(index: PickIndex, context: CommandContext): Entry
 }
 
 /** Each family as "follows the system" and then its themes; the choice in effect is marked. */
-export function themeEntries(
-  index: ThemeIndex,
-  followLabel: string,
-  current: string,
-  retro?: { readonly label: string; readonly kind: string },
-): Entry[] {
-  const entries: Entry[] = index.families.flatMap(({ name, label, system, themes }) => {
+export function themeEntries(index: ThemeIndex, followLabel: string, current: string): Entry[] {
+  return index.families.flatMap(({ name, label, system, themes }) => {
     const variant = themes.find((theme) => theme.id === system.dark) ?? themes[0];
     return [
       {
@@ -220,13 +203,6 @@ export function themeEntries(
       ),
     ];
   });
-  // The retro switch leads the list, apart from the themes it does not belong to.
-  return retro
-    ? [
-        { id: 'command:retro', label: retro.label, kind: retro.kind, action: { type: 'command', command: 'retro' } },
-        ...entries,
-      ]
-    : entries;
 }
 
 /** A match on another name still counts, a little lower, and highlights nothing in the label shown. */

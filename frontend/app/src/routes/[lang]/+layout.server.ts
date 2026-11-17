@@ -1,5 +1,4 @@
 import { panesOf } from '#lib/sections.ts';
-import { bootOf } from '#lib/server/boot.ts';
 import { readFontPreloads } from '#lib/server/fonts.ts';
 import { readDictionary } from '#lib/server/i18n.ts';
 import { readModel } from '#lib/server/model.ts';
@@ -11,7 +10,6 @@ const SITE_URL = process.env['SITE_URL'] ?? 'https://igorj.dev/';
 
 export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: ShellData }> => {
   const model = await readModel(params.lang);
-  const dictionary = await readDictionary(params.lang);
   return {
     shell: {
       language: params.lang,
@@ -26,8 +24,7 @@ export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: Shell
       role: model.profile?.role ?? '',
       contact: model.contact,
       panes: panesOf(params.lang, model),
-      boot: await bootOf(model, dictionary),
-      dictionary,
+      dictionary: await readDictionary(params.lang),
     },
   };
 };

@@ -13,10 +13,7 @@
   import { direction } from '#lib/motion/direction.ts';
   import { navigationTransition } from '#lib/motion/transition.ts';
   import PickBox from '#lib/pick/PickBox.svelte';
-  import PresentationMenu from '#lib/presentation/PresentationMenu.svelte';
-  import Scene from '#lib/presentation/Scene.svelte';
   import { progress } from '#lib/progress.svelte.ts';
-  import { applyRetro, readRetro, saveRetro } from '#lib/retro/retro.ts';
   import { provideShell } from '#lib/shell.svelte.ts';
   import Shortcuts from '#lib/shortcuts/Shortcuts.svelte';
   import Terminal from '#lib/terminal/Terminal.svelte';
@@ -30,17 +27,11 @@
   provideShell(() => data.shell);
 
   const ui = provideUi();
-  // The head script has already put the saved retro mode on the page; starting from it keeps the first run of the
-  // effect below from taking it off again.
-  if (typeof document !== 'undefined') {
-    ui.retro = document.documentElement.hasAttribute('data-retro');
-  }
   const zoomed = $derived(ui.sideHidden(isReadingPage(page.url.pathname)));
   let pane: HTMLElement | undefined = $state();
 
   // The view of the lists, list or grid, is remembered between visits.
   let viewRead = false;
-  let retroRead = false;
   let ready = $state(false);
   onMount(() => {
     ready = true;
@@ -68,10 +59,6 @@
     if (storage) {
       ui.view = readView(storage);
     }
-    if (storage) {
-      ui.retro = readRetro(storage);
-    }
-    retroRead = true;
     viewRead = true;
     return () => watcher.disconnect();
   });
@@ -83,20 +70,6 @@
         saveView(storage, view);
       } catch {
         // Storage full or blocked: the view lasts until the page closes.
-      }
-    }
-  });
-
-  // The retro mode is applied to the page and remembered.
-  $effect(() => {
-    const on = ui.retro;
-    applyRetro(document.documentElement, on);
-    const storage = browserStorage('localStorage');
-    if (retroRead && storage) {
-      try {
-        saveRetro(storage, on);
-      } catch {
-        // Storage full or blocked: the mode lasts until the page closes.
       }
     }
   });
@@ -145,8 +118,6 @@
     <StatusBar />
   </div>
 </div>
-<Scene boot={data.shell.boot} language={data.shell.language} />
-<PresentationMenu />
 <Shortcuts />
 <HelpDialog />
 <Lightbox />

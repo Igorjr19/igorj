@@ -21,8 +21,6 @@ export class Ui {
   cameFrom = $state<string | null>(null);
   /** What the visitor chose for the theme, for the status line; none until the saved choice is read. */
   theme = $state<SavedTheme | null>(null);
-  /** The retro mode: heavier scanlines, a little tremor and a glow, kept between visits. */
-  retro = $state(false);
   /** The quick-pick box that is open, if any: the palette, the filter of the blog or the themes. */
   pick = $state<'palette' | 'filter' | 'theme' | null>(null);
 

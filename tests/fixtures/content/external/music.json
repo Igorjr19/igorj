@@ -11,11 +11,5 @@
       "name": "Second Artist",
       "plays": 5
     }
-  ],
-  "album": {
-    "title": "Fixture Album",
-    "artist": "Fixture Artist",
-    "url": "https://example.com/album",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/fixture.png"
-  }
+  ]
 }

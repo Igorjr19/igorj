@@ -8,7 +8,6 @@
 @import './base/reset.css';
 @import './base/elements.css';
 @import './layout/window.css';
-@import './layout/scene.css';
 @import './components/window.css';
 @import './components/scroll.css';
 @import './components/keybar.css';
@@ -20,8 +19,6 @@
 @import './components/home.css';
 @import './components/items.css';
 @import './components/data.css';
-@import './components/now.css';
-@import './components/presentation.css';
 @import './components/zoom.css';
 @import './components/terminal.css';
 @import './components/pick.css';
@@ -30,5 +27,4 @@
 @import './components/prose.css';
 @import './components/document.css';
 @import './components/code.css';
-@import './components/retro.css';
 @import './components/print.css';
