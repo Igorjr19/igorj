@@ -1,5 +1,6 @@
-# Services the daily job of the content repository reads. The site never calls them: it shows the saved data,
-# names each source in the system box and credits it on the credits page, only when the model has its data.
+# Services the daily job of the content repository reads. The site shows the saved data and names each source in the
+# system box and on the credits page, only when the model has its data. Covers and posters are the one thing the
+# visitor's browser loads from the services themselves.
 [[sources]]
 name = "Last.fm"
 homepage = "https://www.last.fm"

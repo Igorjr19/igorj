@@ -61,7 +61,9 @@ test('open takes the window to a page, and the terminal stays open and keeps its
   await expect(page).toHaveURL('/en/projects/');
   await expect(page.locator('.drawer--open')).toBeVisible();
   await expect(page.locator('.term__log')).toContainText('open projects');
-  await page.locator('#terminal-input').focus();
+  // A page change moves the focus when it ends, so the field is clicked and the focus awaited before Escape is pressed.
+  await page.locator('#terminal-input').click();
+  await expect(page.locator('#terminal-input')).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('.drawer--open')).toHaveCount(0);
 });
