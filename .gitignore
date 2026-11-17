@@ -1,5 +1,6 @@
 /node_modules/
 /public/
+/public-pro/
 /resources/_gen/
 /.hugo_build.lock
 /generated/
