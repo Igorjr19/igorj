@@ -32,11 +32,11 @@ test('choosing the scene is remembered and shows the monitor, and choosing simpl
   await page.getByRole('radio', { name: 'Scene', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('data-presentation', 'scene');
   expect(await page.evaluate(() => localStorage.getItem('presentation'))).toBe('scene');
-  await expect(page.locator('.monitor[data-on]')).toHaveCount(1);
+  await expect(page.locator('.scene[data-on]')).toHaveCount(1);
   await page.getByRole('button', { name: 'Presentation', exact: true }).click();
   await page.getByRole('radio', { name: 'Simple', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('data-presentation', 'simple');
-  await expect(page.locator('.monitor')).toHaveCount(0);
+  await expect(page.locator('.scene')).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem('presentation'))).toBe('simple');
 });
 

@@ -1,5 +1,5 @@
 import { assertAlmostEquals, assertEquals } from '@std/assert';
-import { ease, fitDistance } from '../../../src/lib/monitor/camera.ts';
+import { ease, fitDistance } from '../../../src/lib/scene/camera.ts';
 
 Deno.test('in a view wider than the screen the height decides the distance, and in a narrower one the width does', () => {
   const tangent = Math.tan((40 * Math.PI) / 360);

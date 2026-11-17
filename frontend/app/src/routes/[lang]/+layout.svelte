@@ -10,11 +10,11 @@
   import { readView, saveView } from '#lib/items/view.ts';
   import { languageInfo } from '#lib/languages.ts';
   import { isReadingPage } from '#lib/layout.ts';
-  import Monitor from '#lib/monitor/Monitor.svelte';
   import { direction } from '#lib/motion/direction.ts';
   import { navigationTransition } from '#lib/motion/transition.ts';
   import PickBox from '#lib/pick/PickBox.svelte';
   import PresentationMenu from '#lib/presentation/PresentationMenu.svelte';
+  import Scene from '#lib/presentation/Scene.svelte';
   import { progress } from '#lib/progress.svelte.ts';
   import { applyRetro, readRetro, saveRetro } from '#lib/retro/retro.ts';
   import { provideShell } from '#lib/shell.svelte.ts';
@@ -145,7 +145,7 @@
     <StatusBar />
   </div>
 </div>
-<Monitor boot={data.shell.boot} />
+<Scene boot={data.shell.boot} />
 <PresentationMenu />
 <Shortcuts />
 <HelpDialog />

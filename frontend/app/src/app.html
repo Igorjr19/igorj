@@ -23,7 +23,7 @@
     </script>
     <script>
       // Decides before the first paint how the site is shown and whether it boots first (lib/presentation/presentation.ts
-      // holds the same rule). The size is the one in lib/monitor/query.ts. data-scene-capable says the window and the
+      // holds the same rule). The size is the one in lib/scene/query.ts. data-scene-capable says the window and the
       // browser can draw the room, so the menu to choose is offered. The choice is localStorage.presentation, 'scene' or
       // 'simple'; automated browsers get the plain site unless it is 'scene'.
       const root = document.documentElement;
@@ -37,7 +37,7 @@
           root.dataset.sceneCapable = '';
           if (saved === 'scene' || (saved !== 'simple' && !navigator.webdriver)) {
             root.dataset.presentation = 'scene';
-            root.dataset.monitor = '';
+            root.dataset.scene = '';
             const navigation = performance.getEntriesByType('navigation')[0];
             const today = new Date().toLocaleDateString('sv-SE');
             if ((navigation && navigation.type === 'reload') || localStorage.getItem('boot-day') !== today) {

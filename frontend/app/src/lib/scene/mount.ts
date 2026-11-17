@@ -1,5 +1,5 @@
-import { MONITOR_QUERY } from './query.ts';
-import { type Boot, type MonitorControl, startMonitor } from './scene.ts';
+import { SCENE_QUERY } from './query.ts';
+import { type Boot, type SceneControl, startScene } from './scene.ts';
 
 /** The day the boot last ran, in the form the `<head>` script of app.html compares. */
 const today = (): string => new Date().toLocaleDateString('sv-SE');
@@ -19,7 +19,7 @@ function finish(root: HTMLElement): void {
 }
 
 interface State {
-  control: MonitorControl | null;
+  control: SceneControl | null;
   generation: number;
   skipped: boolean;
 }
@@ -27,7 +27,7 @@ interface State {
 function begin(root: HTMLElement, element: HTMLElement, boot: Boot, state: State, withBoot: boolean): void {
   state.generation += 1;
   const mine = state.generation;
-  void startMonitor(element, withBoot ? boot : null, () => finish(root)).then((started) => {
+  void startScene(element, withBoot ? boot : null, () => finish(root)).then((started) => {
     if (mine !== state.generation) {
       started?.stop();
     } else if (started) {
@@ -38,7 +38,7 @@ function begin(root: HTMLElement, element: HTMLElement, boot: Boot, state: State
         started.land();
       }
     } else {
-      root.removeAttribute('data-monitor');
+      root.dataset['presentation'] = 'simple';
       root.removeAttribute('data-boot');
     }
   });
@@ -52,21 +52,21 @@ function end(element: HTMLElement, state: State): void {
 }
 
 /**
- * Puts the room behind the window when the head script has turned the monitor on, and keeps it while the window is
+ * Puts the room behind the window when the head script has chosen the scene, and keeps it while the window is
  * wide enough. Any key or click during the boot skips it and does nothing else. Returns the way to undo it all.
  */
-export function mountMonitor(boot: Boot): () => void {
+export function mountScene(boot: Boot): () => void {
   const root = document.documentElement;
-  if (root.dataset['monitor'] === undefined) {
+  if (root.dataset['presentation'] !== 'scene') {
     return () => undefined;
   }
   // The room hangs from the root, not from the body: the body is the screen and holds back what is fixed inside it.
   const element = document.createElement('div');
-  element.className = 'monitor';
+  element.className = 'scene';
   element.setAttribute('aria-hidden', 'true');
   root.append(element);
   const state: State = { control: null, generation: 0, skipped: false };
-  const media = matchMedia(MONITOR_QUERY);
+  const media = matchMedia(SCENE_QUERY);
   const onChange = (): void => (media.matches ? begin(root, element, boot, state, false) : end(element, state));
   const skip = (event: Event): void => {
     if (root.dataset['boot'] !== undefined) {

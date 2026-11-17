@@ -76,7 +76,7 @@ function composerOf(
 export function createRoom(three: Three, container: HTMLElement, palette: Palette): Room {
   const renderer = new three.WebGLRenderer({ antialias: false });
   renderer.setPixelRatio(1);
-  renderer.domElement.className = 'monitor__canvas';
+  renderer.domElement.className = 'scene__canvas';
   container.append(renderer.domElement);
   const scene = new three.Scene();
   scene.background = new three.Color(palette.background);
