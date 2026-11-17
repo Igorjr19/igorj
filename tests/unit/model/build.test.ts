@@ -1,5 +1,5 @@
 import { assertEquals } from '@std/assert';
-import { resolveEdition } from '../../../tools/content/editions.ts';
+import { resolveEdition, type SectionKey } from '../../../tools/content/editions.ts';
 import type { ContentItem, RawContent } from '../../../tools/content/types.ts';
 import {
   activityLevel,
@@ -46,6 +46,11 @@ const cv = (label: string) => ({
 /** The model of the edition every site has, the complete one. */
 const buildModel = (raw: RawContent, language: string) => buildEdition(raw, language, resolveEdition(raw.site, 'full'));
 const sectionsFor = (raw: RawContent) => resolveEdition(raw.site, 'full').sections;
+/** The same content, with the sections named turned off in its complete edition. */
+const without = (sections: Partial<Record<SectionKey, boolean>>): RawContent => ({
+  ...RAW,
+  site: { ...RAW.site, editions: { full: { url: 'https://example.com/', sections } } },
+});
 
 const RAW: RawContent = {
   site: { author: 'Author', languages: ['pt', 'en'] },
@@ -211,12 +216,12 @@ Deno.test('the model sums the tags of the language, most used first', () => {
 
 Deno.test('every section is on unless the site settings turn it off', () => {
   assertEquals(sectionsFor(RAW), { projects: true, posts: true, research: true, cv: true, shelf: true });
-  const off = { ...RAW, site: { ...RAW.site, sections: { research: false, shelf: false } } };
+  const off = without({ research: false, shelf: false });
   assertEquals(sectionsFor(off), { projects: true, posts: true, research: false, cv: true, shelf: false });
 });
 
 Deno.test('a section turned off leaves its items and their tags out, but the CV still lists the research', () => {
-  const off = { ...RAW, site: { ...RAW.site, sections: { research: false, posts: false } } };
+  const off = without({ research: false, posts: false });
   const model = buildModel(off, 'en');
   assertEquals([model.research, model.posts], [[], []]);
   assertEquals(model.sections.research, false);
