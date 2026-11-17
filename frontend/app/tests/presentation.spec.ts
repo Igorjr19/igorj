@@ -17,9 +17,9 @@ test('on a wide window an automated browser is plain, and the menu offers the sc
   await page.setViewportSize({ width: 1400, height: 850 });
   await visit(page, '/en/');
   await expect(page.locator('html')).toHaveAttribute('data-presentation', 'simple');
-  await page.getByRole('button', { name: 'Presentation' }).click();
-  await expect(page.getByRole('radio', { name: 'Simple' })).toBeChecked();
-  await expect(page.getByRole('radio', { name: 'Scene' })).not.toBeChecked();
+  await page.getByRole('button', { name: 'Presentation', exact: true }).click();
+  await expect(page.getByRole('radio', { name: 'Simple', exact: true })).toBeChecked();
+  await expect(page.getByRole('radio', { name: 'Scene', exact: true })).not.toBeChecked();
 });
 
 test('choosing the scene is remembered and shows the monitor, and choosing simple again goes back to the plain site', async ({
@@ -28,13 +28,13 @@ test('choosing the scene is remembered and shows the monitor, and choosing simpl
   await page.addInitScript(() => localStorage.setItem('boot-slowdown', '100'));
   await page.setViewportSize({ width: 1400, height: 850 });
   await visit(page, '/en/');
-  await page.getByRole('button', { name: 'Presentation' }).click();
-  await page.getByRole('radio', { name: 'Scene' }).click();
+  await page.getByRole('button', { name: 'Presentation', exact: true }).click();
+  await page.getByRole('radio', { name: 'Scene', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('data-presentation', 'scene');
   expect(await page.evaluate(() => localStorage.getItem('presentation'))).toBe('scene');
   await expect(page.locator('.monitor[data-on]')).toHaveCount(1);
-  await page.getByRole('button', { name: 'Presentation' }).click();
-  await page.getByRole('radio', { name: 'Simple' }).click();
+  await page.getByRole('button', { name: 'Presentation', exact: true }).click();
+  await page.getByRole('radio', { name: 'Simple', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('data-presentation', 'simple');
   await expect(page.locator('.monitor')).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem('presentation'))).toBe('simple');
@@ -43,7 +43,7 @@ test('choosing the scene is remembered and shows the monitor, and choosing simpl
 test('escape closes the menu and gives the focus back to its button', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 850 });
   await visit(page, '/en/');
-  const button = page.getByRole('button', { name: 'Presentation' });
+  const button = page.getByRole('button', { name: 'Presentation', exact: true });
   await button.click();
   await expect(page.locator('#presentation-menu')).toBeVisible();
   await page.keyboard.press('Escape');

@@ -258,6 +258,11 @@ modeTerminal = "TERMINAL"
 keyTerminal = "terminal"
 helpTerminal = "Open the terminal: ls, cd, cat, open, tree, fetch, theme, man igor"
 
+presentationButton = "Presentation"
+presentationLegend = "Presentation"
+presentationScene = "Scene"
+presentationSimple = "Simple"
+
 [readingTime]
 one = "{{ .Count }} min read"
 other = "{{ .Count }} min read"
@@ -293,8 +298,3 @@ other = "{{ .Count }} contributions in the last year"
 [watchedCaption]
 one = "last film watched"
 other = "last {{ .Count }} films watched"
-
-presentationButton = "Presentation"
-presentationLegend = "Presentation"
-presentationScene = "Scene"
-presentationSimple = "Simple"
