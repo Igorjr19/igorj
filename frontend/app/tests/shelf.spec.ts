@@ -39,6 +39,8 @@ test('a poster shows over a card with the title, and carries the year and the ra
   await page.goto('/en/shelf/');
   const poster = page.locator('.poster').first();
   await expect(poster.locator('.poster__title')).toHaveText('Fixture Film');
+  // The pictures load when they come into view, which is below the fold in some browsers.
+  await poster.scrollIntoViewIfNeeded();
   const image = poster.locator('.poster__image');
   await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0);
   await expect(image).toHaveAttribute('src', /-0-230-0-345-crop/);
