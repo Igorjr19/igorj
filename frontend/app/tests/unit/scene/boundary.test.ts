@@ -15,7 +15,8 @@ async function* files(directory: string): AsyncGenerator<string> {
 const SRC = new URL('../../../src', import.meta.url).pathname;
 /** The only places that may reach for the 3D library or the scene: the scene itself, the one that loads it, and the monitor until the scene takes its place. */
 const ALLOWED = ['lib/scene/', 'lib/presentation/', 'lib/monitor/'];
-const REACHES = /(?:from|import)\s*\(?\s*['"](?:three(?:\/[^'"]*)?|[^'"]*\/scene\/[^'"]*)['"]/;
+/** The contract of the room, `scene/input.ts`, is public: the server builds it, the room only reads it. */
+const REACHES = /(?:from|import)\s*\(?\s*['"](?:three(?:\/[^'"]*)?|[^'"]*\/scene\/(?!input\.ts['"])[^'"]*)['"]/;
 /from\s+['"](?:three(?:\/[^'"]*)?|[^'"]*\/scene\/[^'"]*)['"]|import\(\s*['"](?:three(?:\/[^'"]*)?|[^'"]*\/scene\/[^'"]*)['"]\s*\)/;
 
 Deno.test('nothing but the scene, its loader and the monitor imports the 3D library or the scene, so the scene can be dropped by deleting its folder', async () => {
