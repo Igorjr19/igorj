@@ -8,7 +8,7 @@ test('the shelf shows the week of music, the films watched with their ratings an
   await expect(page.locator('#music-title')).toHaveText('Listening');
   await expect(page.locator('#music-title ~ .panel__meta').first()).toContainText('17 plays this week');
   await expect(page.locator('#films-title')).toHaveText('Watched');
-  await expect(page.locator('#films-title ~ .posters .poster').first()).toBeVisible();
+  await expect(page.locator('#films-title ~ .films .films__row').first()).toBeVisible();
   await expect(page.locator('#reading-title')).toHaveText('Reading');
 });
 
