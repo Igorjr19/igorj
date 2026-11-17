@@ -3,6 +3,8 @@
  * nor the routes, so the room can be dropped without touching them.
  */
 export interface SceneInput {
+  /** The words the room writes on its objects, in the language of the page. */
+  readonly strings: Readonly<Record<string, string>>;
   readonly music: {
     readonly artists: readonly { readonly name: string; readonly plays: number }[];
     readonly album: { readonly title: string; readonly artist: string; readonly cover: string | null } | null;
@@ -45,10 +47,14 @@ export interface SceneSource {
 /** The room has room for this much: the iPod lists five, the board holds four posters and the desk three books. */
 export const LIMITS = { artists: 5, films: 4, books: 3 } as const;
 
-export function buildSceneInput(source: SceneSource): SceneInput {
+/** The interface text the room needs, by key. */
+export const SCENE_STRING_KEYS = ['sceneTop', 'sceneNow', 'sceneAlbum'] as const;
+
+export function buildSceneInput(source: SceneSource, strings: Readonly<Record<string, string>> = {}): SceneInput {
   const artists = source.music?.artists.slice(0, LIMITS.artists) ?? [];
   const album = source.music?.album;
   return {
+    strings,
     music:
       source.music && artists.length > 0
         ? {

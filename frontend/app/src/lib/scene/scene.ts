@@ -1,10 +1,15 @@
 import type * as T from 'three';
 import { ease, fitDistance } from './camera.ts';
 import { advance, isTurning, type Mode, targetPhase } from './cycle.ts';
+import { loadImage } from './images.ts';
+import type { SceneInput } from './input.ts';
+import { type Handlers, listen, pointerOnScreen } from './interaction.ts';
 import { animate } from './loop.ts';
 import { type Palette, readPalette } from './palette.ts';
+import type { Track } from './parts/ipod.ts';
 import { createRoom, type Room, SCREEN } from './room.ts';
 import type { Three } from './three.ts';
+import { roomDistance, step, viewOf } from './view.ts';
 
 const FOV = 35;
 /** The share of the view the screen takes at rest; scene.css gives the window the same share. */
@@ -28,6 +33,15 @@ export interface Boot {
   readonly skip: string;
 }
 
+/** What the room is started with: what it shows, and how to learn what is playing now (null for nothing). */
+export interface SceneOptions {
+  readonly input: SceneInput;
+  readonly nowPlaying: () => Promise<Track | null>;
+}
+
+/** How often, in milliseconds, the iPod asks again what is playing while the room is in view. */
+const ASK_EVERY = 30_000;
+
 export interface SceneControl {
   /** Takes the camera to its resting place at once, as if the boot had run to its end. */
   readonly land: () => void;
@@ -49,6 +63,9 @@ interface Run {
   phase: number;
   target: number;
   dirty: boolean;
+  /** 1 at the screen, 0 at the room, and where the camera wants to go. */
+  mix: number;
+  goal: number;
 }
 
 /** Light or dark, as the theme of the page says it. */
@@ -90,7 +107,7 @@ function draw(run: Run): void {
 /** Puts the camera between the view of the room (0) and the front of the screen (1). */
 function lay(run: Run, progress: number): void {
   const { Vector3 } = run.three;
-  const room = new Vector3(...ROOM_VIEW.position);
+  const room = new Vector3(ROOM_VIEW.position[0], ROOM_VIEW.position[1], roomDistance(FOV, run.room.camera.aspect));
   const rest = new Vector3(SCREEN.x, SCREEN.y, run.rest);
   const looking = new Vector3(...ROOM_VIEW.target).lerp(new Vector3(SCREEN.x, SCREEN.y, SCREEN.z), progress);
   run.room.camera.position.copy(room.lerp(rest, progress));
@@ -102,7 +119,7 @@ function fit(run: Run): void {
   run.room.resize(width, height);
   run.rest = fitDistance(FOV, width / height, SCREEN.width, SCREEN.height, REST_FILL);
   if (run.landed) {
-    lay(run, 1);
+    lay(run, ease(run.mix));
     draw(run);
   }
 }
@@ -173,6 +190,31 @@ function surfaceOf(): Run['drawing'] {
   return context ? { surface, context } : null;
 }
 
+/** The camera is at rest looking at the room, where things move: the leaves, the list on the iPod. */
+function inRoom(run: Run): boolean {
+  return run.landed && run.mix === 0 && run.goal === 0;
+}
+
+/** While the room is in view, asks every so often what is playing and tells the iPod; the answer waits when the camera is elsewhere. */
+function askWhileInRoom(run: Run, ask: () => Promise<Track | null>): () => void {
+  let timer = 0;
+  const check = (): void => {
+    if (inRoom(run) && timer === 0) {
+      const once = (): void => void ask().then((track) => run.room.ipod?.setNow(track));
+      once();
+      timer = window.setInterval(once, ASK_EVERY);
+    } else if (!inRoom(run) && timer !== 0) {
+      clearInterval(timer);
+      timer = 0;
+    }
+  };
+  const watcher = window.setInterval(check, 500);
+  return () => {
+    clearInterval(watcher);
+    clearInterval(timer);
+  };
+}
+
 /** One tick of the loop: the boot, the hours turning, or a redraw that something asked for. */
 function tick(
   run: Run,
@@ -181,7 +223,7 @@ function tick(
   times: { travel: number; land: number } | null,
   land: () => void,
 ): void {
-  const step = seconds - last.at;
+  const interval = seconds - last.at;
   last.at = seconds;
   if (!run.landed && times) {
     bootFrame(run, seconds / slowdown(), times);
@@ -190,36 +232,29 @@ function tick(
     }
     return;
   }
-  if (isTurning(run.phase, run.target)) {
-    run.phase = advance(run.phase, run.target, step);
+  if (run.mix !== run.goal) {
+    run.mix = step(run.mix, run.goal, interval);
+    document.documentElement.dataset['view'] = viewOf(run.mix, run.goal);
+    lay(run, ease(run.mix));
+    draw(run);
+  } else if (isTurning(run.phase, run.target)) {
+    run.phase = advance(run.phase, run.target, interval);
     run.room.setPhase(run.phase);
     draw(run);
   } else if (run.dirty) {
     run.dirty = false;
     draw(run);
   }
+  if (inRoom(run)) {
+    run.room.plant.sway(seconds, 0);
+    run.room.ipod?.tick(seconds);
+    draw(run);
+  }
 }
 
-/**
- * The room behind the window of the site. With a `boot`, a power-on test is typed on the screen while the camera
- * moves in and lands on the monitor; without one the camera is at rest from the start. Once landed nothing moves:
- * the room is drawn again only when the window is resized or the theme changes, and then the hours of the window
- * turn. Resolves to null when WebGL is missing.
- */
-export async function startScene(
-  host: HTMLElement,
-  boot: Boot | null,
-  onLanded: () => void,
-): Promise<SceneControl | null> {
-  const three = await import('three');
-  let room: Room;
-  try {
-    room = createRoom(three, host);
-  } catch {
-    return null;
-  }
+function newRun(three: Three, host: HTMLElement, boot: Boot | null, room: Room): Run {
   const phase = colorMode() === 'dark' ? 0.5 : 0;
-  const run: Run = {
+  return {
     three,
     host,
     boot,
@@ -233,14 +268,54 @@ export async function startScene(
     phase,
     target: phase,
     dirty: true,
+    mix: 1,
+    goal: 1,
   };
-  room.setPhase(phase);
+}
+
+/** What the visitor's moves mean to the camera: where it is, where to send it, and what is under the pointer. */
+function handlersOf(run: Run): Handlers {
+  return {
+    view: () => (run.landed ? viewOf(run.mix, run.goal) : 'monitor'),
+    go: (goal) => {
+      run.goal = goal;
+      document.documentElement.dataset['view'] = 'moving';
+    },
+    under: (event) => run.room.spotAt(...pointerOnScreen(event, run.host)),
+  };
+}
+
+/**
+ * The room behind the window of the site. With a `boot`, a power-on test is typed on the screen while the camera
+ * moves in and lands on the monitor; without one the camera is at rest from the start. Once landed nothing moves:
+ * the room is drawn again only when the window is resized or the theme changes, and then the hours of the window
+ * turn. Resolves to null when WebGL is missing.
+ */
+export async function startScene(
+  host: HTMLElement,
+  boot: Boot | null,
+  onLanded: () => void,
+  options: SceneOptions,
+): Promise<SceneControl | null> {
+  const three = await import('three');
+  const changed: { run: (() => void) | null } = { run: null };
+  let room: Room;
+  try {
+    room = createRoom(three, host, options.input, { load: loadImage, changed: () => changed.run?.() });
+  } catch {
+    return null;
+  }
+  const run = newRun(three, host, boot, room);
+  const unask = askWhileInRoom(run, options.nowPlaying);
+  changed.run = () => {
+    run.dirty = true;
+  };
+  room.setPhase(run.phase);
   showScreen(run);
   fit(run);
   const observer = new ResizeObserver(() => fit(run));
   observer.observe(host);
   const unwatch = watchTheme(() => themeChanged(run));
-  const stopLoop = { stop: null as (() => void) | null };
   const land = (): void => {
     if (!run.landed) {
       run.landed = true;
@@ -249,16 +324,20 @@ export async function startScene(
       onLanded();
     }
   };
+  const unlisten = listen(host, handlersOf(run));
   const times = boot ? schedule(boot) : null;
   const last = { at: 0 };
-  stopLoop.stop = animate((seconds) => tick(run, seconds, last, times, land));
+  const stopLoop = animate((seconds) => tick(run, seconds, last, times, land));
   if (!boot) {
     onLanded();
   }
   return {
     land,
     stop() {
-      stopLoop.stop?.();
+      stopLoop();
+      unask();
+      unlisten();
+      document.documentElement.removeAttribute('data-view');
       unwatch();
       observer.disconnect();
       run.room.dispose();

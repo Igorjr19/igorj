@@ -123,3 +123,51 @@ test('when the theme turns dark the hours of the window turn on to midnight, and
   });
   await expect.poll(phase, { timeout: 15000 }).toBe(1);
 });
+
+test('a click on the room around the screen steps back to see the room, the site steps aside, and the monitor takes the visitor back in', async ({
+  page,
+}) => {
+  await sceneOn(page, today());
+  await page.setViewportSize({ width: 1400, height: 850 });
+  await visit(page, '/en/');
+  await expect(page.locator('.scene[data-on]')).toHaveCount(1);
+  const view = page.locator('html');
+  await page.mouse.click(30, 425);
+  await expect(view).toHaveAttribute('data-view', 'room', { timeout: 15000 });
+  await expect(page.locator('body')).toBeHidden();
+  await page.keyboard.press('Enter');
+  await expect(view).toHaveAttribute('data-view', 'monitor', { timeout: 15000 });
+  await expect(page.locator('body')).toBeVisible();
+});
+
+test('escape leaves the monitor for the room, unless a box of the page is open and takes it first', async ({
+  page,
+}) => {
+  await sceneOn(page, today());
+  await visit(page, '/en/');
+  await expect(page.locator('.scene[data-on]')).toHaveCount(1);
+  await page.keyboard.press('?');
+  await expect(page.locator('dialog[open]')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+  await expect(page.locator('html')).not.toHaveAttribute('data-view', 'room');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('html')).toHaveAttribute('data-view', 'room', { timeout: 15000 });
+});
+
+test('the iPod asks what is playing only while the room is in view', async ({ page }) => {
+  let asked = 0;
+  await page.route('**/api/now-playing', (route) => {
+    asked += 1;
+    return route.fulfill({ contentType: 'application/json', body: '{"playing":false}' });
+  });
+  await sceneOn(page, today());
+  await page.setViewportSize({ width: 1400, height: 850 });
+  await visit(page, '/en/');
+  await expect(page.locator('.scene[data-on]')).toHaveCount(1);
+  await page.waitForTimeout(1500);
+  expect(asked).toBe(0);
+  await page.mouse.click(30, 425);
+  await expect(page.locator('html')).toHaveAttribute('data-view', 'room', { timeout: 15000 });
+  await expect.poll(() => asked, { timeout: 5000 }).toBeGreaterThan(0);
+});

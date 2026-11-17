@@ -6,6 +6,7 @@ test('the room reads what it shows from one small file per language, with the al
   const response = await request.get('/en/scene.json');
   expect(response.ok()).toBe(true);
   const input = await response.json();
+  expect(input.strings.sceneTop).toBe('Most listened this week');
   expect(input.music.artists.length).toBeGreaterThan(0);
   expect(input.music.album).toEqual({
     title: 'Fixture Album',

@@ -263,6 +263,10 @@ presentationLegend = "Presentation"
 presentationScene = "Scene"
 presentationSimple = "Simple"
 
+sceneTop = "Most listened this week"
+sceneNow = "playing now"
+sceneAlbum = "album of the week"
+
 [readingTime]
 one = "{{ .Count }} min read"
 other = "{{ .Count }} min read"

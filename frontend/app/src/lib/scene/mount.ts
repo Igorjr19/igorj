@@ -1,5 +1,5 @@
 import { SCENE_QUERY } from './query.ts';
-import { type Boot, type SceneControl, startScene } from './scene.ts';
+import { type Boot, type SceneControl, type SceneOptions, startScene } from './scene.ts';
 
 /** The day the boot last ran, in the form the `<head>` script of app.html compares. */
 const today = (): string => new Date().toLocaleDateString('sv-SE');
@@ -24,10 +24,17 @@ interface State {
   skipped: boolean;
 }
 
-function begin(root: HTMLElement, element: HTMLElement, boot: Boot, state: State, withBoot: boolean): void {
+function begin(
+  root: HTMLElement,
+  element: HTMLElement,
+  boot: Boot,
+  options: SceneOptions,
+  state: State,
+  withBoot: boolean,
+): void {
   state.generation += 1;
   const mine = state.generation;
-  void startScene(element, withBoot ? boot : null, () => finish(root)).then((started) => {
+  void startScene(element, withBoot ? boot : null, () => finish(root), options).then((started) => {
     if (mine !== state.generation) {
       started?.stop();
     } else if (started) {
@@ -55,7 +62,7 @@ function end(element: HTMLElement, state: State): void {
  * Puts the room behind the window when the head script has chosen the scene, and keeps it while the window is
  * wide enough. Any key or click during the boot skips it and does nothing else. Returns the way to undo it all.
  */
-export function mountScene(boot: Boot): () => void {
+export function mountScene(boot: Boot, options: SceneOptions): () => void {
   const root = document.documentElement;
   if (root.dataset['presentation'] !== 'scene') {
     return () => undefined;
@@ -67,7 +74,8 @@ export function mountScene(boot: Boot): () => void {
   root.append(element);
   const state: State = { control: null, generation: 0, skipped: false };
   const media = matchMedia(SCENE_QUERY);
-  const onChange = (): void => (media.matches ? begin(root, element, boot, state, false) : end(element, state));
+  const onChange = (): void =>
+    media.matches ? begin(root, element, boot, options, state, false) : end(element, state);
   const skip = (event: Event): void => {
     if (root.dataset['boot'] !== undefined) {
       event.stopPropagation();
@@ -81,7 +89,7 @@ export function mountScene(boot: Boot): () => void {
   addEventListener('keydown', skip, true);
   addEventListener('click', skip, true);
   if (media.matches) {
-    begin(root, element, boot, state, root.dataset['boot'] !== undefined);
+    begin(root, element, boot, options, state, root.dataset['boot'] !== undefined);
   }
   return () => {
     media.removeEventListener('change', onChange);
