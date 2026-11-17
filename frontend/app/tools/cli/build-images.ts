@@ -2,12 +2,14 @@ import { dirname } from '@std/path';
 import { parse as parseToml } from '@std/toml';
 import type { SiteModel } from '../../../../tools/model/types.ts';
 import { removeIfExists, walkFiles } from '../../../../tools/shared/fs.ts';
+import { colorGray, splitByRole } from '../image/color.ts';
 import { defaultColors, type PictureColors } from '../image/colors.ts';
 import { atkinson, floydSteinberg, invert } from '../image/dither.ts';
 import { drawFavicon } from '../image/favicon.ts';
 import { grayscale, toLinear } from '../image/filters.ts';
 import { initialOf } from '../image/initial.ts';
 import {
+  type ColorEntry,
   FIGURE_MAX_WIDTH,
   HERO_PORTRAIT_SIZE,
   type ImagesManifest,
@@ -17,6 +19,7 @@ import {
   withoutExtension,
 } from '../image/manifest.ts';
 import { treatPortrait } from '../image/portrait.ts';
+import { colorImages } from '../image/references.ts';
 import { parseThemesData } from '../image/schema.ts';
 import { drawShare, SHARE_HEIGHT, SHARE_PORTRAIT, SHARE_WIDTH, type SharePicture } from '../image/share.ts';
 import type { Gray } from '../image/types.ts';
@@ -78,6 +81,24 @@ async function figureMask(media: string): Promise<MaskEntry> {
     ...(await writeMask('figure', media, floydSteinberg(toLinear(grayscale(probe))))),
     thumb: await writeMask('thumb', media, floydSteinberg(toLinear(grayscale(thumb)))),
   };
+}
+
+/** A picture in the theme's colors: the dither of its brightness, split by the role of the color each pixel had. */
+async function colorMask(media: string): Promise<ColorEntry> {
+  const image = await readRgba(`${MEDIA_DIR}/${media}`, { width: FIGURE_MAX_WIDTH });
+  const bits = floydSteinberg(colorGray(image));
+  const layers: ColorEntry['layers'][number][] = [];
+  for (const { role, bright, dark } of splitByRole(image, bits)) {
+    const base = `img/color/${withoutExtension(media)}.${role}`;
+    const mask = maskPng(bright);
+    const inverse = maskPng(dark);
+    const src = `${base}.${await fingerprint(mask)}.png`;
+    const inverted = `${base}.inverted.${await fingerprint(inverse)}.png`;
+    await write(`${STATIC_DIR}/${src}`, mask);
+    await write(`${STATIC_DIR}/${inverted}`, inverse);
+    layers.push({ role, src: `/${src}`, inverted: `/${inverted}` });
+  }
+  return { width: image.width, height: image.height, layers };
 }
 
 async function shareJpeg(path: string, colors: PictureColors, picture: SharePicture): Promise<void> {
@@ -184,13 +205,13 @@ async function placeholderMasks(model: SiteModel, into: Record<string, MaskEntry
   }
 }
 
-/** Files an item offers for download, such as a paper, are served as they are under /media/. */
-async function copyDocuments(languages: readonly string[]): Promise<void> {
+/** Every file an item refers to is served as it is under /media/: the originals of the pictures, which open from the page, and the files to download. */
+async function copyMedia(languages: readonly string[]): Promise<void> {
   const seen = new Set<string>();
   for (const language of languages) {
     const model = await readModel(language);
     for (const media of [...model.posts, ...model.projects, ...model.research].flatMap((item) => item.media)) {
-      if (!(isRaster(media) || media.toLowerCase().endsWith('.svg') || seen.has(media))) {
+      if (!seen.has(media)) {
         seen.add(media);
         await write(`${STATIC_DIR}/media/${media}`, await Deno.readFile(`${MEDIA_DIR}/${media}`));
       }
@@ -217,6 +238,7 @@ const languages = (await Array.fromAsync(Deno.readDir('generated/model')))
 const placeholders: Record<string, MaskEntry> = {};
 const portraits: Record<string, MaskEntry> = {};
 const figures: Record<string, MaskEntry> = {};
+const colorFigures: Record<string, ColorEntry> = {};
 let shared = 0;
 for (const language of languages) {
   const model = await readModel(language);
@@ -224,17 +246,28 @@ for (const language of languages) {
   if (photo && isRaster(photo)) {
     portraits[photo] = await portraitMask(photo);
   }
-  for (const media of [...model.posts, ...model.projects, ...model.research].flatMap((item) => item.media)) {
-    if (isRaster(media) && !(media in figures)) {
-      figures[media] = await figureMask(media);
+  const items = [
+    ...model.posts.map((item) => ['posts', item] as const),
+    ...model.projects.map((item) => ['projects', item] as const),
+    ...model.research.map((item) => ['research', item] as const),
+  ];
+  for (const [section, item] of items) {
+    const wanted = colorImages(item.body, `${section}/${item.id}`);
+    for (const media of item.media.filter(isRaster)) {
+      if (!(media in figures)) {
+        figures[media] = await figureMask(media);
+      }
+      if (wanted.has(media) && !(media in colorFigures)) {
+        colorFigures[media] = await colorMask(media);
+      }
     }
   }
   await placeholderMasks(model, placeholders);
   shared += await sharePictures(language, colors);
 }
 await favicons(colors);
-await copyDocuments(languages);
-const manifest: ImagesManifest = { portraits, figures, placeholders };
+await copyMedia(languages);
+const manifest: ImagesManifest = { portraits, figures, colorFigures, placeholders };
 await write('generated/data/images.json', `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(
   `Wrote ${Object.keys(portraits).length} portraits, ${

@@ -12,6 +12,8 @@ A long address that cannot break by itself: https://example.com/a-very-long-path
 
 ![A screenshot wider than a phone screen](wide.png)
 
+![A chart with five colors](chart.png#color)
+
 - First item
 - Second item
 

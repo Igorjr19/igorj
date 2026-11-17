@@ -169,3 +169,46 @@ test('every preview in the grid has the same proportion, so the cards line up', 
   expect(new Set(shapes).size).toBe(1);
   expect(shapes[0]).toBeCloseTo(16 / 9, 1);
 });
+
+test('a picture of a post opens its original in a dialog, which Escape and the button close and which gives the focus back', async ({
+  page,
+}) => {
+  await visit(page, '/en/posts/fixture-post/');
+  const figure = page.locator('.prose .figure').first();
+  await figure.focus();
+  await page.keyboard.press('Enter');
+  const dialog = page.locator('dialog.lightbox');
+  await expect(dialog).toBeVisible();
+  const image = dialog.locator('img');
+  await expect(image).toHaveAttribute('src', /\/media\/posts\/fixture-post\/wide\.png$/);
+  await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(figure).toBeFocused();
+  await figure.click();
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: /close/ }).click();
+  await expect(dialog).toBeHidden();
+});
+
+test('a picture marked #color is drawn in the colors of the theme, one pair of layers per role, and the originals are published', async ({
+  page,
+  request,
+}) => {
+  await visit(page, '/en/posts/fixture-post/');
+  const chart = page.locator('.prose .figure', { has: page.locator('.dither__ink[style*="--color-"]') });
+  await expect(chart).toHaveCount(1);
+  const roles = await chart
+    .locator('.dither__ink--on-dark')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => /--dither-ink: var\(--color-(\w+)\)/.exec(node.getAttribute('style') ?? '')?.[1]),
+    );
+  expect(roles.length).toBeGreaterThanOrEqual(4);
+  expect(new Set(roles).size).toBe(roles.length);
+  const inks = await chart
+    .locator('.dither__ink--on-dark')
+    .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).backgroundColor));
+  expect(new Set(inks).size).toBeGreaterThan(1);
+  expect((await request.get('/media/posts/fixture-post/chart.png')).ok()).toBe(true);
+  expect((await request.get('/media/posts/fixture-post/wide.png')).ok()).toBe(true);
+});

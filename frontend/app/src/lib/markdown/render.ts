@@ -1,6 +1,7 @@
 import hljs from 'highlight.js';
 import MarkdownIt from 'markdown-it';
-import type { MaskEntry } from '../../../tools/image/manifest.ts';
+import type { ColorEntry, MaskEntry } from '../../../tools/image/manifest.ts';
+import { COLOR_MARK, isExternal, mediaPath } from '../../../tools/image/references.ts';
 
 export interface Heading {
   readonly id: string;
@@ -18,7 +19,11 @@ export interface RenderContext {
   readonly mediaBase: string;
   /** The dithered figures the build tools made, by media path. */
   readonly figures: Readonly<Record<string, MaskEntry>>;
+  /** The figures asked for in color with `#color`, by media path. */
+  readonly colorFigures: Readonly<Record<string, ColorEntry>>;
   readonly copyLabel: string;
+  /** What a screen reader adds to the description of a picture: that it opens the original. */
+  readonly openLabel: string;
 }
 
 const escapeHtml = (text: string): string =>
@@ -38,23 +43,42 @@ function highlight(code: string, language: string): string {
   return known ? hljs.highlight(code, { language, ignoreIllegals: true }).value : escapeHtml(code);
 }
 
-/** Resolves an image path the way the content writes it, relative to the item's folder. */
-function mediaPath(base: string, source: string): string {
-  const parts = `${base}/${source}`.split('/');
-  const resolved: string[] = [];
-  for (const part of parts) {
-    if (part === '..') {
-      resolved.pop();
-    } else if (part !== '.') {
-      resolved.push(part);
-    }
-  }
-  return resolved.join('/');
+const FIGURE_STYLE = (entry: { width: number; height: number }): string =>
+  `aspect-ratio: ${entry.width} / ${entry.height}; max-inline-size: ${entry.width}px`;
+
+function figure(entry: MaskEntry): string {
+  const style = `--dither: url('${entry.src}'); --dither-inverted: url('${entry.inverted}'); ${FIGURE_STYLE(entry)}`;
+  return `<span class="dither dither--figure" aria-hidden="true" style="${style}"><span class="dither__ink dither__ink--on-bright"></span><span class="dither__ink dither__ink--on-dark"></span></span>`;
 }
 
-function figure(entry: MaskEntry, alt: string): string {
-  const style = `--dither: url('${entry.src}'); --dither-inverted: url('${entry.inverted}'); aspect-ratio: ${entry.width} / ${entry.height}; max-inline-size: ${entry.width}px`;
-  return `<span class="dither dither--figure" role="img" aria-label="${escapeHtml(alt)}" style="${style}"><span class="dither__ink dither__ink--on-bright"></span><span class="dither__ink dither__ink--on-dark"></span></span>`;
+/** A picture in color: for each role it uses, the layer for a dark theme and the one for a light theme, inked with the role's color. */
+function colorFigure(entry: ColorEntry): string {
+  const layers = entry.layers
+    .map(({ role, src, inverted }) => {
+      const ink = `--dither-ink: var(--color-${role})`;
+      return `<span class="dither__ink dither__ink--on-bright" style="--dither: url('${src}'); ${ink}"></span><span class="dither__ink dither__ink--on-dark" style="--dither-inverted: url('${inverted}'); ${ink}"></span>`;
+    })
+    .join('');
+  return `<span class="dither dither--figure" aria-hidden="true" style="${FIGURE_STYLE(entry)}">${layers}</span>`;
+}
+
+/** A picture of the item, as a button that opens its original: dithered where the build made it so, as it is otherwise. */
+function picture(source: string, alt: string, context: RenderContext): string {
+  const color = source.endsWith(COLOR_MARK);
+  const clean = color ? source.slice(0, -COLOR_MARK.length) : source;
+  if (isExternal(clean)) {
+    return `<img src="${escapeHtml(clean)}" alt="${escapeHtml(alt)}">`;
+  }
+  const path = mediaPath(context.mediaBase, clean);
+  const entry = context.figures[path];
+  const colored = color ? context.colorFigures[path] : undefined;
+  const inner = colored
+    ? colorFigure(colored)
+    : entry
+      ? figure(entry)
+      : `<img src="/media/${escapeHtml(path)}" alt="" loading="lazy">`;
+  const label = `${escapeHtml(alt)} (${escapeHtml(context.openLabel)})`;
+  return `<button type="button" class="figure" data-original="/media/${escapeHtml(path)}" data-alt="${escapeHtml(alt)}" aria-label="${label}">${inner}</button>`;
 }
 
 /** CommonMark to HTML at build time: code highlighted with classes the theme colors, images dithered, headings with addresses. */
@@ -72,9 +96,7 @@ export function renderMarkdown(source: string, context: RenderContext): Rendered
   markdown.renderer.rules['image'] = (tokens, index, options, env, self) => {
     const token = tokens[index];
     const alt = self.renderInlineAsText(token?.children ?? [], options, env);
-    const source = String(token?.attrGet('src') ?? '');
-    const entry = /^[a-z]+:|^\//.test(source) ? undefined : context.figures[mediaPath(context.mediaBase, source)];
-    return entry ? figure(entry, alt) : `<img src="${escapeHtml(source)}" alt="${escapeHtml(alt)}">`;
+    return picture(String(token?.attrGet('src') ?? ''), alt, context);
   };
 
   markdown.renderer.rules['heading_open'] = (tokens, index, options, _env, self) => {
@@ -113,7 +135,13 @@ const ENTITIES: Readonly<Record<string, string>> = {
 
 /** The text of a Markdown source with no markup at all, one paragraph per line, for places that only show text. */
 export function plainText(source: string): string {
-  const { html } = renderMarkdown(source, { mediaBase: '', figures: {}, copyLabel: '' });
+  const { html } = renderMarkdown(source, {
+    mediaBase: '',
+    figures: {},
+    colorFigures: {},
+    copyLabel: '',
+    openLabel: '',
+  });
   return html
     .replace(/<button[^>]*>.*?<\/button>/g, '')
     .replace(/<\/(?:p|h[1-6]|li|pre|blockquote|div)>/g, '\n')

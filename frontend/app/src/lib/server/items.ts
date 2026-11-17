@@ -72,13 +72,15 @@ export async function itemPageOf(
   model: SiteModel,
   section: ItemSection,
   item: Item,
-  copyLabel: string,
+  labels: { readonly copy: string; readonly open: string },
 ): Promise<ItemPageData> {
   const images = await readImages();
   const rendered = renderMarkdown(item.body, {
     mediaBase: `${section}/${item.id}`,
     figures: images.figures,
-    copyLabel,
+    colorFigures: images.colorFigures,
+    copyLabel: labels.copy,
+    openLabel: labels.open,
   });
   const project = item as ProjectModel;
   return {

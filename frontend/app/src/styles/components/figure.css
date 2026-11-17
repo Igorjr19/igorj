@@ -1,0 +1,58 @@
+@layer app.components {
+  /* A picture of a page is a button: one click or Enter shows its original. */
+  .figure {
+    display: block;
+    inline-size: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: zoom-in;
+  }
+
+  .figure:focus-visible {
+    outline: 1px solid var(--color-accent);
+    outline-offset: calc(var(--cell-height) / 4);
+  }
+
+  .figure img {
+    display: block;
+  }
+
+  .lightbox {
+    margin: auto;
+    max-inline-size: calc(100vw - 2 * var(--cell-width));
+    max-block-size: calc(100dvh - 2 * var(--cell-height));
+    padding: var(--cell-height) var(--cell-width);
+    border: 1px solid var(--color-accent);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    overflow: auto;
+  }
+
+  .lightbox::backdrop {
+    background-color: color-mix(in oklab, var(--color-background) 80%, transparent);
+  }
+
+  .lightbox__image {
+    display: block;
+    max-inline-size: 100%;
+    max-block-size: calc(100dvh - 8 * var(--cell-height));
+    margin-inline: auto;
+    object-fit: contain;
+  }
+
+  .lightbox__close {
+    display: block;
+    margin: var(--cell-height) auto 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-link);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

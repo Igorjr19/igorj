@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { browserStorage } from '#lib/browser-storage.ts';
   import HelpDialog from '#lib/components/HelpDialog.svelte';
+  import Lightbox from '#lib/components/Lightbox.svelte';
   import SideColumn from '#lib/components/SideColumn.svelte';
   import StatusBar from '#lib/components/StatusBar.svelte';
   import TopBar from '#lib/components/TopBar.svelte';
@@ -146,4 +147,5 @@
 <Monitor boot={data.shell.boot} />
 <Shortcuts />
 <HelpDialog />
+<Lightbox />
 <PickBox />
