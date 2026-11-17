@@ -1,6 +1,6 @@
 // biome-ignore-all lint/style/useNamingConvention: the names of environment variables are capitals
 import { assert, assertEquals } from '@std/assert';
-import { nowPlayingResponse, parseNowPlaying, recentTrackUrl } from '../../../src/lib/shelf/now-playing.ts';
+import { nowPlayingResponse, parseNowPlaying, readAnswer, recentTrackUrl } from '../../../src/lib/shelf/now-playing.ts';
 
 const TRACK = (extra: Record<string, unknown>) => ({
   recenttracks: {
@@ -91,4 +91,17 @@ Deno.test('Last.fm failing, by status or by network, is "not playing" without a 
   );
   assertEquals(byNetwork.body, { playing: false });
   assert(!JSON.stringify(byNetwork).includes('SECRET-KEY'));
+});
+
+Deno.test('the answer of the endpoint counts as playing only with a title and an artist, so a broken one never shows half a line', () => {
+  assertEquals(readAnswer({ playing: true, title: 'A Song', artist: 'A Band', url: 'https://x.example/a' }), {
+    playing: true,
+    title: 'A Song',
+    artist: 'A Band',
+    url: 'https://x.example/a',
+  });
+  assertEquals(readAnswer({ playing: true, title: 'Only a title' }), { playing: false });
+  assertEquals(readAnswer({ playing: false, title: 'A Song', artist: 'A Band' }), { playing: false });
+  assertEquals(readAnswer(null), { playing: false });
+  assertEquals(readAnswer('playing'), { playing: false });
 });

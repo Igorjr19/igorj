@@ -145,7 +145,7 @@
     <StatusBar />
   </div>
 </div>
-<Scene boot={data.shell.boot} />
+<Scene boot={data.shell.boot} language={data.shell.language} />
 <PresentationMenu />
 <Shortcuts />
 <HelpDialog />

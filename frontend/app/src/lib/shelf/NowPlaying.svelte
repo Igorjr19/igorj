@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { useShell } from '../shell.svelte.ts';
-  import type { NowPlaying } from './now-playing.ts';
+  import { type NowPlaying, readAnswer } from './now-playing.ts';
 
   const shell = useShell();
   let now = $state<NowPlaying>({ playing: false });
@@ -12,15 +12,7 @@
   async function ask(): Promise<void> {
     try {
       const answer = await fetch('/api/now-playing');
-      const data: unknown = answer.ok ? await answer.json() : null;
-      const playing = typeof data === 'object' && data !== null && Reflect.get(data, 'playing') === true;
-      const title = playing ? Reflect.get(data, 'title') : null;
-      const artist = playing ? Reflect.get(data, 'artist') : null;
-      const url = playing ? Reflect.get(data, 'url') : null;
-      now =
-        typeof title === 'string' && typeof artist === 'string'
-          ? { playing: true, title, artist, ...(typeof url === 'string' && { url }) }
-          : { playing: false };
+      now = readAnswer(answer.ok ? await answer.json() : null);
     } catch {
       now = { playing: false };
     }

@@ -41,6 +41,17 @@ export function parseNowPlaying(data: unknown): NowPlaying {
   return { playing: true, title, artist, ...(url?.startsWith('https://www.last.fm/') && { url }) };
 }
 
+/** What the site's own endpoint answered, read with suspicion: only a full answer, with a title and an artist, counts as playing. */
+export function readAnswer(data: unknown): NowPlaying {
+  const playing = typeof data === 'object' && data !== null && Reflect.get(data, 'playing') === true;
+  const title = playing ? Reflect.get(data, 'title') : null;
+  const artist = playing ? Reflect.get(data, 'artist') : null;
+  const url = playing ? Reflect.get(data, 'url') : null;
+  return typeof title === 'string' && typeof artist === 'string'
+    ? { playing: true, title, artist, ...(typeof url === 'string' && { url }) }
+    : { playing: false };
+}
+
 export interface NowPlayingEnvironment {
   readonly LASTFM_API_KEY?: string | undefined;
   readonly LASTFM_USER?: string | undefined;

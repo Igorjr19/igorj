@@ -26,7 +26,12 @@ Deno.test('a film with no rating or poster says so with null, so the room draws 
 });
 
 Deno.test('with no music, no films and no reading the room has nothing on its shelves instead of failing', () => {
-  assertEquals(buildSceneInput({ music: null, films: null, reading: [] }), { music: null, films: [], books: [] });
+  assertEquals(buildSceneInput({ music: null, films: null, reading: [] }), {
+    strings: {},
+    music: null,
+    films: [],
+    books: [],
+  });
   assertEquals(buildSceneInput({ music: { artists: [] }, films: null, reading: [] }).music, null);
 });
 
@@ -47,4 +52,8 @@ Deno.test('a poster is asked at the size of the texture, and an address that doe
   );
   assertEquals(posterAt(poster, 230), poster);
   assertEquals(posterAt('https://a.ltrbxd.com/plain.jpg', 460), 'https://a.ltrbxd.com/plain.jpg');
+});
+
+Deno.test('the words for the objects come with the input, so the room writes in the language of the page', () => {
+  assertEquals(buildSceneInput(source, { sceneTop: 'Top' }).strings, { sceneTop: 'Top' });
 });
