@@ -9,6 +9,15 @@ const FOV = 35;
 export const REST_FILL = 0.8;
 const TIMELINE = { first: 0.8, perLine: 0.45, travel: 4.4, land: 5 };
 const FAR = 6.5;
+
+/** How many times slower the boot runs: a test sets `localStorage['boot-slowdown']` to hold it long enough to look at it. */
+function slowdown(): number {
+  try {
+    return Math.max(1, Number(localStorage.getItem('boot-slowdown')) || 1);
+  } catch {
+    return 1;
+  }
+}
 const LINE = 52;
 
 export interface Boot {
@@ -184,7 +193,9 @@ export async function startMonitor(
     }
   };
   if (boot) {
-    loop.stop = animate((seconds) => {
+    const slow = slowdown();
+    loop.stop = animate((elapsed) => {
+      const seconds = elapsed / slow;
       frame(run, seconds);
       if (seconds >= TIMELINE.land) {
         land();
