@@ -41,7 +41,9 @@ Deno.test('the menu words exist in both languages as plain strings, not as entri
     ['en', 'en-US'],
     ['pt', 'pt-BR'],
   ] as const) {
-    const dictionary = parse(await Deno.readTextFile(new URL(`../../../i18n/${language}.toml`, import.meta.url)));
+    const dictionary = parse(
+      await Deno.readTextFile(new URL(`../../../i18n/${language}.toml`, import.meta.url)),
+    ) as Parameters<typeof translate>[0];
     const keys = ['presentationButton', 'presentationLegend', 'presentationScene', 'presentationSimple'];
     assertEquals(
       keys.map((key) => translate(dictionary, locale, key)),
