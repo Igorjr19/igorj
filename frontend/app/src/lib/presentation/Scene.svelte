@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { SceneInput } from '../scene/input.ts';
-  import type { Boot } from '../scene/scene.ts';
+  import type { Boot } from '../scene/run.ts';
   import { readAnswer } from '../shelf/now-playing.ts';
 
   const EMPTY: SceneInput = { strings: {}, music: null, films: [], books: [] };

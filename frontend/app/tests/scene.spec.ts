@@ -171,3 +171,39 @@ test('the iPod asks what is playing only while the room is in view', async ({ pa
   await expect(page.locator('html')).toHaveAttribute('data-view', 'room', { timeout: 15000 });
   await expect.poll(() => asked, { timeout: 5000 }).toBeGreaterThan(0);
 });
+
+test('in the room an arrow chooses an object and says what it is, enter goes close to it, and escape steps back', async ({
+  page,
+}) => {
+  await sceneOn(page, today());
+  await visit(page, '/en/');
+  await expect(page.locator('.scene[data-on]')).toHaveCount(1);
+  await page.mouse.click(30, 425);
+  await expect(page.locator('html')).toHaveAttribute('data-view', 'room', { timeout: 15000 });
+  await expect(page.locator('.scene__caption')).toBeHidden();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.scene__caption')).toContainText('Monitor');
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.scene__caption')).toContainText('iPod');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('html')).toHaveAttribute('data-view', 'focus', { timeout: 15000 });
+  await expect(page.locator('.scene__caption')).toContainText('The most listened this week');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('html')).toHaveAttribute('data-view', 'room', { timeout: 15000 });
+});
+
+test('the objects of the room are buttons for the keyboard, reached only while the room is in view', async ({
+  page,
+}) => {
+  await sceneOn(page, today());
+  await visit(page, '/en/');
+  await expect(page.locator('.scene[data-on]')).toHaveCount(1);
+  await expect(page.locator('.scene__index')).toHaveJSProperty('inert', true);
+  await page.mouse.click(30, 425);
+  await expect(page.locator('html')).toHaveAttribute('data-view', 'room', { timeout: 15000 });
+  await expect(page.locator('.scene__index')).toHaveJSProperty('inert', false);
+  await page.getByRole('button', { name: 'Cork board' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('html')).toHaveAttribute('data-view', 'focus', { timeout: 15000 });
+  await expect(page.locator('.scene__caption')).toContainText('Cork board');
+});

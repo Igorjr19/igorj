@@ -1,5 +1,6 @@
 import { SCENE_QUERY } from './query.ts';
-import { type Boot, type SceneControl, type SceneOptions, startScene } from './scene.ts';
+import type { Boot, SceneControl, SceneOptions } from './run.ts';
+import { startScene } from './scene.ts';
 
 /** The day the boot last ran, in the form the `<head>` script of app.html compares. */
 const today = (): string => new Date().toLocaleDateString('sv-SE');
@@ -70,7 +71,6 @@ export function mountScene(boot: Boot, options: SceneOptions): () => void {
   // The room hangs from the root, not from the body: the body is the screen and holds back what is fixed inside it.
   const element = document.createElement('div');
   element.className = 'scene';
-  element.setAttribute('aria-hidden', 'true');
   root.append(element);
   const state: State = { control: null, generation: 0, skipped: false };
   const media = matchMedia(SCENE_QUERY);
