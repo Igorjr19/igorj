@@ -9,7 +9,7 @@ test.skip(({ browserName }) => browserName !== 'chromium', 'the monitor is check
 async function monitorOn(page: Page, bootDay: string | null): Promise<void> {
   await page.addInitScript(
     ([day]) => {
-      localStorage.setItem('monitor', 'on');
+      localStorage.setItem('presentation', 'scene');
       // The boot runs a hundred times slower, so it does not end by itself while the test is still looking at it.
       localStorage.setItem('boot-slowdown', '100');
       if (day) {

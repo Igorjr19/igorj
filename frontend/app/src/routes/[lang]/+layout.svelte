@@ -14,6 +14,7 @@
   import { direction } from '#lib/motion/direction.ts';
   import { navigationTransition } from '#lib/motion/transition.ts';
   import PickBox from '#lib/pick/PickBox.svelte';
+  import PresentationMenu from '#lib/presentation/PresentationMenu.svelte';
   import { progress } from '#lib/progress.svelte.ts';
   import { applyRetro, readRetro, saveRetro } from '#lib/retro/retro.ts';
   import { provideShell } from '#lib/shell.svelte.ts';
@@ -145,6 +146,7 @@
   </div>
 </div>
 <Monitor boot={data.shell.boot} />
+<PresentationMenu />
 <Shortcuts />
 <HelpDialog />
 <Lightbox />

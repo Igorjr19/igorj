@@ -293,3 +293,8 @@ other = "{{ .Count }} contributions in the last year"
 [watchedCaption]
 one = "last film watched"
 other = "last {{ .Count }} films watched"
+
+presentationButton = "Presentation"
+presentationLegend = "Presentation"
+presentationScene = "Scene"
+presentationSimple = "Simple"
