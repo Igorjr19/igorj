@@ -104,3 +104,22 @@ test('a reload boots again even on the same day, and moving inside the site neve
   await page.mouse.click(300, 300);
   await expect(page.locator('html')).not.toHaveAttribute('data-boot', '');
 });
+
+test('when the theme turns dark the hours of the window turn on to midnight, and back to light they go on to the next noon, never back', async ({
+  page,
+}) => {
+  await sceneOn(page, today());
+  await visit(page, '/en/');
+  const room = page.locator('.scene[data-on]');
+  await expect(room).toHaveCount(1);
+  const phase = async (): Promise<number> => Number(await room.getAttribute('data-phase'));
+  expect(await phase()).toBe(0);
+  await page.evaluate(() => {
+    document.documentElement.dataset['theme'] = 'catppuccin-mocha';
+  });
+  await expect.poll(phase, { timeout: 15000 }).toBe(0.5);
+  await page.evaluate(() => {
+    document.documentElement.dataset['theme'] = 'catppuccin-latte';
+  });
+  await expect.poll(phase, { timeout: 15000 }).toBe(1);
+});
