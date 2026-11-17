@@ -3,6 +3,7 @@
   import Zoom from '#lib/components/Zoom.svelte';
   import AgeNote from '#lib/home/AgeNote.svelte';
   import { listeningBars } from '#lib/home/data.ts';
+  import NowPlaying from '#lib/shelf/NowPlaying.svelte';
   import Posters from '#lib/shelf/Posters.svelte';
   import Record from '#lib/shelf/Record.svelte';
   import Spines from '#lib/shelf/Spines.svelte';
@@ -20,6 +21,7 @@
   <div class="shelf">
     <section aria-labelledby="music-title">
       <h2 class="label" id="music-title">{shell.t('panelListening')}</h2>
+      <NowPlaying />
       {#if data.music && bars}
         {#if data.music.album}<Record album={data.music.album} />{/if}
         <p class="panel__meta">{shell.t(data.music.period === 'month' ? 'periodMonth' : 'periodWeek')} · {shell.t('playsTotal', bars.total)}</p>
