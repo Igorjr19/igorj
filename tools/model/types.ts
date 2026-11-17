@@ -4,7 +4,19 @@
  */
 export type SectionKey = 'projects' | 'posts' | 'research' | 'cv' | 'shelf';
 
+export interface EditionModel {
+  readonly name: string;
+  /** Where the edition lives; null when the site declares no editions. */
+  readonly url: string | null;
+  /** Whether search engines may list it. */
+  readonly index: boolean;
+  /** The boxes of the home page, in order. */
+  readonly boxes: readonly string[];
+}
+
 export interface SiteModel {
+  /** The edition of the site this model is for. */
+  readonly edition: EditionModel;
   readonly language: string;
   readonly languages: readonly string[];
   /** Which sections the site shows; a section turned off has no pages, and its items are left out. */

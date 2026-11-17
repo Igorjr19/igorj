@@ -1,4 +1,5 @@
-import { type Cv, type Post, type Project, type Research, SECTIONS } from '../content/schema.ts';
+import { type Edition, inEdition } from '../content/editions.ts';
+import type { Cv, Post, Project, Research } from '../content/schema.ts';
 import type { ContentItem, RawContent } from '../content/types.ts';
 import type {
   CategoryModel,
@@ -10,7 +11,6 @@ import type {
   ProfileModel,
   ProjectModel,
   ResearchModel,
-  SectionKey,
   SiteModel,
   TagModel,
   TagSummaryModel,
@@ -241,38 +241,72 @@ export function codetimeFor(raw: RawContent): CodetimeModel | null {
   );
 }
 
-/** Every section is on unless the site settings turn it off. */
-export function sectionsFor(raw: RawContent): Record<SectionKey, boolean> {
-  const chosen = raw.site.sections ?? {};
-  return Object.fromEntries(SECTIONS.map((key) => [key, chosen[key] !== false])) as Record<SectionKey, boolean>;
+/** What the edition leaves out of the content: items it is not in, and posts of categories it does not carry. */
+export function forEditionOf(raw: RawContent, edition: Edition): RawContent {
+  const carried = (post: ContentItem<Post>): boolean =>
+    edition.categories === null || post.data.categories.some((slug) => edition.categories?.includes(slug));
+  return {
+    ...raw,
+    posts: raw.posts.filter((post) => inEdition(post.data, edition.name) && carried(post)),
+    projects: raw.projects.filter((project) => inEdition(project.data, edition.name)),
+    research: raw.research.filter((work) => inEdition(work.data, edition.name)),
+  };
 }
 
-/** Applies every content rule for one language. */
-export function buildModel(raw: RawContent, language: string): SiteModel {
-  const sections = sectionsFor(raw);
+/** The contact of the language, without the personal networks where the edition does not show them. */
+function contactFor(raw: RawContent, language: string, edition: Edition): SiteModel['contact'] {
+  const email = raw.contact?.email[language as keyof typeof raw.contact.email];
+  if (!(raw.contact && email)) {
+    return null;
+  }
+  return { email, professional: raw.contact.professional, personal: edition.personal ? raw.contact.personal : [] };
+}
+
+/** The data of the shelf and of the boxes of the home page; what an edition has no place for is not in its model at all. */
+function dataFor(
+  raw: RawContent,
+  edition: Edition,
+): Pick<SiteModel, 'reading' | 'music' | 'films' | 'github' | 'codetime'> {
+  const shown = (box: string) =>
+    edition.sections.shelf || edition.boxes.includes(box as (typeof edition.boxes)[number]);
+  const code = edition.boxes.includes('code');
+  const { music, films } = raw;
+  return {
+    reading: edition.sections.shelf ? (raw.reading?.items ?? []) : [],
+    music:
+      music && shown('listening')
+        ? { updated: day(music.updated), period: music.period, artists: music.artists }
+        : null,
+    films: films && shown('watched') ? { updated: day(films.updated), films: films.films } : null,
+    github: code ? githubFor(raw) : null,
+    codetime: code ? codetimeFor(raw) : null,
+  };
+}
+
+/** Applies every content rule for one language and one edition. */
+export function buildModel(content: RawContent, language: string, edition: Edition): SiteModel {
+  const raw = forEditionOf(content, edition);
+  const sections = edition.sections;
   const allResearch = researchFor(raw, language);
   const research = sections.research ? allResearch : [];
   const posts = sections.posts ? postsFor(raw, language) : [];
   const projects = sections.projects ? projectsFor(raw, language) : [];
-  const email = raw.contact?.email[language as keyof typeof raw.contact.email];
   return {
+    edition: { name: edition.name, url: edition.url, index: edition.index, boxes: edition.boxes },
     language,
     languages: raw.site.languages,
     sections,
     profile: profileFor(raw, language),
-    contact:
-      raw.contact && email ? { email, professional: raw.contact.professional, personal: raw.contact.personal } : null,
-    categories: raw.categories.categories.map(({ slug }) => categoryName(raw, slug, language)),
+    contact: contactFor(raw, language, edition),
+    categories: raw.categories.categories
+      .filter(({ slug }) => edition.categories === null || edition.categories.includes(slug))
+      .map(({ slug }) => categoryName(raw, slug, language)),
     tags: tagSummary([...posts, ...projects, ...research]),
     posts,
     projects,
     research,
     // The CV still lists the research when its section is off; it just has no pages to link to.
     cv: sections.cv ? cvFor(raw, language, allResearch) : null,
-    reading: raw.reading?.items ?? [],
-    music: raw.music && { updated: day(raw.music.updated), period: raw.music.period, artists: raw.music.artists },
-    films: raw.films && { updated: day(raw.films.updated), films: raw.films.films },
-    github: githubFor(raw),
-    codetime: codetimeFor(raw),
+    ...dataFor(raw, edition),
   };
 }

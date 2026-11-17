@@ -25,7 +25,9 @@ import { drawShare, SHARE_HEIGHT, SHARE_PORTRAIT, SHARE_WIDTH, type SharePicture
 import type { Gray } from '../image/types.ts';
 import { drawingOf, maskPng, readRgba, registerFonts } from './canvas.ts';
 
-const MEDIA_DIR = 'generated/media';
+/** The edition the build is for; its model and its media have their own folders. */
+const EDITION = Deno.env.get('EDITION') ?? 'full';
+const MEDIA_DIR = `generated/media/${EDITION}`;
 // Kept apart from generated/static, which the Hugo site publishes as it is.
 const SHARED_STATIC_DIR = 'generated/static';
 const STATIC_DIR = 'generated/app-static';
@@ -127,7 +129,7 @@ async function favicons(colors: PictureColors): Promise<void> {
 }
 
 async function readModel(language: string): Promise<SiteModel> {
-  return JSON.parse(await Deno.readTextFile(`generated/model/${language}.json`)) as SiteModel;
+  return JSON.parse(await Deno.readTextFile(`generated/model/${EDITION}/${language}.json`)) as SiteModel;
 }
 
 async function sectionLabels(language: string): Promise<Record<string, string>> {
@@ -231,7 +233,7 @@ await startStatic();
 await write(`${STATIC_DIR}/_headers`, await Deno.readFile('frontend/app/static/_headers'));
 registerFonts('generated/share/fonts');
 const colors = defaultColors(parseThemesData(JSON.parse(await Deno.readTextFile('generated/data/themes.json'))));
-const languages = (await Array.fromAsync(Deno.readDir('generated/model')))
+const languages = (await Array.fromAsync(Deno.readDir(`generated/model/${EDITION}`)))
   .filter((entry) => entry.name.endsWith('.json'))
   .map((entry) => entry.name.slice(0, -'.json'.length));
 

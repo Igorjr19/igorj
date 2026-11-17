@@ -58,6 +58,7 @@ Deno.test('an edition takes from the one it extends whatever it leaves out, and 
 
 Deno.test('an edition that does not exist, or that extends itself in a circle, is refused with the way it goes round', () => {
   const declared = site({
+    full,
     a: { ...full, extends: 'b' },
     b: { ...full, extends: 'a' },
     c: { ...full, extends: 'missing' },
@@ -66,6 +67,7 @@ Deno.test('an edition that does not exist, or that extends itself in a circle, i
   assertThrows(() => lineage(declared, 'c'), Error, 'Edition "missing" is not declared');
   assertThrows(() => resolveEdition(declared, 'nope'), Error, 'Edition "nope" is not declared');
   assertEquals(editionProblems(declared).length, 3);
+  assertEquals(editionProblems(site({ pro: full })).length, 1);
   assertEquals(editionProblems(site({ full })), []);
 });
 

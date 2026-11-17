@@ -1,15 +1,15 @@
 import { assertEquals } from '@std/assert';
+import { resolveEdition } from '../../../tools/content/editions.ts';
 import type { ContentItem, RawContent } from '../../../tools/content/types.ts';
 import {
   activityLevel,
-  buildModel,
+  buildModel as buildEdition,
   codetimeFor,
   cvFor,
   githubFor,
   postsFor,
   projectsFor,
   researchFor,
-  sectionsFor,
   tagFor,
   tagSlug,
 } from '../../../tools/model/build.ts';
@@ -43,8 +43,13 @@ const cv = (label: string) => ({
   publications: [{ research: 'thesis' }],
 });
 
+/** The model of the edition every site has, the complete one. */
+const buildModel = (raw: RawContent, language: string) => buildEdition(raw, language, resolveEdition(raw.site, 'full'));
+const sectionsFor = (raw: RawContent) => resolveEdition(raw.site, 'full').sections;
+
 const RAW: RawContent = {
   site: { author: 'Author', languages: ['pt', 'en'] },
+  origin: new Map(),
   categories: { categories: [{ slug: 'notes', name: { pt: 'Notas', en: 'Notes' } }] },
   tags: { tags: [{ slug: 'machine-learning', name: { pt: 'aprendizado de máquina', en: 'machine learning' } }] },
   about: {

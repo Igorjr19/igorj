@@ -1,7 +1,10 @@
 import { readdir, readFile } from 'node:fs/promises';
 import type { SiteModel } from '../../../../../tools/model/types.ts';
 
-const MODEL_DIR = process.env['MODEL_DIR'] ?? '../../generated/model';
+/** The edition this build is for: the one the build is asked for, or the complete one. */
+export const EDITION = process.env['EDITION'] ?? 'full';
+const MODEL_ROOT = process.env['MODEL_DIR'] ?? '../../generated/model';
+const MODEL_DIR = `${MODEL_ROOT}/${EDITION}`;
 
 export async function modelLanguages(): Promise<string[]> {
   const files = await readdir(MODEL_DIR);

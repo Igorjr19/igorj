@@ -1,0 +1,13 @@
+role: Professional developer
+lines:
+  - "Fixture line one."
+  - "Fixture line two."
+  - "Fixture line three."
+intro: "Fixture opening sentence."
+photoAlt: "Fixture photo"
+location: "Fixture city"
+now:
+  work: "Fixture job"
+  masters: "Fixture degree"
+  studying: "Fixture topic"
+lastmod: 2026-01-01

@@ -31,3 +31,23 @@ Deno.test('readContent finds the photo and leaves missing optional files as null
 Deno.test('readContent refuses content without the site file, which the content check would also refuse', () => {
   assertThrows(() => readContent([CATEGORIES], []), Error, 'site/site.yaml');
 });
+
+Deno.test('readContent for an edition reads the file made for it in place of the plain one, and leaves out those of other editions', () => {
+  const site = {
+    path: 'site/site.yaml',
+    text: 'author: A\nlanguages: [en]\neditions:\n  full:\n    url: https://a.example/\n  pro:\n    url: https://pro.a.example/\n    extends: full\n',
+  };
+  const about = (role: string) =>
+    `role: ${role}\nlines: [One., Two., Three.]\nphotoAlt: Photo\nlocation: City\nnow: { work: W, masters: M, studying: S }\nlastmod: 2026-01-01\n`;
+  const files = [
+    site,
+    CATEGORIES,
+    { path: 'about/about.en.yaml', text: about('Plain') },
+    { path: 'about/about.pro.en.yaml', text: about('Pro') },
+  ];
+  const paths = files.map((file) => file.path);
+  assertEquals(readContent(files, paths, 'pro').about['en']?.role, 'Pro');
+  assertEquals(readContent(files, paths, 'full').about['en']?.role, 'Plain');
+  assertEquals(readContent(files, paths).about['en']?.role, 'Plain');
+  assertEquals(readContent(files, paths, 'pro').origin.get('about/about.en.yaml'), 'about/about.pro.en.yaml');
+});
