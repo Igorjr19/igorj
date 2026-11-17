@@ -270,7 +270,12 @@ export function buildModel(raw: RawContent, language: string): SiteModel {
     // The CV still lists the research when its section is off; it just has no pages to link to.
     cv: sections.cv ? cvFor(raw, language, allResearch) : null,
     reading: raw.reading?.items ?? [],
-    music: raw.music && { updated: day(raw.music.updated), period: raw.music.period, artists: raw.music.artists },
+    music: raw.music && {
+      updated: day(raw.music.updated),
+      period: raw.music.period,
+      artists: raw.music.artists,
+      ...(raw.music.album && { album: raw.music.album }),
+    },
     films: raw.films && { updated: day(raw.films.updated), films: raw.films.films },
     github: githubFor(raw),
     codetime: codetimeFor(raw),
