@@ -13,9 +13,12 @@ const Example = v.optional(v.boolean());
 const Tags = v.optional(v.array(Text));
 // An archived item stays in the content but leaves the site.
 const Archived = v.optional(v.boolean());
+// The editions of the site an item is in; an item that says nothing is in all of them.
+const Editions = v.optional(v.pipe(v.array(Slug), v.nonEmpty()));
 
 const PostSchema = v.strictObject({
   example: Example,
+  editions: Editions,
   title: Text,
   summary: Text,
   date: Day,
@@ -29,6 +32,7 @@ const PostSchema = v.strictObject({
 
 const ProjectSchema = v.strictObject({
   example: Example,
+  editions: Editions,
   title: Text,
   summary: Text,
   tags: Tags,
@@ -42,6 +46,7 @@ const ProjectSchema = v.strictObject({
 
 const ResearchSchema = v.strictObject({
   example: Example,
+  editions: Editions,
   title: Text,
   kind: v.picklist(['article', 'thesis', 'presentation', 'poster']),
   year: v.pipe(v.number(), v.integer(), v.minValue(1900), v.maxValue(2100)),
@@ -60,11 +65,40 @@ const LanguageCode = v.pipe(v.string(), v.regex(/^[a-z]{2}$/, 'Expected a two-le
 /** Sections of the site that can be turned off; a section left out stays on. */
 export const SECTIONS = ['projects', 'posts', 'research', 'cv', 'shelf'] as const;
 
+const SectionSwitches = v.strictObject(Object.fromEntries(SECTIONS.map((key) => [key, v.optional(v.boolean())])));
+
+/** The boxes of the home page that an edition can show. */
+export const HOME_BOXES = ['recent', 'system', 'code', 'listening', 'watched'] as const;
+
+/** An edition has a name that cannot be taken for a language code, since file names carry both. */
+const EditionName = v.pipe(
+  Slug,
+  v.check((name) => name.length !== 2, 'An edition name cannot be two letters, which are language codes'),
+);
+
+/** One way of publishing the same content: where it lives and what of the content it shows. */
+const EditionSchema = v.strictObject({
+  url: Url,
+  /** Takes what another edition says for anything this one leaves out. */
+  extends: v.optional(EditionName),
+  /** Whether search engines may list it; left out, they may. */
+  index: v.optional(v.boolean()),
+  sections: v.optional(SectionSwitches),
+  /** The categories of post it carries; left out, all of them. */
+  categories: v.optional(v.array(Slug)),
+  /** The boxes of the home page, in order; left out, all of them. */
+  boxes: v.optional(v.array(v.picklist(HOME_BOXES))),
+  /** Whether it shows the personal networks of the contact; left out, it does. */
+  personal: v.optional(v.boolean()),
+});
+
 const SiteSchema = v.strictObject({
   example: Example,
   author: Text,
   languages: v.pipe(v.array(LanguageCode), v.nonEmpty()),
-  sections: v.optional(v.strictObject(Object.fromEntries(SECTIONS.map((key) => [key, v.optional(v.boolean())])))),
+  sections: v.optional(SectionSwitches),
+  /** The editions by name; a site that declares none is one edition called `full`. */
+  editions: v.optional(v.record(EditionName, EditionSchema)),
 });
 
 const CategoriesSchema = v.strictObject({
@@ -258,6 +292,7 @@ export type Post = v.InferOutput<typeof PostSchema>;
 export type Project = v.InferOutput<typeof ProjectSchema>;
 export type Research = v.InferOutput<typeof ResearchSchema>;
 export type Site = v.InferOutput<typeof SiteSchema>;
+export type EditionSettings = v.InferOutput<typeof EditionSchema>;
 export type Categories = v.InferOutput<typeof CategoriesSchema>;
 export type TagNames = v.InferOutput<typeof TagsSchema>;
 export type About = v.InferOutput<typeof AboutSchema>;

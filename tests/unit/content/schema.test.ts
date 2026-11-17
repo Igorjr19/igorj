@@ -164,3 +164,22 @@ Deno.test('the tags file names a tag in each language', () => {
   assertEquals(issuesFor('tags/tags.yaml', tags), null);
   assertRejected('tags/tags.yaml', { tags: [{ slug: 'Machine Learning', name: { en: 'x' } }] }, 'slug');
 });
+
+Deno.test('the site declares editions with an address each, and an edition name cannot be taken for a language', () => {
+  const site = { author: 'A', languages: ['pt', 'en'] };
+  const full = { url: 'https://igorj.dev/' };
+  assertEquals(
+    issuesFor('site/site.yaml', { ...site, editions: { full, pro: { ...full, extends: 'full', boxes: ['recent'] } } }),
+    null,
+  );
+  assertRejected('site/site.yaml', { ...site, editions: { pt: full } }, 'language codes');
+  assertRejected('site/site.yaml', { ...site, editions: { full: {} } }, 'url');
+  assertRejected('site/site.yaml', { ...site, editions: { full: { ...full, boxes: ['everything'] } } }, 'boxes');
+  assertRejected('site/site.yaml', { ...site, editions: { full: { ...full, colour: 'red' } } }, 'colour');
+});
+
+Deno.test('a post, a project or a research work may name the editions it is in, and not an empty list', () => {
+  assertEquals(issuesFor('posts/a/index.pt.md', { ...POST, editions: ['full'] }), null);
+  assertEquals(issuesFor('projects/a/index.pt.md', { ...PROJECT, editions: ['full', 'pro'] }), null);
+  assertRejected('posts/a/index.pt.md', { ...POST, editions: [] }, 'editions');
+});
