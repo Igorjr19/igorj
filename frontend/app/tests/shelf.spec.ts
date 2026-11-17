@@ -1,8 +1,8 @@
 import { expect, type Page, test } from '@playwright/test';
 
-/** A one-pixel PNG, standing in for a cover or a poster, so no test depends on the services that serve them. */
+/** A small PNG, standing in for a cover or a poster, so no test depends on the services that serve them. It is big enough to keep a width after a dense screen halves it. */
 const PIXEL = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+  'iVBORw0KGgoAAAANSUhEUgAAABAAAAAYCAIAAAB8wupbAAAAHUlEQVR4nGOsqFjAQApgIkn1qIZRDaMaRjWQrAEAnXkBwGVeWIoAAAAASUVORK5CYII=',
   'base64',
 );
 const SERVICES = ['**/lastfm-img.freetls.fastly.net/**', '**/a.ltrbxd.com/**'];
