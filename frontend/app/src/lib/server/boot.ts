@@ -2,7 +2,7 @@ import type { SiteModel } from '../../../../../tools/model/types.ts';
 import type { Dictionary } from '../i18n.ts';
 import { translate } from '../i18n.ts';
 import { languageInfo } from '../languages.ts';
-import { bootLines } from '../monitor/boot-lines.ts';
+import { bootLines } from '../presentation/boot-lines.ts';
 import { systemOf } from './home.ts';
 
 export interface BootData {

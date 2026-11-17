@@ -34,11 +34,11 @@
 
   /* On the monitor the layer is the screen's own size, over the window and under the glass of the monitor. */
   @media (min-width: 1100px) and (min-height: 660px) {
-    html[data-retro][data-monitor]::after {
+    html[data-retro][data-presentation='scene']::after {
       content: none;
     }
 
-    html[data-retro][data-monitor] body::before {
+    html[data-retro][data-presentation='scene'] body::before {
       content: '';
       position: absolute;
       inset: 0;

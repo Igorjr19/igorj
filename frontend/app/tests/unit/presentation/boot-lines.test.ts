@@ -1,5 +1,5 @@
 import { assertEquals } from '@std/assert';
-import { bootLines } from '../../../src/lib/monitor/boot-lines.ts';
+import { bootLines } from '../../../src/lib/presentation/boot-lines.ts';
 
 const system = {
   commit: '78d88501bb7296b01a3df6dc47816e9940a679d3',

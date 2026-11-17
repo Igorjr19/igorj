@@ -25,7 +25,7 @@ export interface Boot {
   readonly skip: string;
 }
 
-export interface MonitorControl {
+export interface SceneControl {
   /** Takes the camera to its resting place at once, as if the boot had run to its end. */
   readonly land: () => void;
   readonly stop: () => void;
@@ -151,11 +151,11 @@ function watchTheme(redraw: () => void): () => void {
  * moves: the room is drawn again only when the window is resized or the theme changes. Resolves to null when
  * WebGL is missing.
  */
-export async function startMonitor(
+export async function startScene(
   host: HTMLElement,
   boot: Boot | null,
   onLanded: () => void,
-): Promise<MonitorControl | null> {
+): Promise<SceneControl | null> {
   const three = await import('three');
   const palette = readPalette();
   let room: Room;
