@@ -12,11 +12,10 @@ import {
 import type { Site } from '../../../tools/content/schema.ts';
 
 const full = { url: 'https://igorj.dev/' };
-const site = (editions: Site['editions'], sections?: Site['sections']): Site => ({
+const site = (editions: Site['editions']): Site => ({
   author: 'A',
   languages: ['pt', 'en'],
   ...(editions && { editions }),
-  ...(sections && { sections }),
 });
 
 Deno.test('a site that declares no editions is one edition called full, with everything on and no address', () => {
@@ -31,15 +30,18 @@ Deno.test('a site that declares no editions is one edition called full, with eve
   assertEquals(Object.values(edition.sections), [true, true, true, true, true]);
 });
 
-Deno.test('the switches of sections the site always had apply to every edition, and an edition may turn more off', () => {
-  const declared = site(
-    { full, pro: { url: 'https://pro.igorj.dev/', sections: { shelf: false } } },
-    { research: false },
-  );
+Deno.test('an edition turns sections off, and the ones that extend it keep them off unless they say otherwise', () => {
+  const declared = site({
+    full: { ...full, sections: { research: false } },
+    pro: { url: 'https://pro.igorj.dev/', extends: 'full', sections: { shelf: false } },
+    open: { url: 'https://open.igorj.dev/', extends: 'pro', sections: { research: true } },
+  });
   assertEquals(resolveEdition(declared, 'full').sections.research, false);
   assertEquals(resolveEdition(declared, 'full').sections.shelf, true);
   assertEquals(resolveEdition(declared, 'pro').sections.shelf, false);
   assertEquals(resolveEdition(declared, 'pro').sections.research, false);
+  assertEquals(resolveEdition(declared, 'open').sections.research, true);
+  assertEquals(resolveEdition(declared, 'open').sections.shelf, false);
 });
 
 Deno.test('an edition takes from the one it extends whatever it leaves out, and its own words win', () => {

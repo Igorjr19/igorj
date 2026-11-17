@@ -42,7 +42,7 @@ export function lineage(site: Site, name: string): string[] {
   return chain;
 }
 
-/** The settings of an edition, laid over those of the ones it extends and over the site's own switches for sections. */
+/** The settings of an edition, laid over those of the ones it extends. */
 export function resolveEdition(site: Site, name: string): Edition {
   const settings: EditionSettings[] = lineage(site, name).flatMap((member) => {
     const own = site.editions?.[member];
@@ -50,7 +50,9 @@ export function resolveEdition(site: Site, name: string): Edition {
   });
   const last = <K extends keyof EditionSettings>(key: K): EditionSettings[K] | undefined =>
     settings.map((setting) => setting[key]).findLast((value) => value !== undefined);
-  const switches = { ...site.sections, ...Object.assign({}, ...settings.map((setting) => setting.sections ?? {})) };
+  const switches = Object.assign({}, ...settings.map((setting) => setting.sections ?? {})) as Partial<
+    Record<SectionKey, boolean>
+  >;
   return {
     name,
     url: last('url') ?? null,

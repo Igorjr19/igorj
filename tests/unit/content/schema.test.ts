@@ -183,3 +183,13 @@ Deno.test('a post, a project or a research work may name the editions it is in, 
   assertEquals(issuesFor('projects/a/index.pt.md', { ...PROJECT, editions: ['full', 'pro'] }), null);
   assertRejected('posts/a/index.pt.md', { ...POST, editions: [] }, 'editions');
 });
+
+Deno.test('the switches of sections are written in an edition, and the old place at the top of the site file is refused', () => {
+  const site = { author: 'A', languages: ['pt', 'en'] };
+  const full = { url: 'https://igorj.dev/' };
+  assertEquals(
+    issuesFor('site/site.yaml', { ...site, editions: { full: { ...full, sections: { research: false } } } }),
+    null,
+  );
+  assertRejected('site/site.yaml', { ...site, sections: { research: false } }, 'sections');
+});

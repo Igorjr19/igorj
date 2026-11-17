@@ -96,7 +96,6 @@ const SiteSchema = v.strictObject({
   example: Example,
   author: Text,
   languages: v.pipe(v.array(LanguageCode), v.nonEmpty()),
-  sections: v.optional(SectionSwitches),
   /** The editions by name; a site that declares none is one edition called `full`. */
   editions: v.optional(v.record(EditionName, EditionSchema)),
 });
