@@ -9,7 +9,10 @@ const ImageUrl = v.pipe(
   v.string(),
   v.url(),
   v.startsWith('https://', 'Expected an https address'),
-  v.check((address) => IMAGE_HOSTS.some((host) => new URL(address).host === host), `Expected an image on ${IMAGE_HOSTS.join(' or ')}`),
+  v.check(
+    (address) => IMAGE_HOSTS.some((host) => new URL(address).host === host),
+    `Expected an image on ${IMAGE_HOSTS.join(' or ')}`,
+  ),
 );
 const Email = v.pipe(v.string(), v.email());
 const Month = v.pipe(v.string(), v.regex(/^\d{4}-(?:0[1-9]|1[0-2])$/, 'Expected a month as YYYY-MM'));
