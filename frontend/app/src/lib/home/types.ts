@@ -48,6 +48,8 @@ export interface FilmRow {
 }
 
 export interface HomeData {
+  /** The boxes of the home page this edition shows, in order. */
+  readonly boxes: readonly string[];
   readonly hero: HeroData | null;
   readonly recent: readonly RecentRow[];
   readonly system: SystemData;
