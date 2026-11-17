@@ -23,7 +23,7 @@
     }
 
     /* Away from the monitor the site steps aside: it fades out while the camera leaves and is there again when it is back. */
-    html[data-presentation='scene']:is([data-view='moving'], [data-view='room']) body {
+    html[data-presentation='scene'][data-view]:not([data-view='monitor']) body {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -87,6 +87,117 @@
     html[data-presentation='scene'][data-powering] body {
       animation: monitor-on 520ms ease-out;
     }
+  }
+
+  /* What goes over the room: a mark on each object, the name of the one pointed at, a caption, and the objects as buttons
+     for the keyboard. They are part of the page, so they wear the colors of its theme. */
+  .scene__dot {
+    position: absolute;
+    inline-size: 8px;
+    block-size: 8px;
+    margin: -4px 0 0 -4px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-text) 60%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-background) 60%, transparent);
+    pointer-events: none;
+    animation: scene-breathe 3.2s ease-in-out infinite;
+    transition: opacity 400ms;
+  }
+
+  .scene__dot[data-shown='no'] {
+    opacity: 0;
+    animation: none;
+  }
+
+  @keyframes scene-breathe {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .scene__label {
+    position: absolute;
+    translate: -50% -140%;
+    padding: 3px 9px;
+    border-radius: 3px;
+    color: var(--color-background);
+    background: var(--color-text);
+    font-family: var(--font-mono, monospace);
+    font-weight: 700;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .scene__caption {
+    position: absolute;
+    inset-inline-start: 16px;
+    inset-block-end: 16px;
+    display: grid;
+    gap: 2px;
+    max-inline-size: min(56ch, calc(100% - 32px));
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 3px;
+    border: 1px solid var(--color-surface-3);
+    color: var(--color-text);
+    background: var(--color-background);
+    font-family: var(--font-mono, monospace);
+    pointer-events: none;
+  }
+
+  .scene__label[hidden],
+  .scene__caption[hidden] {
+    display: none;
+  }
+
+  .scene__caption span {
+    opacity: 0.85;
+  }
+
+  .scene__index {
+    position: absolute;
+    inset-block-start: 8px;
+    inset-inline-start: 8px;
+  }
+
+  .scene__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Out of sight until reached by keyboard: they are the way in for people who cannot point at the room. */
+  .scene__pick {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    opacity: 0;
+    clip-path: inset(50%);
+  }
+
+  .scene__pick:focus-visible {
+    opacity: 1;
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    clip-path: none;
+    padding: 4px 10px;
+    border: 0;
+    border-radius: 3px;
+    color: var(--color-background);
+    background: var(--color-text);
+    font: inherit;
+    outline: 2px solid var(--color-accent);
   }
 
   @keyframes monitor-on {

@@ -2,6 +2,8 @@ import type * as T from 'three';
 import type { Level } from './budget.ts';
 import type { SceneInput } from './input.ts';
 import { createKit, type Kit, type Spot, type SpotName, spotInfo } from './kit.ts';
+import type { Anchor } from './neighbour.ts';
+import type { Mark } from './overlay.ts';
 import { buildBooks } from './parts/books.ts';
 import type { Objects } from './parts/context.ts';
 import { buildCorkboard } from './parts/corkboard.ts';
@@ -26,6 +28,9 @@ export interface Room {
   readonly plant: Plant;
   /** The iPod, when the room has music to show. */
   readonly ipod: Ipod | null;
+  /** Where each object is on the screen now: the marks for the overlay, and the anchors the arrow keys go by. */
+  marks(): Mark[];
+  anchors(): Record<string, Anchor>;
   /** The object of the room at a point of the screen, from -1 to 1 across and up. */
   spotAt(x: number, y: number): SpotName | null;
   setPhase(phase: number): void;
@@ -49,11 +54,21 @@ function shelves(objects: Objects, input: SceneInput): { ipod: Ipod | null; piec
   return { ipod, pieces: [ipod?.spot, books, board].filter((piece): piece is T.Group => Boolean(piece)) };
 }
 
+/** Where each object's mark falls on the screen, as a share of its width and height. */
+function marksOf(three: Three, camera: T.PerspectiveCamera, spots: readonly Spot[]): Mark[] {
+  camera.updateMatrixWorld();
+  return spots.map((spot) => {
+    const at = spot.group.localToWorld(new three.Vector3(...spot.anchor)).project(camera);
+    return { name: spot.name, x: (at.x + 1) / 2, y: (1 - at.y) / 2, visible: at.z < 1 };
+  });
+}
+
 function rendererOf(three: Three, container: HTMLElement): T.WebGLRenderer {
   const renderer = new three.WebGLRenderer({ antialias: true });
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = three.PCFSoftShadowMap;
   renderer.domElement.className = 'scene__canvas';
+  renderer.domElement.setAttribute('aria-hidden', 'true');
   container.append(renderer.domElement);
   return renderer;
 }
@@ -98,6 +113,11 @@ export function createRoom(three: Three, container: HTMLElement, input: SceneInp
     spots,
     plant,
     ipod,
+    marks: () => marksOf(three, camera, spots),
+    anchors: () =>
+      Object.fromEntries(
+        marksOf(three, camera, spots).map((mark) => [mark.name, { x: mark.x * 2 - 1, y: 1 - mark.y * 2 }]),
+      ),
     spotAt(x, y) {
       raycaster.setFromCamera(new three.Vector2(x, y), camera);
       let node: T.Object3D | null =

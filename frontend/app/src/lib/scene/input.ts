@@ -48,7 +48,24 @@ export interface SceneSource {
 export const LIMITS = { artists: 5, films: 4, books: 3 } as const;
 
 /** The interface text the room needs, by key. */
-export const SCENE_STRING_KEYS = ['sceneTop', 'sceneNow', 'sceneAlbum'] as const;
+export const SCENE_STRING_KEYS = [
+  'sceneTop',
+  'sceneNow',
+  'sceneAlbum',
+  'sceneIndex',
+  'sceneMonitorName',
+  'sceneMonitorText',
+  'sceneWindowName',
+  'sceneWindowText',
+  'scenePostersName',
+  'scenePostersText',
+  'sceneMusicName',
+  'sceneMusicText',
+  'sceneBooksName',
+  'sceneBooksText',
+  'scenePlantName',
+  'scenePlantText',
+] as const;
 
 export function buildSceneInput(source: SceneSource, strings: Readonly<Record<string, string>> = {}): SceneInput {
   const artists = source.music?.artists.slice(0, LIMITS.artists) ?? [];
