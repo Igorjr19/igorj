@@ -37,8 +37,9 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: browsers-${{ runner.os }}-${{ hashFiles('deno.lock') }}
-      # The mirror of the packages is slow on some days: about a hundred packages for the three browsers can take longer
-      # than a try is allowed. What is downloaded is kept between tries and between runs, so a slow day costs once.
+      # The mirror the runner picks for the packages is slow on some days: about a hundred packages for the three
+      # browsers can take far longer than usual. A try that does not finish is cut, and the next one asks another
+      # mirror. What is downloaded is kept between tries and between runs, so a slow day costs the download once.
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/apt-archives
@@ -46,9 +47,14 @@ jobs:
       - run: |
           mkdir -p "$HOME/apt-archives/partial"
           printf 'Dir::Cache::archives "%s/apt-archives";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nAcquire::Retries "5";\n' "$HOME" | sudo tee /etc/apt/apt.conf.d/99ci
-          for attempt in 1 2 3; do
-            timeout --kill-after=10 600 deno task browsers && { sudo chmod -R a+rX "$HOME/apt-archives"; exit 0; }
-            echo "Browsers not installed (try $attempt)"
+          mirrors=("" "http://archive.ubuntu.com/ubuntu/" "http://azure.archive.ubuntu.com/ubuntu/")
+          limits=(240 420 420)
+          for attempt in 0 1 2; do
+            if [ -n "${mirrors[$attempt]}" ]; then
+              echo "${mirrors[$attempt]}" | sudo tee /etc/apt/apt-mirrors.txt
+            fi
+            timeout --kill-after=10 "${limits[$attempt]}" deno task browsers && { sudo chmod -R a+rX "$HOME/apt-archives"; exit 0; }
+            echo "Browsers not installed (try $((attempt + 1)))"
             sudo pkill -9 -x apt-get || true
             sudo pkill -9 -x dpkg || true
             sudo dpkg --configure -a || true
