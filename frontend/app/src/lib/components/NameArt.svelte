@@ -6,8 +6,11 @@
 
   let { name }: { name: string } = $props();
 
+  /** How many characters wide the drawn name is at every width: the characters grow and shrink with the room, so it never has to be drawn again. */
+  const COLUMNS = 132;
+
   /** How tall the drawn name is, in widths of one character of its widest line, for each of its lines; found by measuring it. */
-  const HEIGHT_PER_LINE = 1.91;
+  const HEIGHT_PER_LINE = 1.93;
   const ratio = $derived.by(() => {
     const lines = nameLines(name);
     return `${Math.max(...lines.map((line) => line.length))} / ${HEIGHT_PER_LINE * lines.length}`;
@@ -20,7 +23,6 @@
   // drawn in characters, and then it moves: a lens crosses it now and then and follows a mouse or a pen.
   onMount(() => {
     const element = pre;
-    let observer: ResizeObserver | undefined;
     let stop: (() => void) | undefined;
     let current: Grid | undefined;
     void document.fonts.ready.then(() => {
@@ -28,30 +30,24 @@
         return;
       }
       const lines = nameLines(name);
-      const draw = (): void => {
-        current = measure(element, lines);
-        text = render(current.cells, current.cols, current.rows);
-      };
-      draw();
-      observer = new ResizeObserver(draw);
-      observer.observe(element);
+      current = measure(element, lines, COLUMNS);
+      text = render(current.cells, current.cols, current.rows);
       stop = animateName(
         element,
-        () => current ?? measure(element, lines),
+        () => current ?? measure(element, lines, COLUMNS),
         (frame) => {
           text = frame;
         },
       );
     });
     return () => {
-      observer?.disconnect();
       stop?.();
     };
   });
 </script>
 
 <!-- The drawn name is as tall as its width and its lines allow, so the room is kept before it is drawn and the page below does not move. -->
-<div class="hero__name-block" style:aspect-ratio={ratio}>
+<div class="hero__name-block" style:aspect-ratio={ratio} style:--name-cols={COLUMNS}>
   <h1 class={['hero__name', text && 'sr-only']} id="hero-name">{name}</h1>
   <pre class="hero__ascii" aria-hidden="true" bind:this={pre}>{text}</pre>
 </div>

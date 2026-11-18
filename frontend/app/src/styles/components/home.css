@@ -87,6 +87,7 @@
     display: grid;
     gap: var(--cell-height);
     min-inline-size: 0;
+    container-type: inline-size;
   }
 
   .hero__name {
@@ -100,7 +101,8 @@
     margin: 0;
     inline-size: 100%;
     overflow: hidden;
-    font-size: 0.5em;
+    /* The name has a fixed number of characters across (0.6 em wide each), so its size follows the room it has. */
+    font-size: calc(100cqw / (var(--name-cols) * 0.6));
     font-weight: bold;
     line-height: 1;
     white-space: pre;
@@ -276,6 +278,20 @@
     .hero__photo .dither__ink {
       mask-position: 50% 65%;
       -webkit-mask-position: 50% 65%;
+    }
+
+    /* Who the page is about is centered, as on the profile of an app; the text that follows reads from the left. */
+    .hero__photo {
+      justify-self: center;
+    }
+
+    .hero__role {
+      text-align: center;
+    }
+
+    .hero__lines li {
+      text-align: justify;
+      hyphens: auto;
     }
 
     .recent__row {

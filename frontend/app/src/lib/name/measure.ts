@@ -1,8 +1,8 @@
 /// <reference lib="dom" />
 import { coverage, type Grid } from './ascii.ts';
 
-/** Draws the name with the page's mono font into a canvas sized to the character grid of the element. */
-export function measure(pre: HTMLElement, lines: readonly string[]): Grid {
+/** Draws the name with the page's mono font into a canvas of `cols` characters wide, so the grid is the same at every width. */
+export function measure(pre: HTMLElement, lines: readonly string[], cols: number): Grid {
   const probe = document.createElement('span');
   probe.textContent = 'M'.repeat(20);
   probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
@@ -10,7 +10,6 @@ export function measure(pre: HTMLElement, lines: readonly string[]): Grid {
   const box = probe.getBoundingClientRect();
   probe.remove();
   const charWidth = box.width / 20;
-  const cols = Math.max(20, Math.floor(pre.clientWidth / charWidth));
   const cellWidth = 2;
   const cellHeight = Math.max(2, Math.round((cellWidth * box.height) / charWidth));
   const canvas = document.createElement('canvas');
