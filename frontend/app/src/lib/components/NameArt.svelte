@@ -6,6 +6,13 @@
 
   let { name }: { name: string } = $props();
 
+  /** How tall the drawn name is, in widths of one character of its widest line, for each of its lines; found by measuring it. */
+  const HEIGHT_PER_LINE = 1.91;
+  const ratio = $derived.by(() => {
+    const lines = nameLines(name);
+    return `${Math.max(...lines.map((line) => line.length))} / ${HEIGHT_PER_LINE * lines.length}`;
+  });
+
   let pre: HTMLPreElement | undefined = $state();
   let text = $state('');
 
@@ -43,5 +50,8 @@
   });
 </script>
 
-<h1 class={['hero__name', text && 'sr-only']} id="hero-name">{name}</h1>
-<pre class="hero__ascii" aria-hidden="true" bind:this={pre}>{text}</pre>
+<!-- The drawn name is as tall as its width and its lines allow, so the room is kept before it is drawn and the page below does not move. -->
+<div class="hero__name-block" style:aspect-ratio={ratio}>
+  <h1 class={['hero__name', text && 'sr-only']} id="hero-name">{name}</h1>
+  <pre class="hero__ascii" aria-hidden="true" bind:this={pre}>{text}</pre>
+</div>

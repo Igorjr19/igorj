@@ -42,6 +42,7 @@
     <section aria-labelledby="films-title">
       <h2 class="label" id="films-title">{shell.t('panelWatched')}</h2>
       {#if data.films}
+        <p class="panel__meta">{shell.t('watchedCaption', data.films.films.length)}</p>
         <AgeNote updated={data.films.updatedLate} />
         <ul class="films">
           {#each data.films.films as film (film.title + film.year)}
@@ -71,8 +72,8 @@
           {#each data.reading as book (book.title)}
             <li class="films__row films__row--reading">
               <span class="films__title">{#if book.url}<a href={book.url}>{book.title}</a>{:else}<cite>{book.title}</cite>{/if}</span>
-              <span class="films__year">{shell.t(kinds[book.kind])}</span>
               <span class="films__authors">{book.authors.join(', ')}</span>
+              <span class="films__year">{shell.t(kinds[book.kind])}</span>
             </li>
           {/each}
         </ul>

@@ -31,7 +31,6 @@
     style:--dither={`url('${picture.src}')`}
     style:--dither-inverted={`url('${picture.inverted}')`}
     style:aspect-ratio={fill ? undefined : `${picture.width} / ${picture.height}`}
-    style:--dither-ratio={`${picture.width} / ${picture.height}`}
     style:max-inline-size={`${picture.width}px`}>{@render layers()}</span
   >
 {:else}
@@ -42,7 +41,6 @@
     style:--dither={`url('${picture.src}')`}
     style:--dither-inverted={`url('${picture.inverted}')`}
     style:aspect-ratio={fill ? undefined : `${picture.width} / ${picture.height}`}
-    style:--dither-ratio={`${picture.width} / ${picture.height}`}
     style:max-inline-size={`${picture.width}px`}>{@render layers()}</span
   >
 {/if}

@@ -265,12 +265,17 @@
       grid-template-columns: minmax(0, 1fr);
     }
 
-    /* With one column there is no text beside the photo to give it a height, so it keeps its own proportions. */
+    /* With one column there is no text beside the photo to give it a height. A phone is held upright, so the portrait
+       is cropped to a gentler shape, with the face kept in view. */
     .hero__photo {
       inline-size: 100%;
-      max-inline-size: calc(28 * var(--cell-width));
-      aspect-ratio: var(--dither-ratio);
+      aspect-ratio: 5 / 4;
       align-self: start;
+    }
+
+    .hero__photo .dither__ink {
+      mask-position: 50% 65%;
+      -webkit-mask-position: 50% 65%;
     }
 
     .recent__row {

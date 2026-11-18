@@ -78,7 +78,7 @@ export interface BarArtist {
   readonly percent: number;
 }
 
-const ARTISTS_SHOWN = 3;
+const ARTISTS_SHOWN = 4;
 
 /** The week's artists with each bar scaled to the most played one. */
 export function listeningBars(
