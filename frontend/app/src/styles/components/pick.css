@@ -161,10 +161,24 @@
     border-color: var(--color-text);
   }
 
+  .pick__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--cell-height) / 2) calc(2 * var(--cell-width));
+  }
+
   .pick__keys {
     margin: 0;
     color: var(--color-text-muted);
     font-size: var(--font-size-small);
+  }
+
+  .pick__actions {
+    display: flex;
+    gap: var(--cell-width);
+    margin-inline-start: auto;
   }
 
   .items__filter {

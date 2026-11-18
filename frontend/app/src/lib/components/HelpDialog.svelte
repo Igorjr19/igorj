@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { closeOnOutside } from '../modal.ts';
   import { useShell } from '../shell.svelte.ts';
   import { useUi } from '../ui.svelte.ts';
 
@@ -30,7 +31,9 @@
   ] as const);
 </script>
 
-<dialog class="panel help" aria-labelledby="help-title" bind:this={dialog} onclose={() => (ui.helpOpen = false)}>
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+<!-- biome-ignore lint/a11y/useKeyWithClickEvents: the click on the backdrop is a mouse shortcut; Escape and the close button are the keyboard ways -->
+<dialog class="panel help" aria-labelledby="help-title" bind:this={dialog} onclose={() => (ui.helpOpen = false)} onclick={(event) => closeOnOutside(dialog, event)}>
   <h2 class="panel__title" id="help-title">{shell.t('helpTitle')}</h2>
   <dl class="facts">
     {#each rows as [keys, text] (text)}
@@ -39,6 +42,6 @@
     {/each}
   </dl>
   <form class="help__actions" method="dialog">
-    <button type="submit">{shell.t('helpClose')}</button>
+    <button type="submit" class="button">{shell.t('helpClose')}</button>
   </form>
 </dialog>

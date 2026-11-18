@@ -4,6 +4,7 @@
   import { sameEverywhere } from '../alternates.ts';
   import { browserStorage } from '../browser-storage.ts';
   import { isReadingPage } from '../layout.ts';
+  import { closeOnOutside } from '../modal.ts';
   import { useShell } from '../shell.svelte.ts';
   import { choiceToSaved, savedToChoice } from '../theme/choice.ts';
   import { currentChoice } from '../theme/current.ts';
@@ -264,7 +265,8 @@
   }
 </script>
 
-<dialog class="pick panel" aria-label={title} bind:this={dialog} onclose={onClose} onkeydown={onKeydown}>
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+<dialog class="pick panel" aria-label={title} bind:this={dialog} onclose={onClose} onkeydown={onKeydown} onclick={(event) => closeOnOutside(dialog, event)}>
   <!-- The strings come with the index, so before it is loaded the box has nothing to say and is left empty. -->
   {#if index}
   <h2 class="panel__title pick__title">{title}</h2>
@@ -302,7 +304,9 @@
         onmousemove={() => (active = position)}
         onclick={() => {
           active = position;
-          choose();
+          if (mode !== 'theme') {
+            choose();
+          }
         }}
         onkeydown={(event) => event.key === 'Enter' && choose()}
       >
@@ -339,6 +343,16 @@
       {/each}
     </div>
   {/if}
-  <p class="pick__keys">{keys}</p>
+  <div class="pick__foot">
+    <p class="pick__keys">{keys}</p>
+    <span class="pick__actions">
+      {#if mode === 'theme'}
+        <button type="button" class="button button--primary" onclick={choose}>{s['pickApply'] ?? ''}</button>
+        <button type="button" class="button" onclick={() => dialog?.close()}>{s['pickCancel'] ?? ''}</button>
+      {:else}
+        <button type="button" class="button" onclick={() => dialog?.close()}>{s['pickClose'] ?? ''}</button>
+      {/if}
+    </span>
+  </div>
   {/if}
 </dialog>

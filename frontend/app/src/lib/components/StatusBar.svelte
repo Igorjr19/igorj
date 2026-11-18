@@ -5,6 +5,7 @@
   import { useShell } from '../shell.svelte.ts';
   import { themeLabel } from '../theme/status.ts';
   import { useUi } from '../ui.svelte.ts';
+  import LanguageSwitch from './LanguageSwitch.svelte';
 
   const shell = useShell();
   const ui = useUi();
@@ -46,7 +47,7 @@
     {#if reading}
       <span>{progress.percent}% {shell.t('statusRead')}</span>
     {/if}
-    <span>{shell.locale}</span>
+    <LanguageSwitch where="status" />
     {#if ui.theme !== undefined}<span>{themeName}</span>{/if}
     <a class="statusbar__credits" href={`/${shell.language}/credits/`}>{shell.t('credits').toLowerCase()}</a>
   </div>

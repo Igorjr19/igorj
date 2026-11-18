@@ -37,3 +37,14 @@ test('on a phone the photo of the home has a gentle shape in the single column',
   expect(box?.width).toBeGreaterThan(100);
   expect((box?.height ?? 0) / (box?.width ?? 1)).toBeCloseTo(4 / 5, 1);
 });
+
+test('the language is one control: on a phone it sits in the top line, and the status line does not repeat it', async ({
+  page,
+}) => {
+  await page.goto('/en/');
+  await expect(page.locator('.lang--top')).toBeVisible();
+  await expect(page.locator('.lang--status')).toBeHidden();
+  await expect(page.locator('.lang--top .lang__current')).toHaveText('en-us');
+  const box = await page.locator('.lang--top a').boundingBox();
+  expect(box?.height).toBeGreaterThanOrEqual(44);
+});

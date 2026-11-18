@@ -1,12 +1,10 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { sameEverywhere } from '../alternates.ts';
-  import { LANGUAGE_STORAGE_KEY } from '../language-choice.ts';
-  import { languageInfo } from '../languages.ts';
   import { isReadingPage } from '../layout.ts';
   import { useShell } from '../shell.svelte.ts';
   import { useUi } from '../ui.svelte.ts';
   import Icon from './Icon.svelte';
+  import LanguageSwitch from './LanguageSwitch.svelte';
 
   /** A modal opening over a button makes the browser report the pointer as gone while it is still there, so only a pointer really outside ends the quiet. */
   function hush(event: PointerEvent & { currentTarget: HTMLButtonElement }): void {
@@ -36,31 +34,6 @@
       label: index === 0 ? shell.sectionLabel(segment) : segment,
     }));
   });
-
-  /** Choosing a language with the switcher is remembered, so the root address honors it next time. */
-  function remember(language: string): void {
-    try {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-    } catch {
-      // Storage blocked: the browser language keeps deciding at the root.
-    }
-  }
-
-  function alternatesOf(language: string): string {
-    const given = (page.data.alternates as Record<string, string> | undefined)?.[language];
-    return given ?? sameEverywhere(page.url.pathname, shell.language, shell.languages)[language] ?? `/${language}/`;
-  }
-
-  /** The same page in the other languages when the page has a twin there, otherwise their home. */
-  const other = $derived(
-    shell.languages
-      .filter((language) => language !== shell.language)
-      .map((language) => ({
-        language,
-        href: alternatesOf(language),
-        info: languageInfo(language),
-      })),
-  );
 </script>
 
 <header class="win__top">
@@ -96,12 +69,6 @@
         onkeydown={(event) => event.currentTarget.removeAttribute('data-quiet')}><Icon name={tool.icon} /></button
       >
     {/each}
-    {#if other.length > 0}
-      <nav class="win__languages" aria-label={shell.t('languages')}>
-        {#each other as { language, href, info } (language)}
-          <a {href} hreflang={info.locale} lang={info.locale} onclick={() => remember(language)}>{info.label}</a>
-        {/each}
-      </nav>
-    {/if}
+    <LanguageSwitch where="top" />
   </div>
 </header>
