@@ -37,7 +37,13 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: browsers-${{ runner.os }}-${{ hashFiles('deno.lock') }}
-      - run: deno task browsers
+      # The install now and then stalls on a package mirror or a download for good; each try is cut short and tried again.
+      - run: |
+          for attempt in 1 2 3; do
+            timeout 300 deno task browsers && exit 0
+            echo "Browsers not installed (try $attempt)"
+          done
+          exit 1
       - run: deno task ci
 
   audit:
