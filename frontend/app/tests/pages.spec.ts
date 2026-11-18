@@ -143,7 +143,7 @@ test('on paper the CV opens with the name large, then the role and the place, wi
   await expect(page.locator('.cv__headline')).toContainText('Fixture role');
 });
 
-test('an item with no picture shows its initial in the preview, and every preview has the same shape', async ({
+test('an item with no picture shows a pattern grown from its title with the title set over it, and every preview has the same shape', async ({
   page,
 }) => {
   await page.goto('/en/posts/');
@@ -152,6 +152,8 @@ test('an item with no picture shows its initial in the preview, and every previe
     .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).maskImage));
   expect(masks.length).toBe(4);
   expect(masks.filter((mask) => mask.includes('/img/thumb/placeholder/')).length).toBe(3);
+  await expect(page.locator('.item__poster')).toHaveCount(3);
+  await expect(page.locator('.item__poster').first()).not.toBeEmpty();
   await expect(page.locator('.item__image--none')).toHaveCount(0);
 });
 

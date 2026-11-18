@@ -39,7 +39,8 @@
         style:--dither-ink={color}
         style:--dither={`url('${item.image.src}')`}
         style:--dither-inverted={`url('${item.image.inverted}')`}
-        ><span class="dither__ink dither__ink--on-bright"></span><span class="dither__ink dither__ink--on-dark"></span></span
+        ><span class="dither__ink dither__ink--on-bright"></span><span class="dither__ink dither__ink--on-dark"></span
+        >{#if item.image.poster}<span class="item__poster"><span>{item.title}</span></span>{/if}</span
       >
     {:else}
       <span class="item__image item__image--none" aria-hidden="true"><span>{kind}</span></span>

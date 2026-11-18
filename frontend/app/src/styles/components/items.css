@@ -36,6 +36,27 @@
     background-color: var(--color-surface-1);
   }
 
+  /* An item with no picture has a pattern grown from its title, and its title set over it, line by line on a plate. */
+  .item__poster {
+    grid-area: 1 / 1;
+    align-self: center;
+    padding: var(--cell-height) calc(2 * var(--cell-width));
+    overflow: hidden;
+    max-block-size: 100%;
+    line-height: 1.9;
+  }
+
+  .item__poster > span {
+    padding: 0.15em 0.6ch;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 1.05em;
+    font-weight: bold;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
   /* Items without a picture get a block tinted with their color, named by their kind. */
   .item__image--none {
     display: flex;
