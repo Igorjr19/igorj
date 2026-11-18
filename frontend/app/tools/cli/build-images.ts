@@ -16,6 +16,7 @@ import {
   isRaster,
   type MaskEntry,
   PLACEHOLDER_SIZE,
+  WEB_MAX_WIDTH,
   withoutExtension,
 } from '../image/manifest.ts';
 import { treatPortrait } from '../image/portrait.ts';
@@ -23,7 +24,7 @@ import { colorImages } from '../image/references.ts';
 import { parseThemesData } from '../image/schema.ts';
 import { drawShare, SHARE_HEIGHT, SHARE_PORTRAIT, SHARE_WIDTH, type SharePicture } from '../image/share.ts';
 import type { Gray } from '../image/types.ts';
-import { drawingOf, maskPng, readRgba, registerFonts } from './canvas.ts';
+import { drawingOf, maskPng, readRgba, registerFonts, resized } from './canvas.ts';
 
 /** The edition the build is for; its model and its media have their own folders. */
 const EDITION = Deno.env.get('EDITION') ?? 'full';
@@ -83,6 +84,17 @@ async function figureMask(media: string): Promise<MaskEntry> {
     ...(await writeMask('figure', media, floydSteinberg(toLinear(grayscale(probe))))),
     thumb: await writeMask('thumb', media, floydSteinberg(toLinear(grayscale(thumb)))),
   };
+}
+
+/** The picture sized for the screen, when its original is larger; the address it is served from, with its fingerprint. */
+async function webCopy(media: string): Promise<string | null> {
+  const copy = await resized(`${MEDIA_DIR}/${media}`, WEB_MAX_WIDTH, 82);
+  if (!copy) {
+    return null;
+  }
+  const path = `img/web/${withoutExtension(media)}.${await fingerprint(copy.bytes)}.${copy.extension}`;
+  await write(`${STATIC_DIR}/${path}`, copy.bytes);
+  return `/${path}`;
 }
 
 /** A picture in the theme's colors: the dither of its brightness, split by the role of the color each pixel had. */
@@ -241,6 +253,7 @@ const placeholders: Record<string, MaskEntry> = {};
 const portraits: Record<string, MaskEntry> = {};
 const figures: Record<string, MaskEntry> = {};
 const colorFigures: Record<string, ColorEntry> = {};
+const webCopies: Record<string, string> = {};
 let shared = 0;
 for (const language of languages) {
   const model = await readModel(language);
@@ -262,6 +275,12 @@ for (const language of languages) {
       if (wanted.has(media) && !(media in colorFigures)) {
         colorFigures[media] = await colorMask(media);
       }
+      if (!(media in webCopies)) {
+        const copy = await webCopy(media);
+        if (copy) {
+          webCopies[media] = copy;
+        }
+      }
     }
   }
   await placeholderMasks(model, placeholders);
@@ -269,7 +288,7 @@ for (const language of languages) {
 }
 await favicons(colors);
 await copyMedia(languages);
-const manifest: ImagesManifest = { portraits, figures, colorFigures, placeholders };
+const manifest: ImagesManifest = { portraits, figures, colorFigures, placeholders, webCopies };
 await write('generated/data/images.json', `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(
   `Wrote ${Object.keys(portraits).length} portraits, ${

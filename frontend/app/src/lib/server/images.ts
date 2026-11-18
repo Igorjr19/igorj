@@ -8,6 +8,6 @@ export async function readImages(): Promise<ImagesManifest> {
   try {
     return JSON.parse(await readFile(IMAGES, 'utf8')) as ImagesManifest;
   } catch {
-    return { portraits: {}, figures: {}, colorFigures: {}, placeholders: {} };
+    return { portraits: {}, figures: {}, colorFigures: {}, placeholders: {}, webCopies: {} };
   }
 }

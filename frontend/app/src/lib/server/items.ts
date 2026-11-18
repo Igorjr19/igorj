@@ -79,6 +79,7 @@ export async function itemPageOf(
     mediaBase: `${section}/${item.id}`,
     figures: images.figures,
     colorFigures: images.colorFigures,
+    webCopies: images.webCopies,
     copyLabel: labels.copy,
     openLabel: labels.open,
   });

@@ -163,7 +163,6 @@
     overflow: hidden auto;
     padding: calc(1.25 * var(--cell-height)) calc(2 * var(--cell-width));
     border-inline-end: var(--line);
-    transition: visibility 0s;
   }
 
   /* The contents keep their width while the column narrows, so they slide out of view instead of squeezing. */
@@ -174,7 +173,6 @@
   /* Once the column has slid aside, it leaves the tab order and screen readers too. */
   .is-zoomed .side {
     visibility: hidden;
-    transition: visibility 0s 240ms;
   }
 
   .side__who {

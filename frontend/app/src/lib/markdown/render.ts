@@ -21,6 +21,8 @@ export interface RenderContext {
   readonly figures: Readonly<Record<string, MaskEntry>>;
   /** The figures asked for in color with `#color`, by media path. */
   readonly colorFigures: Readonly<Record<string, ColorEntry>>;
+  /** The screen-sized copies of the pictures that are larger than that, by media path. */
+  readonly webCopies?: Readonly<Record<string, string>>;
   readonly copyLabel: string;
   /** What a screen reader adds to the description of a picture: that it opens the original. */
   readonly openLabel: string;
@@ -78,7 +80,10 @@ function picture(source: string, alt: string, context: RenderContext): string {
       ? figure(entry)
       : `<img src="/media/${escapeHtml(path)}" alt="" loading="lazy">`;
   const label = `${escapeHtml(alt)} (${escapeHtml(context.openLabel)})`;
-  return `<button type="button" class="figure" data-original="/media/${escapeHtml(path)}" data-alt="${escapeHtml(alt)}" aria-label="${label}">${inner}</button>`;
+  const original = `/media/${escapeHtml(path)}`;
+  const shown = context.webCopies?.[path] ?? original;
+  const full = shown === original ? '' : ` data-full="${original}"`;
+  return `<button type="button" class="figure" data-original="${escapeHtml(shown)}"${full} data-alt="${escapeHtml(alt)}" aria-label="${label}">${inner}</button>`;
 }
 
 /** CommonMark to HTML at build time: code highlighted with classes the theme colors, images dithered, headings with addresses. */

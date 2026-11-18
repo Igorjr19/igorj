@@ -1,6 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import type { ItemsView } from './items/view.ts';
 import { otherView } from './items/view.ts';
+import { slideSide } from './motion/side.ts';
 import { transition } from './motion/transition.ts';
 import type { SavedTheme } from './theme/storage.ts';
 
@@ -29,8 +30,12 @@ export class Ui {
     return this.#side ?? pageHides;
   }
 
+  /** The page is laid out once, in its final shape, and the column and the page slide into it by moving. */
   toggleSide(pageHides: boolean): void {
-    this.#side = !this.sideHidden(pageHides);
+    const hidden = !this.sideHidden(pageHides);
+    slideSide(() => {
+      this.#side = hidden;
+    });
   }
 
   /** A new page starts from what the page asks for. */

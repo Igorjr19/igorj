@@ -48,3 +48,18 @@ test('the language is one control: on a phone it sits in the top line, and the s
   const box = await page.locator('.lang--top a').boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(44);
 });
+
+test('on a phone the controls of the lists and the CV are as tall as a thumb needs, and a CV entry has the whole width', async ({
+  page,
+}) => {
+  await page.goto('/en/projects/');
+  for (const button of await page.locator('.view-switch button').all()) {
+    expect((await button.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.goto('/en/cv/');
+  const entry = page.locator('.cv__entry').first();
+  const period = await entry.locator('.cv__period').boundingBox();
+  const body = await entry.locator('.cv__body').boundingBox();
+  expect(body?.y).toBeGreaterThan((period?.y ?? 0) + (period?.height ?? 0) - 1);
+  expect(body?.width).toBeGreaterThan(300);
+});

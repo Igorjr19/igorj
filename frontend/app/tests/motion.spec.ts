@@ -86,3 +86,17 @@ test('during a page change the window marks it, so the columns do not slide unde
   expect(await page.evaluate(() => Reflect.get(window, 'marked'))).toBe(true);
   await expect(page.locator('.is-navigating')).toHaveCount(0);
 });
+
+test('hiding the side column slides the page and the column by moving them, and ends with the column hidden', async ({
+  page,
+}) => {
+  await visit(page, '/en/projects/');
+  await page.keyboard.press('z');
+  const moving = await page.evaluate(() =>
+    document.getAnimations().some((animation) => (animation.effect as KeyframeEffect | null)?.target?.matches('.pane')),
+  );
+  expect(moving).toBe(true);
+  await expect(page.locator('.side')).toBeHidden();
+  await page.keyboard.press('z');
+  await expect(page.locator('.side')).toBeVisible();
+});

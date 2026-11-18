@@ -19,4 +19,13 @@
     background-color: var(--color-link);
     color: var(--color-background);
   }
+
+  /* On a phone the small controls are as tall as a thumb needs. */
+  @container screen (width < 100ch) {
+    :is(.view-switch button, .items__feed, .items__filter, .widget__more a, .cv__print button) {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: round(up, 44px, var(--cell-height));
+    }
+  }
 }

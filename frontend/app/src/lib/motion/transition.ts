@@ -7,6 +7,9 @@ interface ViewTransitionLike {
 
 type StartViewTransition = (update: () => void | Promise<void>) => ViewTransitionLike;
 
+/** About a hundred characters of the page font: below it the window is a single column, as on a phone. */
+const NARROW = '(max-width: 52rem)';
+
 function starter(): StartViewTransition | null {
   const start = (document as Document & { startViewTransition?: StartViewTransition }).startViewTransition;
   return start ? start.bind(document) : null;
@@ -31,7 +34,8 @@ export function navigationTransition(
   complete: Promise<void>,
 ): Promise<void> | void {
   const start = starter();
-  if (!start) {
+  // A phone takes the next page at once: the old page waiting and two snapshots crossing cost more there than they say.
+  if (!start || window.matchMedia(NARROW).matches) {
     return;
   }
   return new Promise((resolve) => {

@@ -139,6 +139,37 @@
     cursor: pointer;
   }
 
+  /* On a phone the period goes above the text instead of taking a third of the width beside it, and the head is centered. */
+  @container screen (width < 100ch) {
+    .cv__entry {
+      grid-template-columns: minmax(0, 1fr);
+      gap: calc(var(--cell-height) / 4) 0;
+    }
+
+    .cv__entry > .cv__period {
+      grid-column: 1;
+      grid-row: 1;
+      text-align: start;
+    }
+
+    .cv__entry > .cv__body {
+      grid-row: 2;
+    }
+
+    .cv__skills {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .cv__skills dd {
+      margin-block-end: calc(var(--cell-height) / 2);
+    }
+
+    .cv .cv__head p {
+      text-align: center;
+    }
+  }
+
   @media print {
     .cv__print {
       display: none;

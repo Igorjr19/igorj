@@ -44,9 +44,20 @@
     object-fit: contain;
   }
 
+  .lightbox__actions {
+    display: flex;
+    justify-content: center;
+    gap: calc(3 * var(--cell-width));
+    margin: var(--cell-height) 0 0;
+  }
+
+  .lightbox__actions a {
+    color: var(--color-link);
+  }
+
   .lightbox__close {
     display: block;
-    margin: var(--cell-height) auto 0;
+    margin: 0;
     padding: 0;
     border: 0;
     background: none;
