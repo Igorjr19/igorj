@@ -16,22 +16,21 @@
     overflow: hidden;
   }
 
-  /* The terminal, when open, takes a row under the pane, as tall as the visitor left it. The side column and the
-     terminal both grow and shrink their track, so they slide in and out instead of popping. */
+  /* The terminal, when open, takes a row under the pane, as tall as the visitor left it, and slides in by growing its
+     track. The side column does not animate its track: that would lay the page out again on every frame, so it goes
+     as a view transition, which the browser draws without that work. */
   .win__body {
     --slide: 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
     display: grid;
     grid-template-columns: calc(30 * var(--cell-width)) minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) 0;
     min-block-size: 0;
-    transition:
-      grid-template-rows var(--slide),
-      grid-template-columns var(--slide);
+    transition: grid-template-rows var(--slide);
   }
 
   /* While the visitor drags the terminal's edge, the height follows the pointer at once. A page change runs inside a
-     view transition, which snapshots the new page as soon as it is in place: a column still sliding would be caught
-     half way and then jump, so during a page change the columns change at once. */
+     view transition, which snapshots the new page as soon as it is in place: a terminal still sliding would be caught
+     half way and then jump, so during a page change it changes at once. */
   :is(.is-resizing, .is-navigating) .win__body {
     transition: none;
   }

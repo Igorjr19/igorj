@@ -29,6 +29,8 @@ export interface ImagesManifest {
   readonly colorFigures: Readonly<Record<string, ColorEntry>>;
   /** For an item with no picture, by `section:id`: its initial. */
   readonly placeholders: Readonly<Record<string, MaskEntry>>;
+  /** The copy of a picture sized for the screen, by media path, for the ones larger than that; the original stays under /media/. */
+  readonly webCopies: Readonly<Record<string, string>>;
 }
 
 /** Image files the content can hold that are worth dithering; vector images stay as they are. */
@@ -37,6 +39,9 @@ export const RASTER_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp'] as const;
 export function isRaster(path: string): boolean {
   return RASTER_EXTENSIONS.some((extension) => path.toLowerCase().endsWith(extension));
 }
+
+/** A picture opened from a page is shown at most this wide; a larger original is shown from a smaller copy of it. */
+export const WEB_MAX_WIDTH = 1600;
 
 /** Figures never fill more than the text column, so the dots are not made wider than this. */
 export const FIGURE_MAX_WIDTH = 960;

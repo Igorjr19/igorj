@@ -88,3 +88,18 @@ Deno.test('raw HTML in the text is shown as text, so a post cannot bring markup 
 Deno.test('slugs drop accents and punctuation', () => {
   assertEquals(slugify('Pare de se PRÉ-ocupar!'), 'pare-de-se-pre-ocupar');
 });
+
+Deno.test('a picture larger than the screen opens its smaller copy and keeps the way to the original, so it loads quickly', () => {
+  const { html } = renderMarkdown('![A wide chart](wide.png)', {
+    ...context,
+    webCopies: { 'posts/a-post/wide.png': '/img/web/posts/a-post/wide.abc.png' },
+  });
+  assertStringIncludes(html, 'data-original="/img/web/posts/a-post/wide.abc.png"');
+  assertStringIncludes(html, 'data-full="/media/posts/a-post/wide.png"');
+});
+
+Deno.test('a picture with no smaller copy opens its original and names no other', () => {
+  const { html } = renderMarkdown('![A wide chart](wide.png)', context);
+  assertStringIncludes(html, 'data-original="/media/posts/a-post/wide.png"');
+  assert(!html.includes('data-full'));
+});
