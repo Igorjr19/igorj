@@ -6,13 +6,14 @@
   const ui = useUi();
   let { items }: { items: readonly ItemRowData[] } = $props();
 
-  let selected = $state(0);
+  /** None until a key moves into the list: the pointer has its own hover, so nothing starts out chosen. */
+  let selected = $state(-1);
 
-  /** The selected item stands out: the one the visitor moved to with the keys or the pointer. */
+  /** The selected item stands out: the one the visitor moved to with the keys. */
   function onfocusin(event: FocusEvent): void {
     const row = event.target instanceof Element ? event.target.closest('.item') : null;
     const at = row ? [...(row.parentElement?.children ?? [])].indexOf(row) : -1;
-    if (at >= 0) {
+    if (at >= 0 && event.target instanceof Element && event.target.matches(':focus-visible')) {
       selected = at;
     }
   }

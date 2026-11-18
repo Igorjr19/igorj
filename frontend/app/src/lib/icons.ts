@@ -7,6 +7,7 @@ import circleHalfStroke from '@fortawesome/fontawesome-free/svgs/solid/circle-ha
 import circleQuestion from '@fortawesome/fontawesome-free/svgs/solid/circle-question.svg?raw';
 import envelope from '@fortawesome/fontawesome-free/svgs/solid/envelope.svg?raw';
 import filter from '@fortawesome/fontawesome-free/svgs/solid/filter.svg?raw';
+import language from '@fortawesome/fontawesome-free/svgs/solid/language.svg?raw';
 import list from '@fortawesome/fontawesome-free/svgs/solid/list.svg?raw';
 import magnifyingGlass from '@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?raw';
 import rss from '@fortawesome/fontawesome-free/svgs/solid/rss.svg?raw';
@@ -23,6 +24,7 @@ const SOLID = {
   'circle-half-stroke': circleHalfStroke,
   'circle-question': circleQuestion,
   rss,
+  language,
   list,
   'table-cells-large': tableCellsLarge,
   filter,

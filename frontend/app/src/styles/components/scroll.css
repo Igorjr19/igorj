@@ -1,13 +1,21 @@
 @layer app.components {
   /* Inner scrollers keep a thin bar in the theme colors, which stays out of the way until it is used. */
   .pane,
-  .term__scroll {
+  .term__scroll,
+  .pick__list,
+  .side,
+  .help,
+  .lang-menu {
     scrollbar-width: thin;
     scrollbar-color: var(--color-surface-2) transparent;
   }
 
   .pane:hover,
-  .term__scroll:hover {
+  .term__scroll:hover,
+  .pick__list:hover,
+  .side:hover,
+  .help:hover,
+  .lang-menu:hover {
     scrollbar-color: var(--color-text-muted) transparent;
   }
 

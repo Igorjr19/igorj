@@ -72,7 +72,8 @@
 
   /* The boxes drop into place as they open and fade back out as they close, with their backdrop. */
   .pick,
-  .help {
+  .help,
+  .lang-menu {
     opacity: 0;
     translate: 0 calc(-1 * var(--cell-height) / 2);
     scale: 0.98;
@@ -85,7 +86,8 @@
   }
 
   .pick[open],
-  .help[open] {
+  .help[open],
+  .lang-menu[open] {
     opacity: 1;
     translate: 0;
     scale: 1;
@@ -100,7 +102,8 @@
   }
 
   .pick::backdrop,
-  .help::backdrop {
+  .help::backdrop,
+  .lang-menu::backdrop {
     opacity: 0;
     transition:
       opacity 160ms ease-in,
@@ -109,7 +112,8 @@
   }
 
   .pick[open]::backdrop,
-  .help[open]::backdrop {
+  .help[open]::backdrop,
+  .lang-menu[open]::backdrop {
     opacity: 1;
 
     @starting-style {

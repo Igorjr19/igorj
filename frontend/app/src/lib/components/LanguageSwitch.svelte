@@ -3,12 +3,15 @@
   import { sameEverywhere } from '../alternates.ts';
   import { LANGUAGE_STORAGE_KEY } from '../language-choice.ts';
   import { languageInfo } from '../languages.ts';
+  import { closeOnOutside } from '../modal.ts';
   import { useShell } from '../shell.svelte.ts';
+  import Icon from './Icon.svelte';
 
   let { where }: { where: 'top' | 'status' } = $props();
   const shell = useShell();
+  let dialog: HTMLDialogElement | undefined = $state();
 
-  /** Choosing a language with the switcher is remembered, so the root address honors it next time. */
+  /** Choosing a language is remembered, so the root address honors it next time. */
   function remember(language: string): void {
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
@@ -22,21 +25,40 @@
     return given ?? sameEverywhere(page.url.pathname, shell.language, shell.languages)[language] ?? `/${language}/`;
   }
 
-  /** The language in use first, then the others as links to the same page in them, or to their home. */
-  const others = $derived(
-    shell.languages
-      .filter((language) => language !== shell.language)
-      .map((language) => ({ language, href: alternatesOf(language), info: languageInfo(language) })),
+  /** Every language of the site: the one in use, and for each of the others the same page in it, or its home. */
+  const options = $derived(
+    shell.languages.map((language) => ({
+      language,
+      info: languageInfo(language),
+      current: language === shell.language,
+      href: alternatesOf(language),
+    })),
   );
   const current = $derived(languageInfo(shell.language));
 </script>
 
-{#if others.length > 0}
-  <!-- One control for the language: the one in use, and the way to the others. It sits in the top line on a phone and in the status line elsewhere. -->
-  <ul class={`lang lang--${where}`} aria-label={shell.t('languages')}>
-    <li><span class="lang__current" lang={current.locale} aria-current="true">{current.label}</span></li>
-    {#each others as { language, href, info } (language)}
-      <li><a {href} hreflang={info.locale} lang={info.locale} onclick={() => remember(language)}>{info.label}</a></li>
-    {/each}
-  </ul>
+{#if options.length > 1}
+  <!-- One control for the language: the one in use, which opens the choice. It sits in the top line on a phone and in the status line elsewhere. -->
+  <button type="button" class={`lang lang--${where}`} aria-haspopup="dialog" aria-label={shell.t('languages')} onclick={() => dialog?.showModal()}>
+    <Icon name="language" /><span lang={current.locale}>{current.label}</span>
+  </button>
+  <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+  <!-- biome-ignore lint/a11y/useKeyWithClickEvents: the click on the backdrop is a mouse shortcut; Escape and the close button are the keyboard ways -->
+  <dialog class="panel lang-menu" aria-label={shell.t('languages')} bind:this={dialog} onclick={(event) => closeOnOutside(dialog, event)}>
+    <p class="panel__title">{shell.t('languages')}</p>
+    <ul class="lang-menu__list">
+      {#each options as { language, info, current: inUse, href } (language)}
+        <li>
+          {#if inUse}
+            <span class="lang-menu__option" aria-current="true" lang={info.locale}>{info.name}<span>{info.label}</span></span>
+          {:else}
+            <a class="lang-menu__option" {href} hreflang={info.locale} lang={info.locale} onclick={() => remember(language)}>{info.name}<span>{info.label}</span></a>
+          {/if}
+        </li>
+      {/each}
+    </ul>
+    <form class="help__actions" method="dialog">
+      <button type="submit" class="button">{shell.t('helpClose')}</button>
+    </form>
+  </dialog>
 {/if}

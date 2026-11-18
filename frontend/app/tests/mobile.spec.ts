@@ -44,8 +44,8 @@ test('the language is one control: on a phone it sits in the top line, and the s
   await page.goto('/en/');
   await expect(page.locator('.lang--top')).toBeVisible();
   await expect(page.locator('.lang--status')).toBeHidden();
-  await expect(page.locator('.lang--top .lang__current')).toHaveText('en-us');
-  const box = await page.locator('.lang--top a').boundingBox();
+  await expect(page.locator('.lang--top')).toHaveText('en-us');
+  const box = await page.locator('.lang--top').boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(44);
 });
 

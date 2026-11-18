@@ -120,7 +120,7 @@
     back = history.length;
     value = '';
     suggestions = '';
-    const themeName = themeLabel(shell.themeNames, ui.theme, matchMedia('(prefers-color-scheme: dark)').matches);
+    const themeName = themeLabel(shell.themeNames, ui.theme ?? null, matchMedia('(prefers-color-scheme: dark)').matches);
     apply(run(typed, { data, cwd, history, themeName }));
   }
 

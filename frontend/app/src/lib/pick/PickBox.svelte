@@ -41,6 +41,8 @@
   let index = $state<PickIndex | null>(null);
   let query = $state('');
   let active = $state(0);
+  /** The theme under the pointer: shown while it is there, and the chosen one comes back when the pointer leaves. */
+  let hover = $state<number | null>(null);
   let chosen = false;
 
   // Themes: the choice and the accent being previewed, and what to go back to on cancel.
@@ -107,6 +109,7 @@
     themeChoice = savedToChoice(before, loaded.themeIndex.defaultFamily);
     accent = before?.accent ?? loaded.themeIndex.accents?.default ?? '';
     active = startIndex(wanted, loaded);
+    hover = null;
     dialog?.showModal();
     (input ?? listbox)?.focus();
   }
@@ -131,9 +134,9 @@
     return withAccent;
   }
 
-  // Moving over a theme previews it.
+  // A theme under the pointer, or the one the keys are on, is previewed.
   $effect(() => {
-    const entry = ranked[active]?.entry;
+    const entry = ranked[hover ?? active]?.entry;
     if (mode === 'theme' && entry?.action.type === 'theme' && dialog?.open) {
       themeChoice = entry.action.choice;
       preview();
@@ -226,6 +229,7 @@
 
   function move(step: number): void {
     if (ranked.length > 0) {
+      hover = null;
       active = (active + step + ranked.length) % ranked.length;
       listbox?.querySelector(`#pick-option-${active}`)?.scrollIntoView({ block: 'nearest' });
     }
@@ -291,7 +295,16 @@
       <span class="pick__ghost">{ghost ? `${query}${ghost}` : ''}</span>
     </div>
   {/if}
-  <div class="pick__list" id="pick-list" role="listbox" aria-label={title} tabindex={searching ? undefined : 0} bind:this={listbox}>
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <div
+    class="pick__list"
+    id="pick-list"
+    role="listbox"
+    aria-label={title}
+    tabindex={searching ? undefined : 0}
+    bind:this={listbox}
+    onmouseleave={() => (hover = null)}
+  >
     {#each ranked as { entry, match }, position (entry.id)}
       <div
         class="pick__option"
@@ -301,9 +314,16 @@
         aria-selected={position === active}
         data-current={entry.current ? 'true' : undefined}
         style:--pick-color={entry.color}
-        onmousemove={() => (active = position)}
+        onmousemove={() => {
+          if (mode === 'theme') {
+            hover = position;
+          } else {
+            active = position;
+          }
+        }}
         onclick={() => {
           active = position;
+          hover = null;
           if (mode !== 'theme') {
             choose();
           }
