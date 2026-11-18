@@ -117,6 +117,6 @@ test('the copy button of a code block copies it and says so', async ({ page, con
 
 test('choosing a language with the switcher is remembered for the root address', async ({ page }) => {
   await visit(page, '/en/');
-  await page.locator('.win__languages a').click();
+  await page.locator('.lang--status a').click();
   expect(await page.evaluate(() => localStorage.getItem('language'))).toBe('pt');
 });

@@ -32,14 +32,14 @@ test('a post is an article with its own picture, date and translation', async ({
     'content',
     /^\d{4}-\d{2}-\d{2}$/,
   );
-  await expect(page.locator('.win__languages a')).toHaveAttribute('href', '/pt/posts/fixture-post/');
+  await expect(page.locator('.lang--status a')).toHaveAttribute('href', '/pt/posts/fixture-post/');
 });
 
 test('a post that exists in one language only has no translation to switch to, so the switch leads to the home', async ({
   page,
 }) => {
   await page.goto('/pt/posts/pt-only-post/');
-  await expect(page.locator('.win__languages a')).toHaveAttribute('href', '/en/');
+  await expect(page.locator('.lang--status a')).toHaveAttribute('href', '/en/');
   await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(0);
 });
 

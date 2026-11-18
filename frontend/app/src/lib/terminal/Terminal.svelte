@@ -235,7 +235,7 @@
     <span class="drawer__title">terminal · {who.user}@{who.host}</span>
     <span class="drawer__end">
       <span class="drawer__keys">{data?.strings['termKeys'] ?? ''}</span>
-      <button type="button" class="drawer__close" aria-label={data?.strings['termCloseLabel'] ?? 'Close the terminal'} onclick={close}>{data?.strings['termClose'] ?? 'close'}</button>
+      <button type="button" class="button drawer__close" aria-label={data?.strings['termCloseLabel'] ?? 'Close the terminal'} onclick={close}>{data?.strings['termClose'] ?? 'close'}</button>
     </span>
   </div>
   <div class="term">

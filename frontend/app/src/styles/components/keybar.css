@@ -21,14 +21,4 @@
     gap: calc(2 * var(--cell-width));
     margin-block-start: var(--cell-height);
   }
-
-  .help__actions button {
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--color-link);
-    font: inherit;
-    text-decoration: underline;
-    cursor: pointer;
-  }
 }

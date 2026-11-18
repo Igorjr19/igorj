@@ -1,0 +1,22 @@
+@layer app.components {
+  /* Something that does something is framed; the hints that only name a key are plain muted text beside it. */
+  .button {
+    padding: 0 var(--cell-width);
+    border: 1px solid var(--color-surface-3);
+    background: none;
+    color: var(--color-text);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .button--primary {
+    border-color: var(--color-link);
+    color: var(--color-link);
+  }
+
+  .button:is(:hover, :focus-visible) {
+    border-color: var(--color-link);
+    background-color: var(--color-link);
+    color: var(--color-background);
+  }
+}

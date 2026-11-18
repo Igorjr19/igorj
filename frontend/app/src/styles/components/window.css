@@ -123,12 +123,34 @@
     white-space: nowrap;
   }
 
-  .win__languages a {
+  /* The language in use and the way to the others: one control, shown in the top line on a phone and in the status line elsewhere. */
+  .lang {
+    display: inline-flex;
+    gap: var(--cell-width);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lang li::before {
+    content: none;
+  }
+
+  .lang a {
     color: inherit;
   }
 
-  .win__languages a:hover {
+  .lang a:hover {
     color: var(--color-link);
+  }
+
+  .lang__current {
+    color: var(--color-text);
+    font-weight: bold;
+  }
+
+  .lang--top {
+    display: none;
   }
 
   /* The side column: who and the panes at the top, the contacts at the foot. */
@@ -325,6 +347,23 @@
     .win__path,
     .win__side-toggle,
     .win__controls > .win__button {
+      display: none;
+    }
+
+    .lang--top {
+      display: inline-flex;
+      gap: 0;
+    }
+
+    /* Both the language in use and the link to the other are as tall as a thumb needs. */
+    .lang--top :is(a, .lang__current) {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: round(up, 44px, var(--cell-height));
+      padding-inline: var(--cell-width);
+    }
+
+    .lang--status {
       display: none;
     }
 

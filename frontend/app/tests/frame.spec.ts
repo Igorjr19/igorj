@@ -25,7 +25,7 @@ test('the side column marks the current pane and lists only the panes the conten
 
 test('the switcher shows the other language by its code and keeps the addresses in English', async ({ page }) => {
   await page.goto('/en/');
-  const link = page.locator('.win__languages a');
+  const link = page.locator('.lang--status a');
   await expect(link).toHaveText('pt-br');
   await expect(link).toHaveAttribute('href', '/pt/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
