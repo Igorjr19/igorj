@@ -63,7 +63,8 @@
   /* Below a full-width terminal the window becomes the page: the side turns into a row of panes and the status line sticks to the bottom. */
   @container screen (width < 100ch) {
     .win {
-      display: block;
+      display: flex;
+      flex-direction: column;
       max-inline-size: none;
       margin: 0;
       block-size: auto;
@@ -72,12 +73,14 @@
       overflow: visible;
     }
 
+    /* The body steps out of the way so the side, now the tab bar, can stay at the bottom of the window. */
     .win__body,
     .is-zoomed .win__body {
-      display: block;
+      display: contents;
     }
 
     .pane {
+      flex: 1;
       overflow: visible;
       padding-inline: calc(2 * var(--cell-width));
     }
