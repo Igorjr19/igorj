@@ -49,8 +49,14 @@
     gap: calc(2 * var(--cell-width));
   }
 
+  /* A book is one line: the title, its author and its kind. */
   .films__row--reading {
-    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-columns: minmax(0, 1fr) max-content max-content;
+    gap: 0 calc(2 * var(--cell-width));
+  }
+
+  .films__row--reading .films__authors {
+    grid-column: auto;
   }
 
   .films__authors {

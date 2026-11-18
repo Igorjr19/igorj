@@ -126,7 +126,6 @@ helpOpen = "Abrir o item selecionado"
 helpTab = "Ir para o próximo link"
 helpHelp = "Abrir esta ajuda"
 helpEscape = "Fechar esta ajuda"
-helpIgnored = "Os atalhos não fazem nada com Ctrl, Alt ou Meta pressionado ou enquanto você digita num campo."
 helpClose = "Fechar"
 
 panes = "Painéis"

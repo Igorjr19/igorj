@@ -55,13 +55,13 @@ Deno.test('minutes read as hours and minutes, or only minutes under an hour', ()
   );
 });
 
-Deno.test('the listening bars scale to the most played artist, over all artists, and show the top three', () => {
-  const artists = [100, 50, 25, 25].map((plays, index) => ({ name: `A${index}`, plays }));
+Deno.test('the listening bars scale to the most played artist, over all artists, and show the top four', () => {
+  const artists = [100, 50, 25, 25, 10].map((plays, index) => ({ name: `A${index}`, plays }));
   const { total, bars } = listeningBars(artists);
-  assertEquals(total, 200);
+  assertEquals(total, 210);
   assertEquals(
     bars.map((bar) => bar.percent),
-    [100, 50, 25],
+    [100, 50, 25, 25],
   );
 });
 

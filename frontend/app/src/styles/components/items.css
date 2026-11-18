@@ -98,13 +98,16 @@
     margin: 0;
   }
 
-  .items[data-view='grid'] .item[data-selected='true']::before {
+  .items[data-view='grid'] .item:is([data-selected='true'], :hover)::before {
     content: '';
     position: absolute;
     inset: calc(-1 * var(--cell-height) / 3) calc(-1 * var(--cell-width));
     z-index: -1;
-    border: 1px solid var(--item-color);
     background-color: var(--color-surface-1);
+  }
+
+  .items[data-view='grid'] .item[data-selected='true']::before {
+    border: 1px solid var(--item-color);
   }
 
   /* The list view, set by the script: one row per item, the title and its facts, the summary under them. */

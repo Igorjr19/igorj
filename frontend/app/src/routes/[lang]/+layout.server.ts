@@ -1,3 +1,4 @@
+import { brandOf } from '#lib/brand.ts';
 import { panesOf } from '#lib/sections.ts';
 import { readFontPreloads } from '#lib/server/fonts.ts';
 import { readDictionary } from '#lib/server/i18n.ts';
@@ -13,7 +14,7 @@ export const load: LayoutServerLoad = async ({ params }): Promise<{ shell: Shell
     shell: {
       language: params.lang,
       languages: model.languages,
-      host: new URL(SITE_URL).host,
+      host: brandOf(new URL(SITE_URL).host),
       siteUrl: SITE_URL,
       indexed: model.edition.index,
       description: model.profile?.description ?? '',

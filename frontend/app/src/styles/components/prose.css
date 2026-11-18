@@ -28,9 +28,15 @@
 
   /* A link that opens a new tab says so with a small arrow after it. */
   a[target='_blank']:not(.win__site, .side__links a)::after {
-    content: '↗' / '';
+    content: '';
+    display: inline-block;
+    inline-size: 0.7em;
+    block-size: 0.7em;
     margin-inline-start: 0.25em;
-    font-size: 0.8em;
+    background-color: currentcolor;
+    mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='square'%3E%3Cpath d='M6 18 18 6M8 6h10v10'/%3E%3C/svg%3E")
+      center / contain no-repeat;
     text-decoration: none;
   }
 }

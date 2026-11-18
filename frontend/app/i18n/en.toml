@@ -126,7 +126,6 @@ helpOpen = "Open the selected item"
 helpTab = "Go to the next link"
 helpHelp = "Open this help"
 helpEscape = "Close this help"
-helpIgnored = "Shortcuts do nothing while Ctrl, Alt or Meta is held or while typing in a field."
 helpClose = "Close"
 
 panes = "Panes"

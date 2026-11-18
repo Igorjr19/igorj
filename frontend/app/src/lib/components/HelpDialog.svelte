@@ -38,7 +38,6 @@
       <dd>{shell.t(text)}</dd>
     {/each}
   </dl>
-  <p>{shell.t('helpIgnored')}</p>
   <form class="help__actions" method="dialog">
     <button type="submit">{shell.t('helpClose')}</button>
   </form>
