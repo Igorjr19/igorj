@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { CvModel } from '../../../../../tools/model/types.ts';
+  import { slugify } from '../markdown/render.ts';
   import { useShell } from '../shell.svelte.ts';
 
   const shell = useShell();
@@ -113,5 +114,8 @@
     </section>
   {/if}
 
-  <p class="cv__print"><button type="button" onclick={() => window.print()}>{shell.t('print')}</button></p>
+  <p class="cv__print">
+    <a class="button" href={`/${shell.language}/cv/cv.pdf`} download={`${slugify(shell.author)}-cv-${shell.language}.pdf`}>{shell.t('cvDownload')}</a>
+    <button type="button" class="button" onclick={() => window.print()}>{shell.t('print')}</button>
+  </p>
 </div>
