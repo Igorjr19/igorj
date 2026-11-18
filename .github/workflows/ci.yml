@@ -37,13 +37,17 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: browsers-${{ runner.os }}-${{ hashFiles('deno.lock') }}
-      # A package download now and then stalls for good. The package manager is told to give up on a silent connection
-      # and ask again; if the install still hangs, it is cut short, the process it leaves holding the lock is ended,
-      # and it is tried again.
+      # The mirror of the packages is slow on some days: about a hundred packages for the three browsers can take longer
+      # than a try is allowed. What is downloaded is kept between tries and between runs, so a slow day costs once.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/apt-archives
+          key: apt-${{ runner.os }}-browsers-1
       - run: |
-          echo 'Acquire::http::Timeout "20"; Acquire::https::Timeout "20"; Acquire::Retries "5";' | sudo tee /etc/apt/apt.conf.d/99ci-timeouts
+          mkdir -p "$HOME/apt-archives/partial"
+          printf 'Dir::Cache::archives "%s/apt-archives";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nAcquire::Retries "5";\n' "$HOME" | sudo tee /etc/apt/apt.conf.d/99ci
           for attempt in 1 2 3; do
-            timeout --kill-after=10 300 deno task browsers && exit 0
+            timeout --kill-after=10 600 deno task browsers && { sudo chmod -R a+rX "$HOME/apt-archives"; exit 0; }
             echo "Browsers not installed (try $attempt)"
             sudo pkill -9 -x apt-get || true
             sudo pkill -9 -x dpkg || true
