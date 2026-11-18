@@ -123,7 +123,10 @@ export async function buildHome(model: SiteModel, now: Date): Promise<HomeData> 
     recent: recentRows(model, model.language),
     system: await systemOf(model, now),
     code: codeOf(model, now),
-    listening: music && model.music ? { ...music, updatedLate: lateOf(model.music.updated, now) } : null,
+    listening:
+      music && model.music
+        ? { ...music, period: model.music.period, updatedLate: lateOf(model.music.updated, now) }
+        : null,
     watched: watchedOf(model, now),
     networks: networksOf(model),
   };

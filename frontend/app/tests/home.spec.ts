@@ -79,9 +79,9 @@ test('the boxes are system, code, listening and watched, each titled on its bord
   ]);
 });
 
-test('the listening box sums the week and scales each bar to the most played artist', async ({ page }) => {
+test('the listening box names the week and scales each bar to the most played artist', async ({ page }) => {
   await page.goto('/en/');
-  await expect(page.locator('#listening .panel__meta').first()).toHaveText('17 plays this week');
+  await expect(page.locator('#listening .panel__meta').first()).toHaveText('Most played this week');
   const bars = await page.locator('#listening .bars__row').evaluateAll((rows) =>
     rows.map((row) => {
       const track = row.querySelector('.bars__track') as Element;
@@ -143,4 +143,24 @@ test('the box of films says what it shows, as the one of music does', async ({ p
   await expect(page.locator('#watched .panel__meta').first()).toContainText(/Last \d+ films? watched/);
   await page.goto('/pt/');
   await expect(page.locator('#watched .panel__meta').first()).toContainText(/Últimos? \d* ?filmes? assistidos?/);
+});
+
+test('the music box says which list it is and does not claim a total of plays it cannot know', async ({ page }) => {
+  await page.goto('/en/');
+  const box = page.locator('#listening');
+  await expect(box.locator('.panel__meta').first()).toHaveText(/most played this (week|month)/i);
+  await expect(box).not.toContainText(/plays? (this|in the) week/i);
+});
+
+test('the theme in the status line is a skeleton in the page as the server sends it, then the name', async ({
+  page,
+  request,
+}) => {
+  const html = await (await request.get('/en/')).text();
+  const at = html.indexOf('statusbar__theme');
+  expect(at).toBeGreaterThan(-1);
+  expect(html.slice(at, at + 200)).toContain('class="skeleton"');
+  await page.goto('/en/');
+  await expect(page.locator('.statusbar__theme .skeleton')).toHaveCount(0);
+  await expect(page.locator('.statusbar__theme')).not.toBeEmpty();
 });

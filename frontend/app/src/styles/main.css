@@ -11,6 +11,7 @@
 @import './components/window.css';
 @import './components/scroll.css';
 @import './components/button.css';
+@import './components/skeleton.css';
 @import './components/keybar.css';
 @import './components/status.css';
 @import './components/panel.css';

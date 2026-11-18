@@ -22,7 +22,7 @@
     <section aria-labelledby="music-title">
       <h2 class="label" id="music-title">{shell.t('panelListening')}</h2>
       {#if data.music && bars}
-        <p class="panel__meta">{shell.t(data.music.period === 'month' ? 'periodMonth' : 'periodWeek')} · {shell.t('playsTotal', bars.total)}</p>
+        <p class="panel__meta">{shell.t(data.music.period === 'month' ? 'periodMonth' : 'periodWeek')}</p>
         <AgeNote updated={data.music.updatedLate} />
         <ol class="bars">
           {#each bars.bars as artist (artist.name)}

@@ -13,7 +13,7 @@
 <section class="panel widget" id="listening" aria-labelledby="listening-title">
   <BoxTitle id="listening" label={shell.t('panelListening')} {url} />
   {#if listening}
-    <p class="panel__meta">{shell.t('playsTotal', listening.total)}</p>
+    <p class="panel__meta">{shell.t(listening.period === 'month' ? 'periodMonth' : 'periodWeek')}</p>
     <AgeNote updated={listening.updatedLate} />
     <ol class="bars">
       {#each listening.bars as artist (artist.name)}

@@ -59,7 +59,6 @@ cvSkills = "Skills"
 cvLanguages = "Languages"
 cvPublications = "Publications"
 cvOtherLanguage = "Available only in {{ . }}."
-print = "print"
 cvDownload = "download PDF"
 researchArticle = "article"
 researchThesis = "thesis"
@@ -253,10 +252,6 @@ other = "{{ .Count }} items"
 [plays]
 one = "{{ .Count }} play"
 other = "{{ .Count }} plays"
-
-[playsTotal]
-one = "{{ .Count }} play this week"
-other = "{{ .Count }} plays this week"
 
 [countPosts]
 one = "{{ .Count }} post"

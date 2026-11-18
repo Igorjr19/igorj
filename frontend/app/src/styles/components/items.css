@@ -178,8 +178,8 @@
     font-style: italic;
   }
 
-  /* A project has only its first tag to say, which a row leaves out: it tells nothing the title does not. */
-  .items[data-view='list'] .item[data-meta='tag'] .item__meta {
+  /* A project has only its first tag to say, and the chips below name all of them: neither the row nor the card repeats it. */
+  .item[data-meta='tag'] .item__meta {
     display: none;
   }
 

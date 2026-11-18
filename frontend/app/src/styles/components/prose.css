@@ -26,8 +26,9 @@
     font-variant-ligatures: common-ligatures;
   }
 
-  /* A link that opens a new tab says so with a small arrow after it. */
-  a[target='_blank']:not(.win__site, .side__links a)::after {
+  /* A link to another site says so with a small arrow after it. It follows the address, which is there from the first paint,
+     and not the target that the script sets later. */
+  a:is([href^='http'], [href^='mailto:'], [target='_blank']):not(.win__site, .side__links a)::after {
     content: '';
     display: inline-block;
     inline-size: 0.7em;

@@ -153,36 +153,37 @@
     gap: 2px;
     margin: var(--cell-height) 0 0;
     padding: 0;
-    list-style: none;
-  }
-
-  .lang-menu__list li::before {
-    content: none;
+    border: 0;
   }
 
   .lang-menu__option {
     display: flex;
-    justify-content: space-between;
+    align-items: baseline;
     gap: var(--cell-width);
     padding: calc(var(--cell-height) / 4) var(--cell-width);
     color: var(--color-text);
-    text-decoration: none;
+    cursor: pointer;
   }
 
-  .lang-menu__option span {
-    color: var(--color-text-muted);
-  }
-
-  a.lang-menu__option:is(:hover, :focus-visible) {
+  .lang-menu__option:hover {
     background-color: var(--color-surface-1);
   }
 
-  .lang-menu__option[aria-current] {
+  .lang-menu__option:has(:checked) {
     background-color: var(--color-selection-background);
     color: var(--color-selection-text);
   }
 
-  .lang-menu__option[aria-current] span {
+  .lang-menu__option input {
+    accent-color: var(--color-link);
+  }
+
+  .lang-menu__code {
+    margin-inline-start: auto;
+    color: var(--color-text-muted);
+  }
+
+  .lang-menu__option:has(:checked) .lang-menu__code {
     color: inherit;
   }
 

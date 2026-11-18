@@ -55,7 +55,7 @@ export interface HomeData {
   readonly system: SystemData;
   readonly code: CodeData | null;
   readonly listening: {
-    readonly total: number;
+    readonly period: 'week' | 'month';
     readonly bars: readonly { name: string; url: string | null; plays: number; percent: number }[];
     readonly updatedLate: string | null;
   } | null;

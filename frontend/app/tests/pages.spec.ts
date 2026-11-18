@@ -225,10 +225,37 @@ test('a list starts with nothing chosen when it is used with the pointer, and a 
   await expect(page.locator('.item').first()).toHaveAttribute('data-selected', 'true');
 });
 
-test('a project row in the list shows no tag, and the card of the grid keeps it', async ({ page }) => {
+test('a project row in the list shows no tag', async ({ page }) => {
   await visit(page, '/en/projects/');
-  const meta = page.locator('.item').first().locator('.item__meta');
-  await expect(meta).toBeHidden();
+  await expect(page.locator('.item').first().locator('.item__meta')).toBeHidden();
+});
+
+test('the card of the grid shows no lone tag, since the chips below name them all', async ({ page }) => {
+  await visit(page, '/en/projects/');
   await page.keyboard.press('v');
-  await expect(meta).toBeVisible();
+  await expect(page.locator('.item').first().locator('.item__meta')).toBeHidden();
+  await expect(page.locator('.item').first().locator('.item__chips')).toBeVisible();
+});
+
+test('the CV has one button for the PDF and none for printing, and a study in progress ends in "present"', async ({
+  page,
+}) => {
+  await visit(page, '/en/cv/');
+  await expect(page.getByRole('link', { name: 'download PDF' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /print/i })).toHaveCount(0);
+  await expect(page.locator('.cv__period', { hasText: /–\s*$/ })).toHaveCount(0);
+});
+
+test('a link to another site has its arrow without waiting for the script that gives it a target', async ({ page }) => {
+  await visit(page, '/en/');
+  const shape = await page.evaluate(() => {
+    const link = document.createElement('a');
+    link.href = 'https://example.org/';
+    link.textContent = 'elsewhere';
+    document.querySelector('.pane')?.append(link);
+    const after = getComputedStyle(link, '::after');
+    return { clip: after.clipPath, display: after.display };
+  });
+  expect(shape.clip).toContain('polygon');
+  expect(shape.display).toBe('inline-block');
 });

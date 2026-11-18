@@ -48,7 +48,9 @@
       <span>{progress.percent}% {shell.t('statusRead')}</span>
     {/if}
     <LanguageSwitch where="status" />
-    <span class="statusbar__theme">{ui.theme === undefined ? '' : themeName}</span>
+    <span class="statusbar__theme">
+      {#if ui.theme === undefined}<span class="skeleton" aria-hidden="true"></span>{:else}{themeName}{/if}
+    </span>
     <a class="statusbar__credits" href={`/${shell.language}/credits/`}>{shell.t('credits').toLowerCase()}</a>
   </div>
 </footer>
