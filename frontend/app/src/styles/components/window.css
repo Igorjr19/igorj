@@ -328,11 +328,17 @@
       display: none;
     }
 
+    /* The panes become a tab bar at the foot of the screen, within reach of the thumb. */
     .side {
-      gap: 0;
-      padding: calc(var(--cell-height) / 2) calc(2 * var(--cell-width));
+      order: 2;
+      position: sticky;
+      inset-block-end: 0;
+      z-index: 1;
+      display: block;
+      padding: 0 0 env(safe-area-inset-bottom);
       border: 0;
-      border-block-end: var(--line);
+      border-block-start: var(--line);
+      background-color: var(--color-background);
       overflow: visible;
     }
 
@@ -343,14 +349,27 @@
 
     .side__panes {
       display: flex;
-      flex-wrap: wrap;
-      gap: 2px var(--cell-width);
+      gap: 0;
+    }
+
+    .side__panes li {
+      flex: 1 1 0;
+      min-inline-size: 0;
     }
 
     .side__panes a {
-      grid-template-columns: auto auto;
-      gap: var(--cell-width);
-      white-space: nowrap;
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 0;
+      padding-block: calc(var(--cell-height) / 4);
+      min-block-size: round(up, 44px, var(--cell-height));
+      padding-inline: 0;
+      font-size: calc(0.9 * var(--font-size-small));
+      text-align: center;
+    }
+
+    .side__key {
+      font-weight: bold;
     }
 
     .side__count {
@@ -362,9 +381,7 @@
     }
 
     .statusbar {
-      position: sticky;
-      inset-block-end: 0;
-      padding-block-end: env(safe-area-inset-bottom);
+      order: 1;
       font-size: inherit;
     }
 
