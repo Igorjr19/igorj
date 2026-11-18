@@ -15,7 +15,7 @@
   const reading = $derived(isReadingPage(pathname));
   const isList = $derived(/^\/[^/]+\/(?:projects|posts|research)\/$/.test(pathname) || /^\/[^/]+\/(?:categories|tags)\/[^/]+\/$/.test(pathname));
   const parent = $derived(pathname.replace(/[^/]+\/$/, ''));
-  const themeName = $derived(themeLabel(shell.themeNames, ui.theme, typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches));
+  const themeName = $derived(themeLabel(shell.themeNames, ui.theme ?? null, typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches));
   const lastPane = $derived(shell.panes.length);
   const isPost = $derived(/^\/[^/]+\/posts\/[^/]+\/$/.test(pathname));
   const previous = $derived(page.data.item?.post?.previous as { href: string } | null | undefined);
@@ -48,7 +48,7 @@
       <span>{progress.percent}% {shell.t('statusRead')}</span>
     {/if}
     <LanguageSwitch where="status" />
-    {#if ui.theme !== undefined}<span>{themeName}</span>{/if}
+    <span class="statusbar__theme">{ui.theme === undefined ? '' : themeName}</span>
     <a class="statusbar__credits" href={`/${shell.language}/credits/`}>{shell.t('credits').toLowerCase()}</a>
   </div>
 </footer>

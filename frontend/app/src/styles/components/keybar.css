@@ -1,5 +1,6 @@
 @layer app.components {
-  .help {
+  .help,
+  .lang-menu {
     max-inline-size: min(80ch, calc(100% - 2 * var(--cell-width)));
     margin: auto;
     border: 0;
@@ -8,6 +9,7 @@
   }
 
   .help::backdrop,
+  .lang-menu::backdrop,
   .pick::backdrop {
     background-color: color-mix(in oklab, var(--color-background) 80%, transparent);
   }

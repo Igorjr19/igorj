@@ -212,3 +212,21 @@ test('a picture marked #color is drawn in the colors of the theme, one pair of l
   expect((await request.get('/media/posts/fixture-post/chart.png')).ok()).toBe(true);
   expect((await request.get('/media/posts/fixture-post/wide.png')).ok()).toBe(true);
 });
+
+test('a list starts with nothing chosen when it is used with the pointer, and a key chooses the first row', async ({
+  page,
+}) => {
+  await visit(page, '/en/posts/');
+  await expect(page.locator('.item[data-selected="true"]')).toHaveCount(0);
+  await page.keyboard.press('j');
+  await expect(page.locator('.item[data-selected="true"]')).toHaveCount(1);
+  await expect(page.locator('.item').first()).toHaveAttribute('data-selected', 'true');
+});
+
+test('a project row in the list shows no tag, and the card of the grid keeps it', async ({ page }) => {
+  await visit(page, '/en/projects/');
+  const meta = page.locator('.item').first().locator('.item__meta');
+  await expect(meta).toBeHidden();
+  await page.keyboard.press('v');
+  await expect(meta).toBeVisible();
+});

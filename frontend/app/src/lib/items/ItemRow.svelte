@@ -26,7 +26,7 @@
   );
 </script>
 
-<li class="item" style:--item-color={color} data-selected={selected}>
+<li class="item" style:--item-color={color} data-selected={selected} data-meta={item.category || item.research ? undefined : 'tag'}>
   <a class="item__link" href={item.href} lang={foreign ? languageInfo(item.language).locale : undefined}>
     <span class="item__title">{item.title}</span>
     <span class="item__meta">{meta}</span>

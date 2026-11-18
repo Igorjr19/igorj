@@ -123,34 +123,67 @@
     white-space: nowrap;
   }
 
-  /* The language in use and the way to the others: one control, shown in the top line on a phone and in the status line elsewhere. */
+  /* The language in use, which opens the choice: one control, shown in the top line on a phone and in the status line elsewhere. */
   .lang {
     display: inline-flex;
+    align-items: center;
     gap: var(--cell-width);
-    margin: 0;
     padding: 0;
-    list-style: none;
-  }
-
-  .lang li::before {
-    content: none;
-  }
-
-  .lang a {
+    border: 0;
+    background: none;
     color: inherit;
+    font: inherit;
+    cursor: pointer;
   }
 
-  .lang a:hover {
+  .lang:is(:hover, :focus-visible) {
     color: var(--color-link);
-  }
-
-  .lang__current {
-    color: var(--color-text);
-    font-weight: bold;
   }
 
   .lang--top {
     display: none;
+  }
+
+  .lang-menu {
+    inline-size: min(calc(32 * var(--cell-width)), calc(100% - 2 * var(--cell-width)));
+  }
+
+  .lang-menu__list {
+    display: grid;
+    gap: 2px;
+    margin: var(--cell-height) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lang-menu__list li::before {
+    content: none;
+  }
+
+  .lang-menu__option {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--cell-width);
+    padding: calc(var(--cell-height) / 4) var(--cell-width);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .lang-menu__option span {
+    color: var(--color-text-muted);
+  }
+
+  a.lang-menu__option:is(:hover, :focus-visible) {
+    background-color: var(--color-surface-1);
+  }
+
+  .lang-menu__option[aria-current] {
+    background-color: var(--color-selection-background);
+    color: var(--color-selection-text);
+  }
+
+  .lang-menu__option[aria-current] span {
+    color: inherit;
   }
 
   /* The side column: who and the panes at the top, the contacts at the foot. */
@@ -320,6 +353,12 @@
     padding-inline-end: calc(1.5 * var(--cell-width));
   }
 
+  /* The name of the theme is known only once the saved choice is read; its room is kept so the line does not move. */
+  .statusbar__theme {
+    min-inline-size: 25ch;
+    justify-content: flex-end;
+  }
+
   .statusbar .status-line {
     padding: 0;
     border: 0;
@@ -350,13 +389,6 @@
 
     .lang--top {
       display: inline-flex;
-      gap: 0;
-    }
-
-    /* Both the language in use and the link to the other are as tall as a thumb needs. */
-    .lang--top :is(a, .lang__current) {
-      display: inline-flex;
-      align-items: center;
       min-block-size: round(up, 44px, var(--cell-height));
       padding-inline: var(--cell-width);
     }

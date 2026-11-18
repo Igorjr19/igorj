@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { visit } from './support.ts';
 
 test('moving between panes keeps the same window: no new document, the side column stays', async ({ page }) => {
   await page.goto('/en/');
@@ -23,11 +24,16 @@ test('the side column marks the current pane and lists only the panes the conten
   expect(keys).toEqual(keys.map((_, index) => String(index + 1)));
 });
 
-test('the switcher shows the other language by its code and keeps the addresses in English', async ({ page }) => {
-  await page.goto('/en/');
-  const link = page.locator('.lang--status a');
-  await expect(link).toHaveText('pt-br');
+test('the switcher shows the language in use and opens the choice, with the addresses kept in English', async ({
+  page,
+}) => {
+  await visit(page, '/en/');
+  await expect(page.locator('.lang--status')).toHaveText('en-us');
+  await page.locator('.lang--status').click();
+  const link = page.locator('.lang--status + dialog.lang-menu a');
   await expect(link).toHaveAttribute('href', '/pt/');
+  await expect(link).toHaveAttribute('hreflang', 'pt-BR');
+  await expect(page.locator('.lang--status + dialog.lang-menu [aria-current]')).toContainText('English');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await link.click();
   await expect(page).toHaveURL('/pt/');

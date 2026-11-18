@@ -157,6 +157,11 @@
     font-style: italic;
   }
 
+  /* A project has only its first tag to say, which a row leaves out: it tells nothing the title does not. */
+  .items[data-view='list'] .item[data-meta='tag'] .item__meta {
+    display: none;
+  }
+
   .items[data-view='list'] .item:hover {
     background-color: var(--color-surface-1);
   }

@@ -140,7 +140,7 @@ test('the rating of a film is five stars filled up to the rating, not bars: the 
 
 test('the box of films says what it shows, as the one of music does', async ({ page }) => {
   await page.goto('/en/');
-  await expect(page.locator('#watched .panel__meta').first()).toContainText(/last \d+ films? watched/);
+  await expect(page.locator('#watched .panel__meta').first()).toContainText(/Last \d+ films? watched/);
   await page.goto('/pt/');
-  await expect(page.locator('#watched .panel__meta').first()).toContainText(/últimos? \d* ?filmes? vistos?/);
+  await expect(page.locator('#watched .panel__meta').first()).toContainText(/Últimos? \d* ?filmes? assistidos?/);
 });

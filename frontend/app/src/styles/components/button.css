@@ -1,6 +1,7 @@
 @layer app.components {
   /* Something that does something is framed; the hints that only name a key are plain muted text beside it. */
-  .button {
+  /* Also where a plainer rule for buttons applies, such as inside the status line. */
+  .button:is(button, a) {
     padding: 0 var(--cell-width);
     border: 1px solid var(--color-surface-3);
     background: none;
@@ -9,7 +10,7 @@
     cursor: pointer;
   }
 
-  .button--primary {
+  .button--primary:is(button, a) {
     border-color: var(--color-link);
     color: var(--color-link);
   }

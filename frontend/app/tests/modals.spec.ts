@@ -51,3 +51,32 @@ test('choosing a theme only previews it; apply keeps it and cancel puts the old 
   await expect(pick).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.getAttribute('data-theme'))).toBe(previewed);
 });
+
+test('a theme is shown only while the pointer is on it, and the chosen one is back when it leaves', async ({
+  page,
+}) => {
+  await visit(page, '/en/');
+  const root = page.locator('html');
+  const before = await root.getAttribute('data-theme');
+  await page.keyboard.press('t');
+  const pick = page.locator('dialog.pick');
+  await expect(pick).toBeVisible();
+  const options = pick.locator('.pick__option');
+  const last = options.nth((await options.count()) - 1);
+  await last.hover();
+  await expect.poll(() => root.getAttribute('data-theme')).not.toBe(before);
+  await page.mouse.move(5, 5);
+  await expect.poll(() => root.getAttribute('data-theme')).toBe(before);
+  await last.click();
+  await page.mouse.move(5, 5);
+  await expect.poll(() => root.getAttribute('data-theme')).not.toBe(before);
+});
+
+test('the language switch opens a choice and a click outside closes it', async ({ page }) => {
+  await visit(page, '/en/');
+  await page.locator('.lang--status').click();
+  const menu = page.locator('.lang--status + dialog.lang-menu');
+  await expect(menu).toBeVisible();
+  await page.mouse.click(5, 5);
+  await expect(menu).toBeHidden();
+});

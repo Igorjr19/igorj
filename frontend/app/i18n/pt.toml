@@ -275,5 +275,5 @@ one = "{{ .Count }} contribuição no último ano"
 other = "{{ .Count }} contribuições no último ano"
 
 [watchedCaption]
-one = "último filme visto"
-other = "últimos {{ .Count }} filmes vistos"
+one = "Último filme assistido"
+other = "Últimos {{ .Count }} filmes assistidos"
