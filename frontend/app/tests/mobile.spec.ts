@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { animatedSoFar, recordAnimations, visit } from './support.ts';
 
 test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
 
@@ -62,4 +63,14 @@ test('on a phone the controls of the lists and the CV are as tall as a thumb nee
   const body = await entry.locator('.cv__body').boundingBox();
   expect(body?.y).toBeGreaterThan((period?.y ?? 0) + (period?.height ?? 0) - 1);
   expect(body?.width).toBeGreaterThan(300);
+});
+
+test('on a phone a change of pane brings the new page in with a short movement instead of cutting to it', async ({
+  page,
+}) => {
+  await recordAnimations(page);
+  await visit(page, '/en/');
+  await page.locator('.side__panes a[data-pane="2"]').tap();
+  await expect(page).toHaveURL('/en/projects/');
+  await expect.poll(() => animatedSoFar(page)).toContain('pane');
 });

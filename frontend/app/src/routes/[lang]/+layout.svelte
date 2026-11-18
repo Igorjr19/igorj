@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { flushSync, onMount } from 'svelte';
   import { browserStorage } from '#lib/browser-storage.ts';
   import HelpDialog from '#lib/components/HelpDialog.svelte';
   import Lightbox from '#lib/components/Lightbox.svelte';
@@ -11,7 +11,9 @@
   import { languageInfo } from '#lib/languages.ts';
   import { isReadingPage } from '#lib/layout.ts';
   import { direction } from '#lib/motion/direction.ts';
-  import { navigationTransition } from '#lib/motion/transition.ts';
+  import { enterPane } from '#lib/motion/enter.ts';
+  import { sideSlide } from '#lib/motion/side.ts';
+  import { isNarrow, navigationTransition } from '#lib/motion/transition.ts';
   import PickBox from '#lib/pick/PickBox.svelte';
   import { progress } from '#lib/progress.svelte.ts';
   import { provideShell } from '#lib/shell.svelte.ts';
@@ -74,6 +76,8 @@
     }
   });
 
+  let slide: (() => void) | null = null;
+
   // The old page stays until the new one is ready, then the two cross, from the side its number lies on.
   onNavigate((navigation) => {
     if (!(navigation.from && navigation.to)) {
@@ -83,13 +87,28 @@
     void navigation.complete.finally(() => {
       ui.navigating = false;
     });
-    return navigationTransition(direction(navigation.from.url.pathname, navigation.to.url.pathname), navigation.complete);
+    const way = direction(navigation.from.url.pathname, navigation.to.url.pathname);
+    if (isNarrow()) {
+      void navigation.complete.then(() => enterPane(way));
+      return;
+    }
+    // A page that is read takes the window: the column slides away and the page takes its place, and the other way round.
+    if (ui.sideHidden(isReadingPage(navigation.from.url.pathname)) !== isReadingPage(navigation.to.url.pathname)) {
+      slide = sideSlide({ fade: true });
+      return;
+    }
+    return navigationTransition(way, navigation.complete);
   });
 
   // A new page starts from what it asks for, at the top, read from the beginning.
   afterNavigate((navigation) => {
     ui.cameFrom = navigation.from?.url.pathname ?? null;
     ui.newPage();
+    if (slide) {
+      flushSync();
+      slide();
+      slide = null;
+    }
     pane?.scrollTo({ top: 0 });
     if (pane) {
       progress.update(pane);

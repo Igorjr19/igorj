@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { visit } from './support.ts';
+import { animatedSoFar, recordAnimations, visit } from './support.ts';
 
 test('under the mouse a light follows the pointer over the photo, and goes when it leaves', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -90,13 +90,26 @@ test('during a page change the window marks it, so the columns do not slide unde
 test('hiding the side column slides the page and the column by moving them, and ends with the column hidden', async ({
   page,
 }) => {
+  await recordAnimations(page);
   await visit(page, '/en/projects/');
   await page.keyboard.press('z');
-  const moving = await page.evaluate(() =>
-    document.getAnimations().some((animation) => (animation.effect as KeyframeEffect | null)?.target?.matches('.pane')),
-  );
-  expect(moving).toBe(true);
+  await expect.poll(() => animatedSoFar(page)).toContain('pane');
   await expect(page.locator('.side')).toBeHidden();
   await page.keyboard.press('z');
+  await expect(page.locator('.side')).toBeVisible();
+});
+
+test('opening a post hides the side column and brings the page in by moving it, and going back brings the column back', async ({
+  page,
+}) => {
+  await recordAnimations(page);
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await visit(page, '/en/posts/');
+  await page.locator('.item__link').first().click();
+  await expect(page).toHaveURL(/\/en\/posts\/[^/]+\/$/);
+  await expect.poll(() => animatedSoFar(page)).toContain('pane');
+  await expect(page.locator('.side')).toBeHidden();
+  await page.keyboard.press('q');
+  await expect(page).toHaveURL('/en/posts/');
   await expect(page.locator('.side')).toBeVisible();
 });

@@ -168,7 +168,8 @@
       margin-block-end: calc(var(--cell-height) / 2);
     }
 
-    .cv .cv__head p {
+    /* The name, the role and the contacts are centered; the summary is running text and stays justified. */
+    .cv .cv__head :is(.cv__headline, .cv__contact) {
       text-align: center;
     }
   }
