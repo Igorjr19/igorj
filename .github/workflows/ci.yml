@@ -37,11 +37,17 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: browsers-${{ runner.os }}-${{ hashFiles('deno.lock') }}
-      # The install now and then stalls on a package mirror or a download for good; each try is cut short and tried again.
+      # A package download now and then stalls for good. The package manager is told to give up on a silent connection
+      # and ask again; if the install still hangs, it is cut short, the process it leaves holding the lock is ended,
+      # and it is tried again.
       - run: |
+          echo 'Acquire::http::Timeout "20"; Acquire::https::Timeout "20"; Acquire::Retries "5";' | sudo tee /etc/apt/apt.conf.d/99ci-timeouts
           for attempt in 1 2 3; do
-            timeout 300 deno task browsers && exit 0
+            timeout --kill-after=10 300 deno task browsers && exit 0
             echo "Browsers not installed (try $attempt)"
+            sudo pkill -9 -x apt-get || true
+            sudo pkill -9 -x dpkg || true
+            sudo dpkg --configure -a || true
           done
           exit 1
       - run: deno task ci
