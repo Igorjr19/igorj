@@ -32,6 +32,11 @@ jobs:
         with:
           path: .cache
           key: cache-${{ hashFiles('frontend/app/data/themes/*.toml') }}
+      # The browsers are the slowest download of the job; the install below only checks them when they are cached.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: browsers-${{ runner.os }}-${{ hashFiles('deno.lock') }}
       - run: deno task browsers
       - run: deno task ci
 
