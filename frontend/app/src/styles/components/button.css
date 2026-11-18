@@ -15,7 +15,12 @@
     color: var(--color-link);
   }
 
-  .button:is(:hover, :focus-visible) {
+  .button:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .button:not(:disabled):is(:hover, :focus-visible) {
     border-color: var(--color-link);
     background-color: var(--color-link);
     color: var(--color-background);

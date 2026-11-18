@@ -85,13 +85,10 @@ export function listeningBars(
   artists: NonNullable<SiteModel['music']>['artists'],
   shown = ARTISTS_SHOWN,
 ): {
-  total: number;
   bars: BarArtist[];
 } {
-  const total = artists.reduce((sum, artist) => sum + artist.plays, 0);
   const max = Math.max(1, ...artists.map((artist) => artist.plays));
   return {
-    total,
     bars: artists.slice(0, shown).map((artist) => ({
       name: artist.name,
       url: artist.url ?? null,

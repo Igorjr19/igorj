@@ -118,6 +118,9 @@ test('the copy button of a code block copies it and says so', async ({ page, con
 test('choosing a language with the switcher is remembered for the root address', async ({ page }) => {
   await visit(page, '/en/');
   await page.locator('.lang--status').click();
-  await page.locator('.lang--status + dialog.lang-menu a').click();
+  const menu = page.locator('.lang--status + dialog.lang-menu');
+  await menu.getByLabel('Português').check();
+  await menu.getByRole('button', { name: 'apply' }).click();
+  await expect(page).toHaveURL('/pt/');
   expect(await page.evaluate(() => localStorage.getItem('language'))).toBe('pt');
 });

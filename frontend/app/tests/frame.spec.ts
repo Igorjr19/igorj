@@ -24,19 +24,28 @@ test('the side column marks the current pane and lists only the panes the conten
   expect(keys).toEqual(keys.map((_, index) => String(index + 1)));
 });
 
-test('the switcher shows the language in use and opens the choice, with the addresses kept in English', async ({
+test('the switcher shows the language in use and opens the choice, which changes the site only when it is applied', async ({
   page,
 }) => {
   await visit(page, '/en/');
   await expect(page.locator('.lang--status')).toHaveText('en-us');
   await page.locator('.lang--status').click();
-  const link = page.locator('.lang--status + dialog.lang-menu a');
-  await expect(link).toHaveAttribute('href', '/pt/');
-  await expect(link).toHaveAttribute('hreflang', 'pt-BR');
-  await expect(page.locator('.lang--status + dialog.lang-menu [aria-current]')).toContainText('English');
+  const menu = page.locator('.lang--status + dialog.lang-menu');
+  const apply = menu.getByRole('button', { name: 'apply' });
+  await expect(apply).toBeDisabled();
+  await menu.getByLabel('Português').check();
+  await expect(page).toHaveURL('/en/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await link.click();
+  await expect(apply).toBeEnabled();
+  await menu.getByRole('button', { name: 'cancel' }).click();
+  await expect(menu).toBeHidden();
+  await expect(page).toHaveURL('/en/');
+  await page.locator('.lang--status').click();
+  await expect(menu.getByLabel('English')).toBeChecked();
+  await menu.getByLabel('Português').check();
+  await apply.click();
   await expect(page).toHaveURL('/pt/');
+  await expect(menu).toBeHidden();
   await expect(page.locator('.side__panes .side__label').nth(1)).toHaveText('Projetos');
 });
 

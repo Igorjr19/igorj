@@ -48,7 +48,7 @@
       <h2 class="label" id="cv-education">{shell.t('cvEducation')}</h2>
       {#each cv.education as study (study.institution + study.area)}
         <article class="cv__entry">
-          <p class="cv__period">{period(study.startDate, study.endDate, '')}</p>
+          <p class="cv__period">{period(study.startDate, study.endDate, shell.t('periodPresent'))}</p>
           <div class="cv__body">
             <h3 class="cv__title"><span class="cv__role">{study.studyType}{' · '}{study.area}</span></h3>
             <p class="cv__place">{#if study.url}<a href={study.url}>{study.institution}</a>{:else}{study.institution}{/if}</p>
@@ -116,6 +116,5 @@
 
   <p class="cv__print">
     <a class="button" href={`/${shell.language}/cv/cv.pdf`} download={`${slugify(shell.author)}-cv-${shell.language}.pdf`}>{shell.t('cvDownload')}</a>
-    <button type="button" class="button" onclick={() => window.print()}>{shell.t('print')}</button>
   </p>
 </div>
