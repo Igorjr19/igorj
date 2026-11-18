@@ -26,6 +26,12 @@ homepage = "https://github.com/mozilla/Fira"
 text = { package = "@fontsource/fira-sans", file = "LICENSE" }
 
 [[entries]]
+name = "pdf-lib"
+license = "MIT"
+homepage = "https://pdf-lib.js.org"
+text = { package = "pdf-lib", file = "LICENSE.md" }
+
+[[entries]]
 name = "Catppuccin palette"
 license = "MIT"
 homepage = "https://catppuccin.com"

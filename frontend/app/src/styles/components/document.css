@@ -130,13 +130,16 @@
     gap: calc(var(--cell-height) / 4) var(--cell-width);
   }
 
-  .cv__print button {
-    padding: 0 var(--cell-width);
-    border: var(--line);
-    background: none;
-    color: var(--color-link);
-    font: var(--font-size) var(--font-mono);
-    cursor: pointer;
+  .cv__print {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cell-width);
+  }
+
+  .cv__print .button {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
   }
 
   /* On a phone the period goes above the text instead of taking a third of the width beside it, and the head is centered. */

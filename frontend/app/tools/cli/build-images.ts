@@ -2,6 +2,8 @@ import { dirname } from '@std/path';
 import { parse as parseToml } from '@std/toml';
 import type { SiteModel } from '../../../../tools/model/types.ts';
 import { removeIfExists, walkFiles } from '../../../../tools/shared/fs.ts';
+import { renderCvPdf } from '../cv-pdf/render.ts';
+import type { Labels } from '../cv-pdf/types.ts';
 import { colorGray, splitByRole } from '../image/color.ts';
 import { defaultColors, type PictureColors } from '../image/colors.ts';
 import { atkinson, floydSteinberg, invert } from '../image/dither.ts';
@@ -233,6 +235,35 @@ async function copyMedia(languages: readonly string[]): Promise<void> {
   }
 }
 
+/** The words of the interface the CV carries, from the dictionary of its language. */
+function cvLabels(words: Record<string, string>): Labels {
+  const word = (key: string): string => words[key] ?? '';
+  return {
+    work: word('cvWork'),
+    education: word('cvEducation'),
+    academic: word('cvAcademic'),
+    skills: word('cvSkills'),
+    languages: word('cvLanguages'),
+    publications: word('cvPublications'),
+    present: word('periodPresent'),
+  };
+}
+
+/** The CV of each language as a PDF beside its page, for a visitor who wants to keep it or send it on. */
+async function cvPdfs(languages: readonly string[], accent: string): Promise<number> {
+  let count = 0;
+  for (const language of languages) {
+    const model = await readModel(language);
+    if (model.cv) {
+      const labels = cvLabels(await sectionLabels(language));
+      const meta = { name: model.profile?.author ?? '', accent, labels };
+      await write(`${STATIC_DIR}/${language}/cv/cv.pdf`, await renderCvPdf(model.cv, meta));
+      count += 1;
+    }
+  }
+  return count;
+}
+
 /** Starts from the files both frontends serve as they are (the fonts, the license texts), then the pictures go beside them. */
 async function startStatic(): Promise<void> {
   await removeIfExists(STATIC_DIR);
@@ -288,10 +319,11 @@ for (const language of languages) {
 }
 await favicons(colors);
 await copyMedia(languages);
+const cvs = await cvPdfs(languages, colors.accent);
 const manifest: ImagesManifest = { portraits, figures, colorFigures, placeholders, webCopies };
 await write('generated/data/images.json', `${JSON.stringify(manifest, null, 2)}\n`);
 console.log(
   `Wrote ${Object.keys(portraits).length} portraits, ${
     Object.keys(figures).length
-  } figures, ${shared} share images and the favicons.`,
+  } figures, ${cvs} CV files, ${shared} share images and the favicons.`,
 );
