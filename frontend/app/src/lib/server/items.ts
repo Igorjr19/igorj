@@ -11,7 +11,11 @@ type Item = PostModel | ProjectModel | ResearchModel;
 function firstImage(item: ItemModel, images: Images, key: string): ItemRowData['image'] {
   const media = item.media.find((path) => path in images.figures);
   const figure = media ? images.figures[media] : undefined;
-  return figure ? (figure.thumb ?? figure) : (images.placeholders[key] ?? null);
+  const placeholder = images.placeholders[key];
+  if (figure) {
+    return figure.thumb ?? figure;
+  }
+  return placeholder ? { ...placeholder, poster: true } : null;
 }
 
 export function rowOf(section: ItemSection, item: Item, images: Images): ItemRowData {

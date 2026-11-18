@@ -3,8 +3,10 @@
     display: grid;
   }
 
+  /* The dots are drawn small and kept square when scaled, as the portrait of the home does. */
   .dither__ink {
     grid-area: 1 / 1;
+    image-rendering: pixelated;
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: cover;

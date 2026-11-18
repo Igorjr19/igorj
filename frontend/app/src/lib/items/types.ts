@@ -25,6 +25,8 @@ export interface ItemRowData {
     readonly inverted: string;
     readonly width: number;
     readonly height: number;
+    /** A picture grown from the title, to stand where there is none: the page sets the title over it. */
+    readonly poster?: boolean;
   } | null;
 }
 

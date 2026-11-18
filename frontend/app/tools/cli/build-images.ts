@@ -9,7 +9,6 @@ import { defaultColors, type PictureColors } from '../image/colors.ts';
 import { atkinson, floydSteinberg, invert } from '../image/dither.ts';
 import { drawFavicon } from '../image/favicon.ts';
 import { grayscale, toLinear } from '../image/filters.ts';
-import { initialOf } from '../image/initial.ts';
 import {
   type ColorEntry,
   FIGURE_MAX_WIDTH,
@@ -21,11 +20,12 @@ import {
   WEB_MAX_WIDTH,
   withoutExtension,
 } from '../image/manifest.ts';
+import { proceduralGray } from '../image/pattern.ts';
 import { treatPortrait } from '../image/portrait.ts';
 import { colorImages } from '../image/references.ts';
 import { parseThemesData } from '../image/schema.ts';
 import { drawShare, SHARE_HEIGHT, SHARE_PORTRAIT, SHARE_WIDTH, type SharePicture } from '../image/share.ts';
-import type { Gray } from '../image/types.ts';
+import type { Rgba } from '../image/types.ts';
 import { drawingOf, maskPng, readRgba, registerFonts, resized } from './canvas.ts';
 
 /** The edition the build is for; its model and its media have their own folders. */
@@ -82,9 +82,11 @@ async function figureMask(media: string): Promise<MaskEntry> {
   const thumb = await readRgba(`${MEDIA_DIR}/${media}`, {
     fit: PLACEHOLDER_SIZE,
   });
+  // The same treatment and the same dots as the portrait of the home, so every picture of the site looks of one kind.
+  const dots = (picture: Rgba) => atkinson(toLinear(treatPortrait(grayscale(picture))));
   return {
-    ...(await writeMask('figure', media, floydSteinberg(toLinear(grayscale(probe))))),
-    thumb: await writeMask('thumb', media, floydSteinberg(toLinear(grayscale(thumb)))),
+    ...(await writeMask('figure', media, dots(probe))),
+    thumb: await writeMask('thumb', media, dots(thumb)),
   };
 }
 
@@ -182,30 +184,7 @@ async function sharePictures(language: string, colors: PictureColors): Promise<n
   return items.length + 1;
 }
 
-/** The initial, large, over a faint texture: what an item with no picture shows in a list. */
-function initialGray(title: string): Gray {
-  const { width, height } = PLACEHOLDER_SIZE;
-  const { context } = drawingOf(width, height);
-  const texture = context.createLinearGradient(0, 0, width, height);
-  texture.addColorStop(0, '#0d0d0d');
-  texture.addColorStop(1, '#3a3a3a');
-  context.fillStyle = texture;
-  context.fillRect(0, 0, width, height);
-  context.fillStyle = '#ffffff';
-  context.font = `bold ${Math.round(height * 0.78)}px "Fira Code"`;
-  context.textAlign = 'center';
-  context.textBaseline = 'alphabetic';
-  const letter = initialOf(title);
-  const { actualBoundingBoxAscent: ascent, actualBoundingBoxDescent: descent } = context.measureText(letter);
-  context.fillText(letter, width / 2, height / 2 + (ascent - descent) / 2);
-  return grayscale({
-    width,
-    height,
-    data: context.getImageData(0, 0, width, height).data,
-  });
-}
-
-/** An item with no picture gets its initial, the same on every build. */
+/** An item with no picture gets a pattern grown from its title, the same on every build; the page sets the title over it. */
 async function placeholderMasks(model: SiteModel, into: Record<string, MaskEntry>): Promise<void> {
   for (const section of ['posts', 'projects', 'research'] as const) {
     for (const item of model[section]) {
@@ -214,7 +193,7 @@ async function placeholderMasks(model: SiteModel, into: Record<string, MaskEntry
         into[key] = await writeMask(
           'thumb',
           `placeholder/${section}/${item.id}`,
-          atkinson(toLinear(initialGray(item.title))),
+          atkinson(proceduralGray(item.title, PLACEHOLDER_SIZE.width, PLACEHOLDER_SIZE.height)),
         );
       }
     }

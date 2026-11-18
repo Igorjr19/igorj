@@ -43,8 +43,8 @@ export function isRaster(path: string): boolean {
 /** A picture opened from a page is shown at most this wide; a larger original is shown from a smaller copy of it. */
 export const WEB_MAX_WIDTH = 1600;
 
-/** Figures never fill more than the text column, so the dots are not made wider than this. */
-export const FIGURE_MAX_WIDTH = 960;
+/** Figures never fill more than the text column, so the dots are made no wider than this: one dot for each pixel on screen, as the portrait of the home. */
+export const FIGURE_MAX_WIDTH = 640;
 
 /** As tall as the photo itself (3:4), so the home can stretch it to the height of the text beside it with little cropped. */
 export const HERO_PORTRAIT_SIZE = { width: 320, height: 427 } as const;
